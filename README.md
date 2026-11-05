@@ -20,7 +20,7 @@ Students revise what they already know and skip the weak prerequisite. Teachers 
 
 Same grade, opposite gaps: the grade hides what each student should revise.
 
-| Concept    | Amira · 12/20 | Youssef · 12/20 |
+| Concept    | Nour· 12/20 | Rayen · 12/20 |
 |------------|:-------------:|:---------------:|
 | Sampling   | ✅ strong     | ⚠️ weak         |
 | Nyquist    | ✅ strong     | ⚠️ weak         |
