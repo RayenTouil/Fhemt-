@@ -26,7 +26,7 @@ Same grade, opposite gaps: the grade hides what each student should revise.
 | Nyquist    | ✅ strong     | ⚠️ weak         |
 | Modulation | ⚠️ weak       | ✅ strong       |
 
-## What Fhemt ? is
+## What "Fhemt ?" is
 
 An **educational, interactive web application**: quizzes, progress tracking, a personalised study path and an AI tutor.
 First version: one course, **Digital Communications** at Sup'Com.
