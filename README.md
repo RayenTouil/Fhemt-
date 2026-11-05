@@ -20,13 +20,13 @@ Students revise what they already know and skip the weak prerequisite. Teachers 
 
 Same grade, opposite gaps: the grade hides what each student should revise.
 
-| Concept    | Nour· 12/20 | Rayen · 12/20 |
+| Concept    | Amira · 12/20 | Youssef · 12/20 |
 |------------|:-------------:|:---------------:|
 | Sampling   | ✅ strong     | ⚠️ weak         |
 | Nyquist    | ✅ strong     | ⚠️ weak         |
 | Modulation | ⚠️ weak       | ✅ strong       |
 
-## What "Fhemt ?" is
+## What Fhemt ? is
 
 An **educational, interactive web application**: quizzes, progress tracking, a personalised study path and an AI tutor.
 First version: one course, **Digital Communications** at Sup'Com.
@@ -58,26 +58,13 @@ First version: one course, **Digital Communications** at Sup'Com.
 
 Quick actions get an answer right away. Slow tasks (AI, emails, statistics) go through a **message queue**, so the app never makes the student wait.
 
-```mermaid
-flowchart LR
-    U["User<br/>student · teacher"] <-->|HTTP| A["Angular<br/>frontend"]
-    A <--> F["Firebase OAuth 2.0<br/>Google sign-in"]
-    A <-->|HTTP| N["Node.js + Express<br/>REST API · RBAC · courses · quiz"]
-    A -.->|direct call to the tutor| AI
-    N <--> RC[("Redis<br/>cache")]
-    N <--> M[("MongoDB")]
-    N <--> C["Cloudinary"]
-    N <-->|events| Q{{"RabbitMQ"}}
-    Q <--> AI["AI microservice<br/>Python · FastAPI"]
-    AI <--> RT[("Redis<br/>tutor memory")]
-    AI <--> QD[("Qdrant<br/>course search")]
-    AI <--> G["Groq<br/>writes the answers"]
-    AI <--> MJ["Mailjet<br/>emails"]
-```
+<p align="center">
+  <img src="assets/architecture.svg" width="100%" alt="Fhemt ? architecture: the Angular frontend (Google sign-in through Firebase) calls the Node.js + Express API, which uses Redis as a cache, MongoDB and Cloudinary. Node.js and the Python FastAPI AI microservice exchange events through RabbitMQ: answer.submitted and material.uploaded go to the AI, mastery.updated comes back. The AI microservice uses Redis for tutor memory, Qdrant to search the course, Groq to write answers and Mailjet for emails. The tutor is called directly from the frontend.">
+</p>
 
-**Events on the bus:** `answer.submitted` and `material.uploaded` (backend → AI), `mastery.updated` (AI → backend).
+**How to read it:** each colour is a layer, dashed boxes are external services, and the numbers ①②③ on the arrows match the three flows below. The moving dots show messages travelling through RabbitMQ.
 
-### Main flows
+### Main flows (①②③ on the diagram)
 
 **① A student answers a question**
 1. Node.js checks the answer: instant feedback.
