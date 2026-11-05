@@ -1,16 +1,10 @@
 <div align="center">
 
-# Fhemt ? · فهمت؟
+<img src="assets/banner.svg" width="100%" alt="Fhemt ? (فهمت؟) — Adaptive learning web platform. Know what you've mastered. Learn what's next.">
 
-**Know what you've mastered. Learn what's next.**
-
-Adaptive learning web platform · Sup'Com Web Project
+<img src="assets/stack.svg" width="100%" alt="Languages: HTML, CSS, JavaScript, TypeScript, Python. Stack: Angular, Firebase Auth, Node.js, Express, MongoDB, Redis, RabbitMQ, FastAPI, Qdrant, Groq, Cloudinary, Mailjet.">
 
 ![Status](https://img.shields.io/badge/status-Objective%201%20·%20design-orange)
-![Angular](https://img.shields.io/badge/frontend-Angular-DD0031?logo=angular&logoColor=white)
-![Node.js](https://img.shields.io/badge/backend-Node.js%20%2B%20Express-339933?logo=nodedotjs&logoColor=white)
-![FastAPI](https://img.shields.io/badge/AI-FastAPI-009688?logo=fastapi&logoColor=white)
-![RabbitMQ](https://img.shields.io/badge/events-RabbitMQ-FF6600?logo=rabbitmq&logoColor=white)
 
 </div>
 
