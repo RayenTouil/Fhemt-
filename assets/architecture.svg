@@ -1,142 +1,131 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="900" height="600" viewBox="0 0 900 600" role="img" aria-label="Architecture cible de Fhemt ? : le frontend Angular (connexion Firebase) appelle une API Node.js + Express (cache Redis, MongoDB, Cloudinary). Node.js et le microservice IA Python FastAPI échangent des événements via RabbitMQ (answer.submitted, material.uploaded, mastery.updated). Le microservice IA utilise Redis pour la mémoire du tuteur, Qdrant pour chercher dans le cours, Groq pour rédiger les réponses et Mailjet pour les e-mails.">
-  <title>Fhemt ? — architecture cible</title>
-  <defs><marker id="m-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1F5FBF"/></marker><marker id="m-slate" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6B85AD"/></marker><marker id="m-purple" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7B3FC4"/></marker><marker id="m-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#C8102E"/></marker><marker id="m-orange" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#B9771A"/></marker></defs>
-  <rect x="0.5" y="0.5" width="899" height="599" rx="16" fill="#FFFFFF" stroke="#DCE3EE"/>
-    <rect x="132" y="24" width="196" height="222" rx="14" fill="#F3F7FF" stroke="#1F5FBF" stroke-width="1.5" stroke-opacity="0.55"/>
-  <text x="146" y="42" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="1.8" fill="#1F5FBF">FRONTEND</text>
-  <rect x="340" y="24" width="542" height="222" rx="14" fill="#F3F7FF" stroke="#0B2E5E" stroke-width="1.5" stroke-opacity="0.55"/>
-  <text x="354" y="42" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="1.8" fill="#0B2E5E">BACKEND ET DONNÉES</text>
-  <rect x="340" y="256" width="542" height="84" rx="14" fill="#F7F1FE" stroke="#7B3FC4" stroke-width="1.5" stroke-opacity="0.55"/>
-  <text x="354" y="274" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="1.8" fill="#7B3FC4">ÉVÉNEMENTS</text>
-  <rect x="132" y="350" width="750" height="140" rx="14" fill="#FFF5F6" stroke="#C8102E" stroke-width="1.5" stroke-opacity="0.55"/>
-  <text x="146" y="368" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="1.8" fill="#C8102E">MICROSERVICE IA</text>
-  <path d="M114 192 H148" fill="none" stroke="#1F5FBF" stroke-width="1.8" marker-end="url(#m-blue)" marker-start="url(#m-blue)"/>
-  <path d="M230 160 V104" fill="none" stroke="#1F5FBF" stroke-width="1.8" marker-end="url(#m-blue)" marker-start="url(#m-blue)"/>
-  <path d="M306 192 H396" fill="none" stroke="#1F5FBF" stroke-width="1.8" marker-end="url(#m-blue)"/>
-  <path d="M402 168 C370 150 360 90 310 80" fill="none" stroke="#B9771A" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#m-orange)"/>
-  <path d="M485 158 V104" fill="none" stroke="#6B85AD" stroke-width="1.8" marker-end="url(#m-slate)" marker-start="url(#m-slate)"/>
-  <path d="M572 172 C620 150 650 90 696 80" fill="none" stroke="#6B85AD" stroke-width="1.8" marker-end="url(#m-slate)" marker-start="url(#m-slate)"/>
-  <path d="M572 196 H696" fill="none" stroke="#B9771A" stroke-width="1.8" marker-end="url(#m-orange)"/>
-  <path id="evDown1" d="M465 224 V279" fill="none" stroke="#7B3FC4" stroke-width="2.6" marker-end="url(#m-purple)"/>
-  <path id="evUp2" d="M505 281 V226" fill="none" stroke="#7B3FC4" stroke-width="2.6" marker-end="url(#m-purple)"/>
-  <path id="evDown2" d="M465 331 V380" fill="none" stroke="#7B3FC4" stroke-width="2.6" marker-end="url(#m-purple)"/>
-  <path id="evUp1" d="M505 382 V333" fill="none" stroke="#7B3FC4" stroke-width="2.6" marker-end="url(#m-purple)"/>
-  <path d="M230 224 C230 330 320 405 396 410" fill="none" stroke="#C8102E" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#m-red)"/>
-  <path d="M398 428 H324" fill="none" stroke="#C8102E" stroke-width="1.8" marker-end="url(#m-red)" marker-start="url(#m-red)"/>
-  <path d="M572 402 C630 400 640 377 696 377" fill="none" stroke="#C8102E" stroke-width="1.8" marker-end="url(#m-red)" marker-start="url(#m-red)"/>
-  <path d="M572 419 H696" fill="none" stroke="#B9771A" stroke-width="1.8" marker-end="url(#m-orange)"/>
-  <path d="M572 436 C630 438 640 461 696 461" fill="none" stroke="#B9771A" stroke-width="1.8" marker-end="url(#m-orange)"/>
-  <rect x="18" y="164" width="96" height="56" rx="10" fill="#FFFFFF" stroke="#0B2E5E" stroke-width="1.8"/>
-  <text x="66.0" y="190.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">Utilisateur</text>
-  <text x="66.0" y="204.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#4A5D7E">étudiant · prof</text>
-  <rect x="150" y="48" width="160" height="54" rx="10" fill="#FFF3E0" stroke="#E8A33D" stroke-width="1.8" stroke-dasharray="5 3"/>
-  <text x="230.0" y="73.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#6B4200">Firebase OAuth 2.0</text>
-  <text x="230.0" y="87.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#8A6427">Connexion Google</text>
-  <text x="302" y="59" text-anchor="end" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="7.5" font-weight="700" letter-spacing="1" fill="#B9771A">EXTERNE</text>
-  <rect x="150" y="162" width="156" height="60" rx="10" fill="#DCEBFF" stroke="#1F5FBF" stroke-width="1.8"/>
-  <text x="228.0" y="190.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">Angular</text>
-  <text x="228.0" y="204.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">frontend · quiz · tuteur</text>
-  <rect x="410" y="48" width="150" height="54" rx="10" fill="#EAF2FD" stroke="#1F5FBF" stroke-width="1.8"/>
-  <g fill="none" stroke="#1F5FBF" stroke-width="1.4"><ellipse cx="426" cy="70.0" rx="6" ry="2.4"/><path d="M420 70.0 v8 a6 2.4 0 0 0 12 0 v-8"/><path d="M420 74.0 a6 2.4 0 0 0 12 0"/></g>
-  <text x="493.0" y="73.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">Redis</text>
-  <text x="493.0" y="87.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">cache des pages</text>
-  <rect x="400" y="158" width="172" height="66" rx="10" fill="#0F3B78" stroke="#0B2E5E" stroke-width="1.8"/>
-  <text x="486.0" y="182.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Node.js + Express</text>
-  <text x="486.0" y="196.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#C9D8F0">REST API · RBAC</text>
-  <text x="486.0" y="209.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#C9D8F0">cours · quiz · classes</text>
-  <rect x="700" y="48" width="166" height="54" rx="10" fill="#EAF2FD" stroke="#1F5FBF" stroke-width="1.8"/>
-  <g fill="none" stroke="#1F5FBF" stroke-width="1.4"><ellipse cx="716" cy="70.0" rx="6" ry="2.4"/><path d="M710 70.0 v8 a6 2.4 0 0 0 12 0 v-8"/><path d="M710 74.0 a6 2.4 0 0 0 12 0"/></g>
-  <text x="791.0" y="73.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">MongoDB</text>
-  <text x="791.0" y="87.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">comptes · concepts · maîtrise</text>
-  <rect x="700" y="169" width="166" height="54" rx="10" fill="#FFF3E0" stroke="#E8A33D" stroke-width="1.8" stroke-dasharray="5 3"/>
-  <text x="783.0" y="194.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#6B4200">Cloudinary</text>
-  <text x="783.0" y="208.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#8A6427">PDF et images du cours</text>
-  <text x="858" y="180" text-anchor="end" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="7.5" font-weight="700" letter-spacing="1" fill="#B9771A">EXTERNE</text>
-  <path d="M414 281 H558 L572 305.0 L558 329 H414 L400 305.0 Z" fill="#7B3FC4" stroke="#4B1D8F" stroke-width="1.8"/>
-  <text x="486.0" y="301" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">RabbitMQ</text>
-  <text x="486.0" y="315" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#E6DAFA">file de messages</text>
-  <rect x="170" y="402" width="152" height="52" rx="10" fill="#FDE7EA" stroke="#C8102E" stroke-width="1.8"/>
-  <g fill="none" stroke="#C8102E" stroke-width="1.4"><ellipse cx="186" cy="423.0" rx="6" ry="2.4"/><path d="M180 423.0 v8 a6 2.4 0 0 0 12 0 v-8"/><path d="M180 427.0 a6 2.4 0 0 0 12 0"/></g>
-  <text x="254.0" y="426.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#7A0A1C">Redis</text>
-  <text x="254.0" y="440.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#8E3A47">mémoire du tuteur</text>
-  <rect x="400" y="382" width="172" height="72" rx="10" fill="#C8102E" stroke="#8E0B20" stroke-width="1.8"/>
-  <text x="486.0" y="409.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Microservice IA</text>
-  <text x="486.0" y="423.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#FFD9DF">Python · FastAPI</text>
-  <text x="486.0" y="436.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#FFD9DF">maîtrise et parcours · tuteur</text>
-  <rect x="700" y="362" width="166" height="30" rx="8" fill="#FDE7EA" stroke="#C8102E" stroke-width="1.8"/>
-  <text x="783.0" y="381.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11.0" font-weight="700" fill="#7A0A1C">Qdrant · fouille le cours</text>
-  <rect x="700" y="404" width="166" height="30" rx="8" fill="#FFF3E0" stroke="#E8A33D" stroke-width="1.8" stroke-dasharray="5 3"/>
-  <text x="783.0" y="423.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="700" fill="#6B4200">Groq · rédige les réponses</text>
-  <rect x="700" y="446" width="166" height="30" rx="8" fill="#FFF3E0" stroke="#E8A33D" stroke-width="1.8" stroke-dasharray="5 3"/>
-  <text x="783.0" y="465.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#6B4200">Mailjet · e-mails</text>
-  <rect x="111.9" y="171" width="38.1" height="16" rx="8" fill="#FFFFFF" stroke="#1F5FBF" stroke-opacity="0.35"/>
-  <text x="131.0" y="183" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#1F5FBF">HTTP</text>
-  <rect x="238.0" y="125" width="44.8" height="16" rx="8" fill="#FFFFFF" stroke="#1F5FBF" stroke-opacity="0.35"/>
-  <text x="260.4" y="137" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#1F5FBF">connexion</text>
-  <rect x="312.6" y="171" width="76.7" height="16" rx="8" fill="#FFFFFF" stroke="#1F5FBF" stroke-opacity="0.35"/>
-  <text x="351.0" y="183" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#1F5FBF">REST + jeton</text>
-  <rect x="303.4" y="111" width="93.1" height="16" rx="8" fill="#FFFFFF" stroke="#B9771A" stroke-opacity="0.35"/>
-  <text x="350.0" y="123" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#B9771A">vérifie le jeton</text>
-  <rect x="493.0" y="123" width="40.4" height="16" rx="8" fill="#FFFFFF" stroke="#6B85AD" stroke-opacity="0.35"/>
-  <text x="513.2" y="135" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#6B85AD">cache</text>
-  <rect x="603.6" y="109" width="64.8" height="16" rx="8" fill="#FFFFFF" stroke="#6B85AD" stroke-opacity="0.35"/>
-  <text x="636.0" y="121" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#6B85AD">lecture / écriture</text>
-  <rect x="593.7" y="175" width="80.6" height="16" rx="8" fill="#FFFFFF" stroke="#B9771A" stroke-opacity="0.35"/>
-  <text x="634.0" y="187" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#B9771A">② stocke les PDF</text>
-  <rect x="596" y="266" width="276" height="66" rx="10" fill="#FFFFFF" stroke="#7B3FC4" stroke-opacity="0.3"/>
-  <circle cx="610" cy="280.5" r="4" fill="#F5B942"/>
-  <text x="620" y="284" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="700" fill="#7B3FC4">①</text>
-  <text x="642" y="284" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" font-weight="700" fill="#7B3FC4" textLength="100.8" lengthAdjust="spacingAndGlyphs">answer.submitted</text>
-  <text x="862" y="284" text-anchor="end" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#5B6B84">Node.js → IA</text>
-  <circle cx="610" cy="299.5" r="4" fill="#F5B942"/>
-  <text x="620" y="303" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="700" fill="#7B3FC4">②</text>
-  <text x="642" y="303" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" font-weight="700" fill="#7B3FC4" textLength="107.1" lengthAdjust="spacingAndGlyphs">material.uploaded</text>
-  <text x="862" y="303" text-anchor="end" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#5B6B84">Node.js → IA</text>
-  <circle cx="610" cy="318.5" r="4" fill="#22C55E"/>
-  <text x="620" y="322" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="700" fill="#7B3FC4">①</text>
-  <text x="642" y="322" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="10.5" font-weight="700" fill="#7B3FC4" textLength="94.5" lengthAdjust="spacingAndGlyphs">mastery.updated</text>
-  <text x="862" y="322" text-anchor="end" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#5B6B84">IA → Node.js</text>
-  <rect x="226.9" y="317" width="82.3" height="16" rx="8" fill="#FFFFFF" stroke="#C8102E" stroke-opacity="0.35"/>
-  <text x="268.0" y="329" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#C8102E">③ question au tuteur</text>
-  <rect x="333.2" y="409" width="55.6" height="16" rx="8" fill="#FFFFFF" stroke="#C8102E" stroke-opacity="0.35"/>
-  <text x="361.0" y="421" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#C8102E">③ historique</text>
-  <rect x="583.5" y="361" width="97.0" height="16" rx="8" fill="#FFFFFF" stroke="#C8102E" stroke-opacity="0.35"/>
-  <text x="632.0" y="373" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#C8102E">②③ indexe · cherche</text>
-  <rect x="577.2" y="402" width="113.7" height="16" rx="8" fill="#FFFFFF" stroke="#B9771A" stroke-opacity="0.35"/>
-  <text x="634.0" y="414" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#B9771A">③ prompt + passages</text>
-  <rect x="589.0" y="448" width="90.1" height="16" rx="8" fill="#FFFFFF" stroke="#B9771A" stroke-opacity="0.35"/>
-  <text x="634.0" y="460" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#B9771A">② support prêt</text>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="900" height="650" viewBox="0 0 900 650" role="img" lang="fr" aria-label="Architecture du MVP de Fhemt ? : l'application Angular 22 (7 pages) choisit selon environment.apiUrl entre ApiService, qui appelle en HTTP l'API Node.js + Express 5 lancée en local (routes, contrôle d'accès requireUser / requireRole, règles de maîtrise et de parcours, stockage dans un fichier JSON créé à partir des données seed), et DemoApi, qui applique les mêmes règles dans le navigateur avec le localStorage. Le code est sur GitHub (Fhemt-), vérifié par GitHub Actions ; npm run deploy publie le site compilé dans RayenTouil.github.io, servi par GitHub Pages sur fhemt.me (DNS Namecheap).">
+  <title>Fhemt ? — architecture du MVP (objectif 3)</title>
+  <defs><marker id="m-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1F5FBF"/></marker><marker id="m-slate" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6B85AD"/></marker><marker id="m-purple" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7B3FC4"/></marker><marker id="m-red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#C8102E"/></marker><marker id="m-orange" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#B9771A"/></marker><marker id="m-green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2E8B57"/></marker></defs>
+  <rect x="0.5" y="0.5" width="899" height="649" rx="16" fill="#FFFFFF" stroke="#DCE3EE"/>
+  <rect x="132" y="24" width="232" height="300" rx="14" fill="#F3F7FF" stroke="#1F5FBF" stroke-width="1.5" stroke-opacity="0.55"/>
+  <text x="146" y="42" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#1F5FBF" letter-spacing="1.8">FRONTEND · ANGULAR 22</text>
+  <rect x="380" y="24" width="502" height="300" rx="14" fill="#F3F7FF" stroke="#0B2E5E" stroke-width="1.5" stroke-opacity="0.55"/>
+  <text x="394" y="42" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#0B2E5E" letter-spacing="1.8">BACKEND · EXPRESS 5 · EN LOCAL (PORT 3000)</text>
+  <rect x="132" y="340" width="750" height="156" rx="14" fill="#F9F5FF" stroke="#7B3FC4" stroke-width="1.5" stroke-opacity="0.55"/>
+  <text x="146" y="358" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#7B3FC4" letter-spacing="1.8">CODE, VÉRIFICATION ET MISE EN LIGNE</text>
+  <path d="M114 88 H148" fill="none" stroke="#1F5FBF" stroke-width="1.8" marker-end="url(#m-blue)" marker-start="url(#m-blue)"/>
+  <path d="M212 124 C212 150 196 152 196 174" fill="none" stroke="#1F5FBF" stroke-width="1.8" marker-end="url(#m-blue)"/>
+  <path d="M282 124 C282 150 298 152 298 174" fill="none" stroke="#1F5FBF" stroke-width="1.8" marker-end="url(#m-blue)"/>
+  <path d="M196 236 V254" fill="none" stroke="#6B85AD" stroke-width="1.8" marker-end="url(#m-slate)" marker-start="url(#m-slate)"/>
+  <path id="rest" d="M346 205 C372 205 372 96 398 96" fill="none" stroke="#1F5FBF" stroke-width="1.8" marker-end="url(#m-blue)"/>
+  <path d="M582 87 H598" fill="none" stroke="#1F5FBF" stroke-width="1.8" marker-end="url(#m-blue)"/>
+  <path d="M640 124 C640 136 560 134 560 144" fill="none" stroke="#6B85AD" stroke-width="1.8" marker-end="url(#m-slate)"/>
+  <path d="M770 124 V144" fill="none" stroke="#6B85AD" stroke-width="1.8" marker-end="url(#m-slate)"/>
+  <path d="M640 210 C640 222 560 220 560 230" fill="none" stroke="#6B85AD" stroke-width="1.8" marker-end="url(#m-slate)" marker-start="url(#m-slate)"/>
+  <path d="M598 270 H584" fill="none" stroke="#B9771A" stroke-width="1.8" marker-end="url(#m-orange)"/>
+  <path d="M800 230 V212" fill="none" stroke="#2E8B57" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#m-green)"/>
+  <path d="M322 405 H338" fill="none" stroke="#7B3FC4" stroke-width="1.8" marker-end="url(#m-purple)"/>
+  <path id="deploy" d="M236 440 V472 H594 V442" fill="none" stroke="#7B3FC4" stroke-width="1.8" marker-end="url(#m-purple)"/>
+  <path d="M680 409 H698" fill="none" stroke="#7B3FC4" stroke-width="1.8" marker-end="url(#m-purple)"/>
+  <path id="visit" d="M66 118 V522 H782 V442" fill="none" stroke="#C8102E" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#m-red)"/>
+  <rect x="18" y="60" width="96" height="56" rx="10" fill="#FFFFFF" stroke="#0B2E5E" stroke-width="1.8"/>
+  <text x="66.0" y="84.8" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">Utilisateur</text>
+  <text x="66.0" y="98.8" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#4A5D7E">étudiant · prof</text>
+  <rect x="150" y="52" width="196" height="72" rx="10" fill="#EAF2FD" stroke="#1F5FBF" stroke-width="1.8"/>
+  <text x="248.0" y="78.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">Application Angular</text>
+  <text x="248.0" y="92.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">7 pages · router · guards</text>
+  <text x="248.0" y="105.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">signals · intercepteur HTTP</text>
+  <rect x="150" y="176" width="92" height="60" rx="10" fill="#DCEBFF" stroke="#1F5FBF" stroke-width="1.8"/>
+  <text x="196.0" y="196.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">DemoApi</text>
+  <text x="196.0" y="210.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">mode démo</text>
+  <text x="196.0" y="223.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">dans le navigateur</text>
+  <rect x="252" y="176" width="94" height="60" rx="10" fill="#DCEBFF" stroke="#1F5FBF" stroke-width="1.8"/>
+  <text x="299.0" y="196.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">ApiService</text>
+  <text x="299.0" y="210.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">vraie API</text>
+  <text x="299.0" y="223.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">requêtes HTTP</text>
+  <rect x="150" y="256" width="196" height="50" rx="10" fill="#EAF2FD" stroke="#1F5FBF" stroke-width="1.8"/>
+  <g fill="none" stroke="#1F5FBF" stroke-width="1.4"><ellipse cx="166" cy="276" rx="6" ry="2.4"/><path d="M160 276 v8 a6 2.4 0 0 0 12 0 v-8"/><path d="M160 280 a6 2.4 0 0 0 12 0"/></g>
+  <text x="248.0" y="277.8" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">localStorage</text>
+  <text x="248.0" y="291.8" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">session · progression en démo</text>
+  <rect x="400" y="52" width="182" height="72" rx="10" fill="#0F3B78" stroke="#0B2E5E" stroke-width="1.8"/>
+  <text x="491.0" y="78.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Express (server.js)</text>
+  <text x="491.0" y="92.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#C9D8F0">cors · JSON · erreurs</text>
+  <text x="491.0" y="105.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#C9D8F0">GET /api/health</text>
+  <rect x="600" y="52" width="262" height="72" rx="10" fill="#EAF2FD" stroke="#1F5FBF" stroke-width="1.8"/>
+  <text x="731.0" y="78.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">routes/</text>
+  <text x="731.0" y="92.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">auth · concepts · quiz</text>
+  <text x="731.0" y="105.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">mastery · path · teacher</text>
+  <rect x="400" y="146" width="182" height="64" rx="10" fill="#EAF2FD" stroke="#1F5FBF" stroke-width="1.8"/>
+  <text x="491.0" y="168.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">middleware/auth.js</text>
+  <text x="491.0" y="182.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">requireUser · requireRole</text>
+  <text x="491.0" y="195.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">rôle stocké côté serveur</text>
+  <rect x="600" y="146" width="262" height="64" rx="10" fill="#EAF2FD" stroke="#1F5FBF" stroke-width="1.8"/>
+  <text x="731.0" y="168.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">services/ (règles)</text>
+  <text x="731.0" y="182.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">maîtrise : +20 / −10, maîtrisé à 70 %</text>
+  <text x="731.0" y="195.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">parcours : prérequis faible d’abord</text>
+  <rect x="400" y="232" width="182" height="72" rx="10" fill="#EAF2FD" stroke="#1F5FBF" stroke-width="1.8"/>
+  <g fill="none" stroke="#1F5FBF" stroke-width="1.4"><ellipse cx="416" cy="252" rx="6" ry="2.4"/><path d="M410 252 v8 a6 2.4 0 0 0 12 0 v-8"/><path d="M410 256 a6 2.4 0 0 0 12 0"/></g>
+  <text x="491.0" y="258.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">store.js → db.json</text>
+  <text x="491.0" y="272.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">fichier JSON</text>
+  <text x="491.0" y="285.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">même forme que MongoDB</text>
+  <rect x="600" y="232" width="128" height="72" rx="10" fill="#EAF2FD" stroke="#1F5FBF" stroke-width="1.8"/>
+  <text x="664.0" y="258.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0B2E5E">data/seed</text>
+  <text x="664.0" y="272.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">8 concepts</text>
+  <text x="664.0" y="285.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#35507A">24 QCM · 4 comptes</text>
+  <rect x="738" y="232" width="124" height="72" rx="10" fill="#EAF7EF" stroke="#2E8B57" stroke-width="1.8" stroke-dasharray="5 3"/>
+  <text x="800.0" y="258.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#1D5E39">test/</text>
+  <text x="800.0" y="272.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#3C7A55">8 tests des règles</text>
+  <text x="800.0" y="285.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#3C7A55">npm test</text>
+  <rect x="150" y="376" width="172" height="64" rx="10" fill="#F3EBFD" stroke="#7B3FC4" stroke-width="1.8"/>
+  <text x="236.0" y="398.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#3E1A73">GitHub · Fhemt-</text>
+  <text x="236.0" y="412.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#5E3C8F">code source</text>
+  <text x="236.0" y="425.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#5E3C8F">branches main · Rayen</text>
+  <rect x="340" y="376" width="160" height="64" rx="10" fill="#F3EBFD" stroke="#7B3FC4" stroke-width="1.8"/>
+  <text x="420.0" y="398.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#3E1A73">GitHub Actions</text>
+  <text x="420.0" y="412.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#5E3C8F">CI à chaque push</text>
+  <text x="420.0" y="425.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#5E3C8F">build · tests · API</text>
+  <rect x="510" y="376" width="170" height="64" rx="10" fill="#F3EBFD" stroke="#7B3FC4" stroke-width="1.8"/>
+  <text x="595.0" y="398.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#3E1A73">RayenTouil.github.io</text>
+  <text x="595.0" y="412.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#5E3C8F">site compilé (mode démo)</text>
+  <text x="595.0" y="425.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#5E3C8F">CNAME · 404.html</text>
+  <rect x="700" y="376" width="166" height="64" rx="10" fill="#C8102E" stroke="#8E0B20" stroke-width="1.8"/>
+  <text x="783.0" y="398.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">fhemt.me</text>
+  <text x="783.0" y="412.0" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#FBD5DB">GitHub Pages</text>
+  <text x="783.0" y="425.5" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#FBD5DB">DNS Namecheap</text>
+  <rect x="111.2" y="64" width="39.5" height="16" rx="8" fill="#FFFFFF" stroke="#1F5FBF" stroke-opacity="0.35"/>
+  <text x="131" y="76" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#1F5FBF">HTTP</text>
+  <rect x="194.1" y="144" width="105.8" height="16" rx="8" fill="#FFFFFF" stroke="#1F5FBF" stroke-opacity="0.35"/>
+  <text x="247" y="156" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#1F5FBF">environment.apiUrl</text>
+  <rect x="326.0" y="146" width="92.0" height="16" rx="8" fill="#FFFFFF" stroke="#1F5FBF" stroke-opacity="0.35"/>
+  <text x="372" y="158" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#1F5FBF">REST + x-user-id</text>
+  <rect x="578.1" y="128" width="43.8" height="16" rx="8" fill="#FFFFFF" stroke="#6B85AD" stroke-opacity="0.35"/>
+  <text x="600" y="140" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#6B85AD">vérifie</text>
+  <rect x="553.5" y="214" width="93.0" height="16" rx="8" fill="#FFFFFF" stroke="#6B85AD" stroke-opacity="0.35"/>
+  <text x="600" y="226" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#6B85AD">lecture / écriture</text>
+  <rect x="370.4" y="464" width="89.2" height="16" rx="8" fill="#FFFFFF" stroke="#7B3FC4" stroke-opacity="0.35"/>
+  <text x="415" y="476" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#7B3FC4">npm run deploy</text>
+  <rect x="312.6" y="389" width="36.8" height="16" rx="8" fill="#FFFFFF" stroke="#7B3FC4" stroke-opacity="0.35"/>
+  <text x="331" y="401" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#7B3FC4">push</text>
+  <rect x="334.9" y="514" width="190.2" height="16" rx="8" fill="#FFFFFF" stroke="#C8102E" stroke-opacity="0.35"/>
+  <text x="430" y="526" text-anchor="middle" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#C8102E">navigateur → fhemt.me : mode démo</text>
   <circle r="5" fill="#F5B942" stroke="#FFFFFF" stroke-width="1.5" opacity="0">
-      <animateMotion dur="4.40s" begin="0.60s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.250;1" calcMode="linear"><mpath xlink:href="#evDown1"/></animateMotion>
-      <animate attributeName="opacity" dur="4.40s" begin="0.60s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.250;0.251;1"/>
+      <animateMotion dur="3.6s" begin="0.4s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.35;1" calcMode="linear"><mpath xlink:href="#rest"/></animateMotion>
+      <animate attributeName="opacity" dur="3.6s" begin="0.4s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.35;0.351;1"/>
     </circle>
-  <circle r="5" fill="#F5B942" stroke="#FFFFFF" stroke-width="1.5" opacity="0">
-      <animateMotion dur="4.40s" begin="1.70s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.250;1" calcMode="linear"><mpath xlink:href="#evDown2"/></animateMotion>
-      <animate attributeName="opacity" dur="4.40s" begin="1.70s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.250;0.251;1"/>
+  <circle r="5" fill="#7B3FC4" stroke="#FFFFFF" stroke-width="1.5" opacity="0">
+      <animateMotion dur="3.6s" begin="1.6s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.35;1" calcMode="linear"><mpath xlink:href="#deploy"/></animateMotion>
+      <animate attributeName="opacity" dur="3.6s" begin="1.6s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.35;0.351;1"/>
     </circle>
-  <circle r="5" fill="#22C55E" stroke="#FFFFFF" stroke-width="1.5" opacity="0">
-      <animateMotion dur="4.40s" begin="2.40s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.250;1" calcMode="linear"><mpath xlink:href="#evUp1"/></animateMotion>
-      <animate attributeName="opacity" dur="4.40s" begin="2.40s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.250;0.251;1"/>
+  <circle r="5" fill="#C8102E" stroke="#FFFFFF" stroke-width="1.5" opacity="0">
+      <animateMotion dur="5.0s" begin="2.6s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.35;1" calcMode="linear"><mpath xlink:href="#visit"/></animateMotion>
+      <animate attributeName="opacity" dur="5.0s" begin="2.6s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.35;0.351;1"/>
     </circle>
-  <circle r="5" fill="#22C55E" stroke="#FFFFFF" stroke-width="1.5" opacity="0">
-      <animateMotion dur="4.40s" begin="3.50s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.250;1" calcMode="linear"><mpath xlink:href="#evUp2"/></animateMotion>
-      <animate attributeName="opacity" dur="4.40s" begin="3.50s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.250;0.251;1"/>
-    </circle>
-  <rect x="24" y="510" width="14" height="14" rx="4" fill="#DCEBFF" stroke="#1F5FBF" stroke-width="1.5"/>
-  <text x="44" y="521" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">Frontend</text>
-  <rect x="114.02234375" y="510" width="14" height="14" rx="4" fill="#0F3B78" stroke="#0B2E5E" stroke-width="1.5"/>
-  <text x="134.02234375" y="521" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">Backend et données</text>
-  <rect x="263.36046875" y="510" width="14" height="14" rx="4" fill="#7B3FC4" stroke="#4B1D8F" stroke-width="1.5"/>
-  <text x="283.36046875" y="521" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">Événements</text>
-  <rect x="358.2778125" y="510" width="14" height="14" rx="4" fill="#C8102E" stroke="#8E0B20" stroke-width="1.5"/>
-  <text x="378.2778125" y="521" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">Microservice IA</text>
-  <rect x="479.45421875" y="510" width="14" height="14" rx="4" fill="#FFF3E0" stroke="#E8A33D" stroke-width="1.5" stroke-dasharray="4 3"/>
-  <text x="499.45421875" y="521" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">Service externe</text>
-  <circle cx="609.70203125" cy="517" r="5" fill="#F5B942" stroke="#fff" stroke-width="1.5"/>
-  <circle cx="621.70203125" cy="517" r="5" fill="#22C55E" stroke="#fff" stroke-width="1.5"/>
-  <text x="633.70203125" y="521" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">messages en transit</text>
-  <text x="24" y="552" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#0B2E5E">① L'étudiant répond à un quiz</text>
-  <text x="239.464375" y="552" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#0B2E5E">② L'enseignant dépose un PDF</text>
-  <text x="468.951875" y="552" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#0B2E5E">③ L'étudiant interroge le tuteur</text>
-  <text x="24" y="576" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#5B6B84">Les actions rapides répondent tout de suite. Le travail lent (IA, e-mails, statistiques) passe par RabbitMQ : l'étudiant n'attend jamais.</text>
+  <rect x="24" y="552" width="14" height="14" rx="4" fill="#DCEBFF" stroke="#1F5FBF" stroke-width="1.5"/>
+  <text x="44" y="563" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">Frontend</text>
+  <rect x="113.99609375" y="552" width="14" height="14" rx="4" fill="#0F3B78" stroke="#0B2E5E" stroke-width="1.5"/>
+  <text x="133.99609375" y="563" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">Backend en local</text>
+  <rect x="241.2421875" y="552" width="14" height="14" rx="4" fill="#F3EBFD" stroke="#7B3FC4" stroke-width="1.5"/>
+  <text x="261.2421875" y="563" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">Code et mise en ligne</text>
+  <rect x="392.9921875" y="552" width="14" height="14" rx="4" fill="#C8102E" stroke="#8E0B20" stroke-width="1.5"/>
+  <text x="412.9921875" y="563" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">Site public</text>
+  <rect x="489.7421875" y="552" width="14" height="14" rx="4" fill="#EAF7EF" stroke="#2E8B57" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="509.7421875" y="563" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#33415C">Tests</text>
+  <text x="24" y="594" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#0B2E5E">① En local : Angular → API Express → fichier JSON (version complète)</text>
+  <text x="470" y="594" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#0B2E5E">② En ligne : fhemt.me, les mêmes règles dans le navigateur</text>
+  <text x="24" y="620" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#5B6B84">Pas encore construit (architecture cible, voir plus bas) : MongoDB, Firebase, Redis, RabbitMQ, tuteur IA (FastAPI + Qdrant + Groq), Cloudinary, Mailjet.</text>
 </svg>

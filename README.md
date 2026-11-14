@@ -2,7 +2,7 @@
 
 <img src="assets/banner.svg" width="100%" alt="Fhemt ? (فهمت؟) — plateforme web d'apprentissage adaptatif. Sache ce que tu maîtrises. Sache quoi réviser ensuite.">
 
-<img src="assets/stack.svg" width="100%" alt="Langages : HTML, CSS, JavaScript, TypeScript, Python. Technologies : Angular, Firebase Auth, Node.js, Express, MongoDB, Redis, RabbitMQ, FastAPI, Qdrant, Groq, Cloudinary, Mailjet.">
+<img src="assets/stack.svg" width="100%" alt="Langages : HTML, CSS, TypeScript, JavaScript, JSON. Frontend et backend : Angular 22, Node.js, Express 5, RxJS. Qualité et mise en ligne : Vitest, node:test, GitHub Actions, GitHub Pages, Namecheap. Prochaines étapes : MongoDB, Firebase Auth, FastAPI, Qdrant, Groq.">
 
 [![Site en ligne](https://img.shields.io/badge/en%20ligne-fhemt.me-c8102e)](https://fhemt.me)
 [![CI](https://github.com/RayenTouil/Fhemt-/actions/workflows/ci.yml/badge.svg)](https://github.com/RayenTouil/Fhemt-/actions/workflows/ci.yml)
@@ -170,38 +170,58 @@ Fhemt/
 - **Un fichier JSON comme base de données** pour le MVP : aucune installation pour le correcteur, et le module de stockage garde la forme des requêtes MongoDB, donc le passage à MongoDB ne touche qu'un fichier.
 - **Connexion par e-mail** pour le MVP, avec le rôle décidé côté serveur. La connexion Google via Firebase remplacera la route de connexion sans toucher aux pages.
 
+## Architecture du MVP
+
+Ce schéma montre ce qui est **réellement construit** dans ce dépôt.
+
+<p align="center">
+  <img src="assets/architecture.svg" width="100%" alt="Architecture du MVP de Fhemt ? : l'application Angular 22 choisit selon environment.apiUrl entre ApiService, qui appelle en HTTP l'API Express 5 lancée en local (routes, contrôle d'accès, règles de maîtrise et de parcours, stockage dans un fichier JSON créé à partir des données seed), et DemoApi, qui applique les mêmes règles dans le navigateur avec le localStorage. Le code est sur GitHub, vérifié par GitHub Actions ; npm run deploy publie le site compilé dans RayenTouil.github.io, servi par GitHub Pages sur fhemt.me.">
+</p>
+
+**① En local, la version complète.** L'application Angular envoie ses requêtes à l'API Express avec l'en-tête `x-user-id`. Le middleware vérifie qui est connecté et son rôle, la route appelle la règle concernée, puis lit ou écrit le fichier `data/db.json`. Exemple quand un étudiant répond à un quiz : `POST /api/quiz/answer` → `requireUser` → règle de maîtrise (+20 / −10) → `db.json` → la correction et le nouveau niveau reviennent tout de suite à la page.
+
+**② En ligne, sur fhemt.me.** GitHub Pages ne sert que des fichiers statiques. La version publiée utilise donc `DemoApi` au lieu d'`ApiService` : les mêmes données et les mêmes règles tournent dans le navigateur, et la progression reste dans le `localStorage`. Le choix se fait dans `environment.apiUrl`, sans toucher aux pages.
+
+**③ Le code et la mise en ligne.** Chaque push sur GitHub lance la CI (compilation, tests, démarrage de l'API). `npm run deploy` compile le site et le publie dans le dépôt `RayenTouil.github.io`, que GitHub Pages sert sur fhemt.me grâce au DNS de Namecheap.
+
 ## Du MVP à l'architecture cible
 
-L'architecture événementielle ci-dessous reste l'objectif. La priorisation de l'objectif 2 a décidé de ce dont le MVP a vraiment besoin.
+L'objectif 1 décrivait une architecture événementielle plus large. La priorisation de l'objectif 2 a décidé de ce dont le MVP a vraiment besoin ; le reste viendra quand une fonctionnalité le justifiera.
 
-| Composant | Dans le MVP (objectif 3) | Ensuite |
+| Composant de l'architecture cible | Dans le MVP (objectif 3) | Ensuite |
 |---|---|---|
-| Angular | ✅ 7 pages | page de discussion avec le tuteur IA |
-| Node.js + Express | ✅ API REST, RBAC | vérification du jeton Firebase |
-| Stockage JSON → **MongoDB** | ✅ fichier JSON | MongoDB Atlas (offre gratuite) |
-| Connexion Google **Firebase** | ➖ connexion par e-mail | objectif suivant |
+| Angular | ✅ 7 pages, mode démo | page de discussion avec le tuteur IA |
+| Node.js + Express | ✅ API REST, contrôle des rôles | vérification du jeton Firebase |
+| **MongoDB** | ➖ remplacé par un fichier JSON (`store.js`) | MongoDB Atlas (offre gratuite) : seul `store.js` change |
+| Connexion Google **Firebase** | ➖ connexion par e-mail, rôle côté serveur | objectif suivant |
 | **FastAPI + Qdrant + Groq** (tuteur, RAG) | ➖ | dernier objectif : le principal élément différenciant |
 | **Cloudinary** (fichiers du cours) | ➖ | avec le tuteur |
-| Cache **Redis** / événements **RabbitMQ** | ➖ | seulement si le tuteur ralentit les requêtes |
+| Cache **Redis** / événements **RabbitMQ** | ➖ aucune tâche lente pour l'instant | seulement si le tuteur ralentit les requêtes |
 | E-mails **Mailjet** | ➖ exclus du MVP | optionnel |
+| Hébergement | ✅ GitHub Pages sur fhemt.me (mode démo) | API hébergée sur Render ([`render.yaml`](render.yaml)) |
 
-## Architecture cible
+<details>
+<summary><strong>Voir l'architecture cible complète (objectif 1, pas encore construite)</strong></summary>
+
+<br>
 
 Les actions rapides reçoivent une réponse tout de suite. Les tâches lentes (IA, e-mails, statistiques) passent par une **file de messages**, pour que l'étudiant n'attende jamais.
 
 <p align="center">
-  <img src="assets/architecture.svg" width="100%" alt="Architecture cible de Fhemt ? : le frontend Angular (connexion Google via Firebase) appelle l'API Node.js + Express, qui utilise Redis comme cache, MongoDB et Cloudinary. Node.js et le microservice IA Python FastAPI échangent des événements via RabbitMQ : answer.submitted et material.uploaded vont vers l'IA, mastery.updated revient. Le microservice IA utilise Redis pour la mémoire du tuteur, Qdrant pour chercher dans le cours, Groq pour rédiger les réponses et Mailjet pour les e-mails.">
+  <img src="assets/architecture-cible.svg" width="100%" alt="Architecture cible de Fhemt ? : le frontend Angular (connexion Google via Firebase) appelle l'API Node.js + Express, qui utilise Redis comme cache, MongoDB et Cloudinary. Node.js et le microservice IA Python FastAPI échangent des événements via RabbitMQ : answer.submitted et material.uploaded vont vers l'IA, mastery.updated revient. Le microservice IA utilise Redis pour la mémoire du tuteur, Qdrant pour chercher dans le cours, Groq pour rédiger les réponses et Mailjet pour les e-mails.">
 </p>
 
-**① Un étudiant répond à une question** — Node.js corrige la réponse (retour immédiat) et met à jour la maîtrise ; plus tard, le service IA affinera le parcours.
-**② Un enseignant dépose un PDF de cours** — stocké sur Cloudinary, découpé et indexé dans Qdrant pour le tuteur.
-**③ Un étudiant interroge le tuteur** — le tuteur retrouve les bons passages du cours (Qdrant), Groq rédige la réponse et cite la page.
+- **Un étudiant répond à une question** : Node.js corrige la réponse et publie `answer.submitted` ; le service IA met à jour la maîtrise et le parcours.
+- **Un enseignant dépose un PDF de cours** : stocké sur Cloudinary, découpé et indexé dans Qdrant pour le tuteur.
+- **Un étudiant interroge le tuteur** : le tuteur retrouve les bons passages du cours (Qdrant), Groq rédige la réponse et cite la page.
+
+</details>
 
 ## Droits d'accès (RBAC)
 
-- **Trois rôles :** étudiant, enseignant, admin. Le rôle est stocké sur le serveur ; les nouveaux comptes sont étudiants.
-- **Vérification 1, le rôle :** *« Un enseignant peut-il déposer un support de cours ? »*
-- **Vérification 2, la propriété :** *« Est-ce **ton** cours ? »* Sinon, l'accès est refusé.
+- **Trois rôles :** étudiant, enseignant, admin. Le rôle est stocké sur le serveur ; les nouveaux comptes sont étudiants, et un compte enseignant est attribué à la main dans les données.
+- **Vérification du rôle (codée) :** `requireRole('teacher', 'admin')` protège la carte de chaleur ; un étudiant reçoit une erreur 403, et le guard Angular le renvoie vers son tableau de bord.
+- **Vérification de la propriété (prévue) :** quand chaque enseignant aura ses propres cours, le serveur vérifiera aussi *« est-ce **ton** cours ? »*. Le MVP n'a qu'un seul cours, donc cette règle n'est pas encore nécessaire.
 
 ## Comment mesurer le succès
 
