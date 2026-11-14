@@ -1,0 +1,18 @@
+{
+  "name": "fhemt-backend",
+  "version": "0.1.0",
+  "description": "API REST minimale de Fhemt ? (objectif 3) : concepts, quiz, maîtrise, parcours personnalisé, carte de chaleur enseignant",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "reset": "node src/reset.js",
+    "test": "node --test"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}

@@ -1,0 +1,3 @@
+node_modules/
+# Runtime database (created from data/seed on first start)
+data/db.json

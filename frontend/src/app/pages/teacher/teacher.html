@@ -1,0 +1,71 @@
+<header class="page-head">
+  <div>
+    <p class="eyebrow">Espace enseignant · Communications numériques</p>
+    <h1>Où la classe bloque-t-elle ?</h1>
+    <p class="muted">Une ligne par étudiant, une colonne par concept. Rouge = faible.</p>
+  </div>
+</header>
+
+@if (error()) {
+  <p class="alert alert--error" role="alert">{{ error() }}</p>
+} @else if (!data()) {
+  <p class="muted">Chargement de la classe…</p>
+} @else if (data(); as d) {
+  @if (d.blockingConcept; as b) {
+    <section class="alert alert--info">
+      <strong>Concept bloquant :</strong> {{ b.title }} (moyenne de la classe {{ b.average }}&nbsp;%).
+      À reprendre en cours.
+    </section>
+  }
+
+  <section class="card heatmap-card">
+    <div class="table-wrap">
+      <table class="heatmap">
+        <thead>
+          <tr>
+            <th scope="col">Étudiant</th>
+            @for (c of d.concepts; track c.id) {
+              <th scope="col" [title]="c.title">{{ c.short }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of d.students; track s.id) {
+            <tr>
+              <th scope="row">{{ s.name }}</th>
+              @for (c of d.concepts; track c.id) {
+                <td
+                  [style.background]="colorOf(s.levels[c.id] ?? null)"
+                  [style.color]="textOn(s.levels[c.id])"
+                  [title]="s.name + ' · ' + c.title"
+                >
+                  {{ s.levels[c.id] ?? '—' }}
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <th scope="row">Moyenne de la classe</th>
+            @for (c of d.concepts; track c.id) {
+              <td [class.is-blocking]="c.id === d.blockingConcept?.id">
+                {{ d.averages[c.id] === null ? '—' : d.averages[c.id] + ' %' }}
+              </td>
+            }
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <ul class="legend">
+      <li><i style="background: #2e8b57"></i> Maîtrisé</li>
+      <li><i style="background: #f2a900"></i> En cours</li>
+      <li><i style="background: #c8102e"></i> Faible</li>
+      <li><i style="background: #c9cdd4"></i> Non évalué (pas compté dans la moyenne)</li>
+    </ul>
+  </section>
+
+  <p class="muted small center">
+    {{ d.students.length }} étudiants · les niveaux changent dès que les étudiants répondent aux quiz (actualise la page).
+  </p>
+}

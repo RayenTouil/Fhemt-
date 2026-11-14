@@ -1,0 +1,58 @@
+[
+  {
+    "id": "signals",
+    "title": "Signaux et spectre",
+    "short": "Signaux",
+    "prerequisites": [],
+    "summary": "Représentations temporelle et fréquentielle d'un signal : période, bande passante, transformée de Fourier."
+  },
+  {
+    "id": "sampling",
+    "title": "Échantillonnage",
+    "short": "Échantillonnage",
+    "prerequisites": ["signals"],
+    "summary": "Passer d'un signal à temps continu à une suite d'échantillons ; effet sur le spectre."
+  },
+  {
+    "id": "nyquist",
+    "title": "Critère de Nyquist et repliement",
+    "short": "Nyquist",
+    "prerequisites": ["sampling"],
+    "summary": "Fréquence d'échantillonnage minimale (2B) et ce qui se passe en dessous."
+  },
+  {
+    "id": "quantization",
+    "title": "Quantification et MIC",
+    "short": "Quantification",
+    "prerequisites": ["sampling"],
+    "summary": "Arrondir les échantillons à un nombre fini de niveaux ; bits par échantillon et bruit de quantification."
+  },
+  {
+    "id": "linecodes",
+    "title": "Codage en ligne (bande de base)",
+    "short": "Codes en ligne",
+    "prerequisites": ["quantization"],
+    "summary": "Représenter les bits par des impulsions : NRZ, Manchester, rapidité de modulation et débit binaire."
+  },
+  {
+    "id": "modulation",
+    "title": "Modulations numériques (ASK, PSK, QAM)",
+    "short": "Modulation",
+    "prerequisites": ["signals"],
+    "summary": "Transporter des bits sur une porteuse en modifiant son amplitude, sa phase ou les deux ; bits par symbole."
+  },
+  {
+    "id": "noise",
+    "title": "Bruit, RSB et TEB",
+    "short": "Bruit / TEB",
+    "prerequisites": ["modulation"],
+    "summary": "Canal à bruit blanc gaussien additif, rapport signal sur bruit, Eb/N0 et taux d'erreur binaire."
+  },
+  {
+    "id": "capacity",
+    "title": "Capacité du canal (Shannon)",
+    "short": "Capacité",
+    "prerequisites": ["noise", "nyquist"],
+    "summary": "C = B log2(1 + S/N) : la limite d'une communication fiable."
+  }
+]

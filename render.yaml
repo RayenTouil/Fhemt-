@@ -1,0 +1,19 @@
+# Optionnel : héberger la vraie API Express gratuitement sur Render (https://render.com).
+# 1. Crée un compte Render avec GitHub, clique sur « New + » → « Blueprint », choisis ce dépôt.
+# 2. Render lit ce fichier et lance l'API sur https://fhemt-api.onrender.com
+# 3. Mets cette adresse (+ /api) dans frontend/src/environments/environment.prod.ts,
+#    puis `npm run deploy` : fhemt.me utilisera le vrai backend au lieu du mode démo.
+# Attention : l'offre gratuite se met en veille après 15 min sans visite (la première requête
+# prend alors environ une minute) et son disque n'est pas persistant : data/db.json revient
+# aux données seed à chaque redémarrage.
+services:
+  - type: web
+    name: fhemt-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "24"

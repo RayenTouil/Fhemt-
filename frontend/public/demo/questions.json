@@ -1,0 +1,201 @@
+[
+  {
+    "id": "q-signals-1",
+    "conceptId": "signals",
+    "text": "La bande passante d'un signal, c'est…",
+    "choices": ["la plage de fréquences qu'il occupe", "son amplitude maximale", "sa durée en secondes", "sa puissance moyenne"],
+    "correctIndex": 0,
+    "explanation": "La bande passante se mesure en hertz : c'est la largeur de la plage de fréquences où le signal a de l'énergie."
+  },
+  {
+    "id": "q-signals-2",
+    "conceptId": "signals",
+    "text": "Un signal périodique de période T = 2 ms a une fréquence fondamentale de…",
+    "choices": ["2 Hz", "50 Hz", "500 Hz", "2000 Hz"],
+    "correctIndex": 2,
+    "explanation": "f0 = 1 / T = 1 / 0,002 s = 500 Hz."
+  },
+  {
+    "id": "q-signals-3",
+    "conceptId": "signals",
+    "text": "Quel outil montre le contenu fréquentiel d'un signal ?",
+    "choices": ["La convolution", "La transformée de Fourier", "L'autocorrélation", "La quantification"],
+    "correctIndex": 1,
+    "explanation": "La transformée de Fourier fait passer un signal du domaine temporel au domaine fréquentiel (son spectre)."
+  },
+
+  {
+    "id": "q-sampling-1",
+    "conceptId": "sampling",
+    "text": "L'échantillonnage transforme un signal…",
+    "choices": ["d'amplitude analogique en amplitude numérique", "de temps continu en temps discret", "de bande de base en bande transposée", "de série en parallèle"],
+    "correctIndex": 1,
+    "explanation": "L'échantillonnage ne garde la valeur du signal qu'aux instants n·Te. L'amplitude reste continue jusqu'à la quantification."
+  },
+  {
+    "id": "q-sampling-2",
+    "conceptId": "sampling",
+    "text": "Échantillonner un signal à la fréquence fe rend son spectre…",
+    "choices": ["nul au-delà de fe", "périodique, répété tous les fe", "deux fois plus large", "décalé à fe/2"],
+    "correctIndex": 1,
+    "explanation": "Multiplier par un peigne de Dirac dans le temps = convoluer par un peigne en fréquence : des copies du spectre tous les fe."
+  },
+  {
+    "id": "q-sampling-3",
+    "conceptId": "sampling",
+    "text": "Un signal de voix téléphonique échantillonné à 8 kHz produit…",
+    "choices": ["8 échantillons par seconde", "800 échantillons par seconde", "8 000 échantillons par seconde", "64 000 échantillons par seconde"],
+    "correctIndex": 2,
+    "explanation": "fe = 8 kHz signifie 8 000 échantillons chaque seconde (64 kbit/s est le débit après une quantification sur 8 bits)."
+  },
+
+  {
+    "id": "q-nyquist-1",
+    "conceptId": "nyquist",
+    "text": "Un signal limité à une bande B Hz peut être reconstruit exactement s'il est échantillonné au moins à…",
+    "choices": ["B / 2", "B", "2 B", "4 B"],
+    "correctIndex": 2,
+    "explanation": "Théorème de Nyquist–Shannon : fe ≥ 2B pour que les copies du spectre ne se chevauchent pas."
+  },
+  {
+    "id": "q-nyquist-2",
+    "conceptId": "nyquist",
+    "text": "Échantillonner en dessous de la fréquence de Nyquist provoque…",
+    "choices": ["du bruit de quantification", "du repliement de spectre (aliasing)", "de l'interférence entre symboles", "une atténuation"],
+    "correctIndex": 1,
+    "explanation": "Les copies du spectre se chevauchent : les hautes fréquences apparaissent comme des fréquences plus basses et ne peuvent plus être séparées."
+  },
+  {
+    "id": "q-nyquist-3",
+    "conceptId": "nyquist",
+    "text": "Une sinusoïde de 10 kHz échantillonnée à 15 kHz apparaît après reconstruction comme une sinusoïde à…",
+    "choices": ["10 kHz", "7,5 kHz", "5 kHz", "2,5 kHz"],
+    "correctIndex": 2,
+    "explanation": "La fréquence repliée vaut |fe − f| = |15 − 10| = 5 kHz, car 10 kHz est au-dessus de fe/2 = 7,5 kHz."
+  },
+
+  {
+    "id": "q-quantization-1",
+    "conceptId": "quantization",
+    "text": "La quantification introduit…",
+    "choices": ["un retard réversible", "une erreur d'arrondi irréversible (bruit de quantification)", "du repliement de spectre", "un décalage en fréquence"],
+    "correctIndex": 1,
+    "explanation": "Chaque échantillon est arrondi au niveau le plus proche ; la valeur exacte est perdue définitivement."
+  },
+  {
+    "id": "q-quantization-2",
+    "conceptId": "quantization",
+    "text": "Un quantificateur uniforme sur 8 bits par échantillon possède…",
+    "choices": ["8 niveaux", "64 niveaux", "128 niveaux", "256 niveaux"],
+    "correctIndex": 3,
+    "explanation": "2^8 = 256 niveaux."
+  },
+  {
+    "id": "q-quantization-3",
+    "conceptId": "quantization",
+    "text": "Ajouter un bit par échantillon à un quantificateur uniforme améliore le rapport signal sur bruit de quantification d'environ…",
+    "choices": ["1 dB", "3 dB", "6 dB", "10 dB"],
+    "correctIndex": 2,
+    "explanation": "RSBq ≈ 6,02·n + 1,76 dB pour une sinusoïde pleine échelle : chaque bit en plus divise le pas par deux, soit environ 6 dB gagnés."
+  },
+
+  {
+    "id": "q-linecodes-1",
+    "conceptId": "linecodes",
+    "text": "Le rôle du codage en ligne est de…",
+    "choices": ["compresser les données", "représenter les bits par des impulsions adaptées au canal physique", "chiffrer les données", "transposer le signal autour d'une porteuse"],
+    "correctIndex": 1,
+    "explanation": "Un code en ligne choisit la forme et les niveaux des impulsions (NRZ, RZ, Manchester…) pour une transmission en bande de base."
+  },
+  {
+    "id": "q-linecodes-2",
+    "conceptId": "linecodes",
+    "text": "En NRZ-L (un bit par symbole) à 1 Mbit/s, la rapidité de modulation vaut…",
+    "choices": ["0,5 Mbaud", "1 Mbaud", "2 Mbaud", "8 Mbaud"],
+    "correctIndex": 1,
+    "explanation": "Rapidité de modulation = débit binaire / bits par symbole = 1 Mbit/s / 1 = 1 Mbaud."
+  },
+  {
+    "id": "q-linecodes-3",
+    "conceptId": "linecodes",
+    "text": "Le codage Manchester garantit…",
+    "choices": ["aucune composante continue et une transition au milieu de chaque bit", "la moitié de la bande passante du NRZ", "la correction d'erreurs", "une amplitude constante"],
+    "correctIndex": 0,
+    "explanation": "La transition en milieu de bit aide le récepteur à récupérer l'horloge, au prix d'une bande passante deux fois plus grande que le NRZ."
+  },
+
+  {
+    "id": "q-modulation-1",
+    "conceptId": "modulation",
+    "text": "En PSK, l'information est portée par… de la porteuse.",
+    "choices": ["l'amplitude", "la phase", "la fréquence", "la bande passante"],
+    "correctIndex": 1,
+    "explanation": "Modulation par déplacement de phase : chaque symbole correspond à une phase différente de la même porteuse."
+  },
+  {
+    "id": "q-modulation-2",
+    "conceptId": "modulation",
+    "text": "Combien de bits par symbole transporte une 16-QAM ?",
+    "choices": ["2", "4", "8", "16"],
+    "correctIndex": 1,
+    "explanation": "16 points dans la constellation = 2^4, donc 4 bits par symbole."
+  },
+  {
+    "id": "q-modulation-3",
+    "conceptId": "modulation",
+    "text": "Par rapport à la BPSK à la même rapidité de modulation, la QPSK…",
+    "choices": ["divise le débit par deux", "garde le même débit", "double le débit", "demande deux fois plus de bande passante"],
+    "correctIndex": 2,
+    "explanation": "La QPSK a 4 phases = 2 bits par symbole au lieu de 1, donc deux fois plus de débit dans la même bande."
+  },
+
+  {
+    "id": "q-noise-1",
+    "conceptId": "noise",
+    "text": "Le sigle AWGN signifie…",
+    "choices": ["Average Wideband Gain Noise", "Additive White Gaussian Noise (bruit blanc gaussien additif)", "Amplitude-Weighted Gaussian Noise", "Analog Wave Generator Noise"],
+    "correctIndex": 1,
+    "explanation": "Additif (il s'ajoute au signal), blanc (spectre plat), gaussien (amplitude suivant une loi normale)."
+  },
+  {
+    "id": "q-noise-2",
+    "conceptId": "noise",
+    "text": "Le taux d'erreur binaire (TEB) est…",
+    "choices": ["le nombre de bits envoyés par seconde", "la proportion de bits reçus qui sont faux", "la puissance du bruit en dB", "le rapport entre bande passante et débit"],
+    "correctIndex": 1,
+    "explanation": "TEB = bits faux / nombre total de bits reçus ; par exemple 10^-5 signifie une erreur tous les 100 000 bits."
+  },
+  {
+    "id": "q-noise-3",
+    "conceptId": "noise",
+    "text": "Augmenter Eb/N0 (énergie par bit sur densité de bruit)…",
+    "choices": ["augmente le TEB", "diminue le TEB", "ne change pas le TEB", "double la bande passante"],
+    "correctIndex": 1,
+    "explanation": "Plus d'énergie par bit par rapport au bruit rend les symboles plus faciles à distinguer, donc moins d'erreurs."
+  },
+
+  {
+    "id": "q-capacity-1",
+    "conceptId": "capacity",
+    "text": "La capacité de Shannon d'un canal à bande limitée avec bruit blanc gaussien est…",
+    "choices": ["C = B · log2(1 + S/N)", "C = 2B · log2(M)", "C = S/N", "C = B / log2(1 + S/N)"],
+    "correctIndex": 0,
+    "explanation": "La capacité en bit/s croît linéairement avec la bande B et logarithmiquement avec le rapport signal sur bruit."
+  },
+  {
+    "id": "q-capacity-2",
+    "conceptId": "capacity",
+    "text": "À rapport signal sur bruit constant, doubler la bande passante B…",
+    "choices": ["double la capacité", "quadruple la capacité", "divise la capacité par deux", "ne change pas la capacité"],
+    "correctIndex": 0,
+    "explanation": "C = B·log2(1+S/N) : à S/N fixé, C est proportionnelle à B."
+  },
+  {
+    "id": "q-capacity-3",
+    "conceptId": "capacity",
+    "text": "Transmettre à un débit supérieur à la capacité du canal signifie que…",
+    "choices": ["les erreurs peuvent quand même devenir aussi rares qu'on veut avec un bon codage", "une communication fiable (sans erreur) est impossible", "la bande passante double automatiquement", "le RSB augmente"],
+    "correctIndex": 1,
+    "explanation": "La capacité est la limite : en dessous, un codage peut rendre les erreurs aussi rares qu'on le souhaite ; au-dessus, c'est impossible."
+  }
+]

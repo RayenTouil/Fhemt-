@@ -1,0 +1,58 @@
+<section class="hero">
+  <p class="eyebrow">Apprentissage adaptatif · Communications numériques · Sup'Com</p>
+  <h1>Sache ce que tu maîtrises.<br />Sache quoi réviser ensuite.</h1>
+  <p class="lead">
+    Avant chaque examen, la même question : <em>par où commencer ?</em> Fhemt ? y répond
+    concept par concept : un court quiz, un niveau de maîtrise pour chaque concept et un
+    parcours de révision où chaque étape vient avec sa raison.
+  </p>
+  <div class="hero__actions">
+    @if (auth.isLoggedIn()) {
+      <a class="btn btn--primary btn--lg" [routerLink]="auth.isTeacher() ? '/teacher' : '/dashboard'">Ouvrir mon espace</a>
+    } @else {
+      <a class="btn btn--primary btn--lg" routerLink="/login">Commencer</a>
+    }
+    <a class="btn btn--ghost btn--lg" href="#comment">Comment ça marche</a>
+  </div>
+</section>
+
+<section class="compare card">
+  <h2>Même note, lacunes opposées</h2>
+  <p class="muted">Une note cache ce que chaque étudiant doit réviser. La maîtrise par concept le montre.</p>
+  <div class="compare__grid">
+    <div class="compare__student">
+      <div class="compare__name">Amira <span class="chip">12/20</span></div>
+      <div class="bar"><span>Échantillonnage</span><div class="bar__track"><div class="bar__fill is-mastered" style="width: 80%"></div></div></div>
+      <div class="bar"><span>Nyquist</span><div class="bar__track"><div class="bar__fill is-mastered" style="width: 70%"></div></div></div>
+      <div class="bar"><span>Modulation</span><div class="bar__track"><div class="bar__fill is-weak" style="width: 20%"></div></div></div>
+    </div>
+    <div class="compare__student">
+      <div class="compare__name">Youssef <span class="chip">12/20</span></div>
+      <div class="bar"><span>Échantillonnage</span><div class="bar__track"><div class="bar__fill is-weak" style="width: 20%"></div></div></div>
+      <div class="bar"><span>Nyquist</span><div class="bar__track"><div class="bar__fill is-weak" style="width: 10%"></div></div></div>
+      <div class="bar"><span>Modulation</span><div class="bar__track"><div class="bar__fill is-mastered" style="width: 80%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="comment" class="steps">
+  <h2>Comment ça marche</h2>
+  <div class="grid grid--3">
+    <article class="card step">
+      <div class="step__num">1</div>
+      <h3>Quiz de diagnostic</h3>
+      <p>Trois questions rapides par concept, avec correction immédiate et explication.</p>
+    </article>
+    <article class="card step">
+      <div class="step__num">2</div>
+      <h3>Tableau de maîtrise</h3>
+      <p>Un niveau par concept, de <strong>faible</strong> à <strong>maîtrisé</strong>, et une carte des concepts colorée selon ta maîtrise.</p>
+    </article>
+    <article class="card step">
+      <div class="step__num">3</div>
+      <h3>Parcours personnalisé</h3>
+      <p>Tes prochaines étapes, chacune avec sa raison : <em>« révise l'échantillonnage avant Nyquist »</em>.</p>
+    </article>
+  </div>
+  <p class="muted center">Les enseignants ont une carte de chaleur de la classe : le concept où la classe bloque, en un coup d'œil.</p>
+</section>
