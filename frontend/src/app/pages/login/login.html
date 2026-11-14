@@ -1,0 +1,41 @@
+<section class="auth">
+  <div class="card auth__card">
+    <h1>Connexion</h1>
+    <p class="muted">
+      Entre ton adresse e-mail. Les nouveaux comptes sont créés comme <strong>étudiants</strong> ;
+      les comptes enseignants sont attribués par l'administrateur. La connexion Google arrive au
+      prochain objectif.
+    </p>
+
+    <form (ngSubmit)="submit()" novalidate>
+      <label class="field">
+        <span>E-mail</span>
+        <input type="email" name="email" [(ngModel)]="email" required placeholder="toi@supcom.tn" autocomplete="email" />
+      </label>
+      <label class="field">
+        <span>Nom <small class="muted">(seulement la première fois)</small></span>
+        <input type="text" name="name" [(ngModel)]="name" placeholder="Ton nom" autocomplete="name" />
+      </label>
+
+      @if (error()) {
+        <p class="alert alert--error" role="alert">{{ error() }}</p>
+      }
+
+      <button class="btn btn--primary btn--block" type="submit" [disabled]="loading() || !email">
+        {{ loading() ? 'Connexion…' : 'Continuer' }}
+      </button>
+    </form>
+
+    <div class="demo">
+      <p class="muted">Comptes de démonstration (clique pour remplir) :</p>
+      <div class="demo__list">
+        @for (account of demo; track account.email) {
+          <button type="button" class="demo__item" (click)="fill(account)">
+            <strong>{{ account.name }}</strong>
+            <span class="muted">{{ account.hint }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</section>

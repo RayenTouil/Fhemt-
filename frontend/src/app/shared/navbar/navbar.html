@@ -1,0 +1,29 @@
+<header class="nav">
+  <a class="nav__brand" routerLink="/" aria-label="Fhemt ? : accueil">
+    <span class="nav__logo">Fhemt <span class="nav__q">?</span></span>
+    <span class="nav__arabic" lang="ar">فهمت؟</span>
+  </a>
+
+  <nav class="nav__links" aria-label="Navigation principale">
+    @if (auth.isLoggedIn()) {
+      @if (auth.isTeacher()) {
+        <a routerLink="/teacher" routerLinkActive="is-active">Ma classe</a>
+      } @else {
+        <a routerLink="/dashboard" routerLinkActive="is-active">Ma maîtrise</a>
+        <a routerLink="/path" routerLinkActive="is-active">Mon parcours</a>
+        <a routerLink="/concepts" routerLinkActive="is-active">Carte des concepts</a>
+      }
+    }
+  </nav>
+
+  <div class="nav__user">
+    @if (auth.user(); as user) {
+      <span class="chip" [class.chip--teacher]="auth.isTeacher()">
+        {{ user.name }} · {{ roleLabel(user.role) }}
+      </span>
+      <button class="btn btn--ghost" type="button" (click)="logout()">Déconnexion</button>
+    } @else {
+      <a class="btn btn--primary" routerLink="/login">Se connecter</a>
+    }
+  </div>
+</header>

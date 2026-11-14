@@ -1,0 +1,6 @@
+[
+  { "id": "u-teacher", "email": "teacher@fhemt.tn", "name": "Dr. Sami Ben Salah", "role": "teacher", "createdAt": "2026-11-01T08:00:00.000Z" },
+  { "id": "u-amira", "email": "amira@fhemt.tn", "name": "Amira", "role": "student", "createdAt": "2026-11-01T08:00:00.000Z" },
+  { "id": "u-youssef", "email": "youssef@fhemt.tn", "name": "Youssef", "role": "student", "createdAt": "2026-11-01T08:00:00.000Z" },
+  { "id": "u-yasmine", "email": "yasmine@fhemt.tn", "name": "Yasmine", "role": "student", "createdAt": "2026-11-01T08:00:00.000Z" }
+]

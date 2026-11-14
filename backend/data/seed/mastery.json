@@ -1,0 +1,17 @@
+[
+  { "userId": "u-amira", "conceptId": "signals", "level": 90 },
+  { "userId": "u-amira", "conceptId": "sampling", "level": 80 },
+  { "userId": "u-amira", "conceptId": "nyquist", "level": 70 },
+  { "userId": "u-amira", "conceptId": "quantization", "level": 40 },
+  { "userId": "u-amira", "conceptId": "modulation", "level": 20 },
+
+  { "userId": "u-youssef", "conceptId": "signals", "level": 60 },
+  { "userId": "u-youssef", "conceptId": "sampling", "level": 20 },
+  { "userId": "u-youssef", "conceptId": "nyquist", "level": 10 },
+  { "userId": "u-youssef", "conceptId": "modulation", "level": 80 },
+  { "userId": "u-youssef", "conceptId": "noise", "level": 50 },
+
+  { "userId": "u-yasmine", "conceptId": "signals", "level": 70 },
+  { "userId": "u-yasmine", "conceptId": "sampling", "level": 30 },
+  { "userId": "u-yasmine", "conceptId": "quantization", "level": 20 }
+]

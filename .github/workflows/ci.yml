@@ -1,0 +1,48 @@
+# Intégration continue : à chaque push, GitHub vérifie que le frontend compile et que
+# ses tests passent, et que l'API démarre et répond. Une croix rouge = quelque chose est cassé.
+name: CI
+
+on:
+  push:
+    branches: [main, Rayen]
+  pull_request:
+
+jobs:
+  frontend:
+    name: Frontend (Angular)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npx ng test --watch=false
+
+  backend:
+    name: Backend (Express)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - name: L'API démarre et répond
+        run: |
+          node src/server.js &
+          sleep 3
+          curl -sf http://localhost:3000/api/health
+          curl -sf http://localhost:3000/api/concepts > /dev/null

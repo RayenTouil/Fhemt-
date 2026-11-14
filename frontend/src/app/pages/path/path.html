@@ -1,0 +1,36 @@
+<header class="page-head">
+  <div>
+    <p class="eyebrow">Parcours personnalisé</p>
+    <h1>Quoi faire ensuite, et pourquoi</h1>
+    <p class="muted">Construit à partir de tes niveaux de maîtrise et des prérequis entre concepts. Il change après chaque quiz.</p>
+  </div>
+</header>
+
+@if (error()) {
+  <p class="alert alert--error" role="alert">{{ error() }}</p>
+} @else if (!steps()) {
+  <p class="muted">Construction de ton parcours…</p>
+} @else if (steps()!.length === 0) {
+  <section class="card center">
+    <h2>Tout est maîtrisé 🎉</h2>
+    <p class="muted">Plus aucun concept faible. Reviens avant l'examen pour rester au point.</p>
+    <a class="btn btn--primary" routerLink="/dashboard">Ma maîtrise</a>
+  </section>
+} @else {
+  <ol class="path">
+    @for (step of steps()!; track step.conceptId; let i = $index) {
+      <li class="card path__step">
+        <div class="path__num">{{ i + 1 }}</div>
+        <div class="path__body">
+          <span class="badge" [class]="'badge kind-' + step.kind">{{ kindLabel[step.kind] }}</span>
+          <h2>{{ step.title }}</h2>
+          <p class="path__reason">{{ step.reason }}</p>
+        </div>
+        <a class="btn btn--primary" [routerLink]="['/quiz', step.conceptId]">
+          {{ step.kind === 'diagnostic' ? 'Faire le quiz' : 'M’entraîner' }}
+        </a>
+      </li>
+    }
+  </ol>
+  <p class="muted center small">Règle du MVP : un concept est maîtrisé à partir de 70&nbsp;% ; un prérequis faible est toujours proposé avant le concept qui en dépend.</p>
+}

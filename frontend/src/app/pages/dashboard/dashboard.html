@@ -1,0 +1,68 @@
+<header class="page-head">
+  <div>
+    <p class="eyebrow">Communications numériques</p>
+    <h1>Bonjour {{ auth.user()?.name }}, voici ta maîtrise</h1>
+  </div>
+</header>
+
+@if (error()) {
+  <p class="alert alert--error" role="alert">{{ error() }}</p>
+} @else if (!data()) {
+  <p class="muted">Chargement de ta maîtrise…</p>
+} @else if (data(); as d) {
+  <section class="grid grid--summary">
+    <article class="card stat">
+      <div class="ring" [style.--value]="d.overall">
+        <span>{{ d.overall }}&nbsp;%</span>
+      </div>
+      <p class="muted">maîtrise globale</p>
+    </article>
+    <article class="card stat">
+      <div class="counts">
+        <div><strong class="is-mastered-text">{{ d.counts.mastered }}</strong><span>maîtrisés</span></div>
+        <div><strong class="is-progress-text">{{ d.counts.inProgress }}</strong><span>en cours</span></div>
+        <div><strong class="is-weak-text">{{ d.counts.weak }}</strong><span>faibles</span></div>
+        <div><strong class="muted">{{ d.counts.notAssessed }}</strong><span>non évalués</span></div>
+      </div>
+      <p class="muted">sur {{ d.concepts.length }} concepts · maîtrisé à partir de {{ d.thresholds.mastered }}&nbsp;%</p>
+    </article>
+    <article class="card stat next">
+      <p class="eyebrow">Prochaine étape</p>
+      @if (nextStep(); as step) {
+        <h3>{{ step.title }}</h3>
+        <p class="muted">{{ step.reason }}</p>
+        <a class="btn btn--primary" [routerLink]="['/quiz', step.conceptId]">
+          {{ step.kind === 'diagnostic' ? 'Faire le quiz' : 'M’entraîner' }}
+        </a>
+      } @else {
+        <h3>Tout est maîtrisé 🎉</h3>
+        <p class="muted">Continue à t'entraîner pour rester au point avant l'examen.</p>
+      }
+      <a class="link" routerLink="/path">Voir tout le parcours →</a>
+    </article>
+  </section>
+
+  <section class="card">
+    <h2>Maîtrise par concept</h2>
+    <ul class="concepts">
+      @for (c of d.concepts; track c.id) {
+        <li class="concept">
+          <div class="concept__head">
+            <div>
+              <strong>{{ c.title }}</strong>
+              <p class="muted small">{{ c.summary }}</p>
+            </div>
+            <span class="badge" [class]="'badge is-' + c.status">{{ labelOf(c.status) }}</span>
+          </div>
+          <div class="concept__row">
+            <div class="bar__track">
+              <div class="bar__fill" [class]="'bar__fill is-' + c.status" [style.width.%]="c.level ?? 0"></div>
+            </div>
+            <span class="concept__level">{{ c.level === null ? '—' : c.level + ' %' }}</span>
+            <a class="btn btn--small" [routerLink]="['/quiz', c.id]">{{ c.level === null ? 'Commencer' : 'M’entraîner' }}</a>
+          </div>
+        </li>
+      }
+    </ul>
+  </section>
+}
