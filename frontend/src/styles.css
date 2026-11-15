@@ -1,3 +1,6 @@
+/* Version « fiche de révision », activée par le bouton Mode fiche (voir core/ui-mode.ts) */
+@import './ui-fiche.css';
+
 /* =====================================================================
    Fhemt ? — styles globaux
    Palette inspirée de Sidi Bou Saïd : bleu marine, rouge, or sur fond crème.

@@ -24,13 +24,16 @@
           <line
             [attr.x1]="shorten(e, 'from').x" [attr.y1]="shorten(e, 'from').y"
             [attr.x2]="shorten(e, 'to').x" [attr.y2]="shorten(e, 'to').y"
-            stroke="#8a94a6" stroke-width="2" marker-end="url(#arrow)"
+            stroke="#8a94a6" stroke-width="2" marker-end="url(#arrow)" pathLength="1"
           />
         }
 
         @for (n of nodes(); track n.id) {
           <g class="node" [class.is-selected]="selected()?.id === n.id" (click)="select(n)" tabindex="0" role="button"
-             [attr.aria-label]="n.title" (keydown.enter)="select(n)">
+             [attr.aria-label]="n.title" [attr.data-status]="n.status" (keydown.enter)="select(n)">
+            @if (ui.fiche() && selected()?.id === n.id) {
+              <path class="pen-circle" [attr.d]="penCircle(n)" pathLength="1" />
+            }
             <circle [attr.cx]="n.x" [attr.cy]="n.y" r="28" [attr.fill]="n.color" stroke="#fff" stroke-width="3" />
             <text [attr.x]="n.x" [attr.y]="n.y + 5" text-anchor="middle" class="node__level">
               {{ n.level === null ? '?' : n.level + '%' }}

@@ -2,7 +2,8 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ApiService, errorMessage } from '../../core/api';
 import { AuthService } from '../../core/auth';
 import { Heatmap } from '../../core/models';
-import { colorOf } from '../../core/levels';
+import { colorOf, statusOf } from '../../core/levels';
+import { UiModeService } from '../../core/ui-mode';
 
 @Component({
   selector: 'app-teacher',
@@ -11,10 +12,12 @@ import { colorOf } from '../../core/levels';
 export class Teacher implements OnInit {
   private readonly api = inject(ApiService);
   readonly auth = inject(AuthService);
+  readonly ui = inject(UiModeService);
 
   readonly data = signal<Heatmap | null>(null);
   readonly error = signal('');
   readonly colorOf = colorOf;
+  readonly statusOf = statusOf; // utilisé par la version fiche (couleurs des surligneurs)
 
   ngOnInit() {
     this.api.heatmap().subscribe({

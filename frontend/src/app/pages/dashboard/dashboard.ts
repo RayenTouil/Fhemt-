@@ -4,6 +4,7 @@ import { ApiService, errorMessage } from '../../core/api';
 import { AuthService } from '../../core/auth';
 import { MasteryResponse, PathStep } from '../../core/models';
 import { labelOf } from '../../core/levels';
+import { UiModeService } from '../../core/ui-mode';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +14,7 @@ import { labelOf } from '../../core/levels';
 export class Dashboard implements OnInit {
   private readonly api = inject(ApiService);
   readonly auth = inject(AuthService);
+  readonly ui = inject(UiModeService);
 
   readonly data = signal<MasteryResponse | null>(null);
   readonly nextStep = signal<PathStep | null>(null);

@@ -17,6 +17,23 @@
   </nav>
 
   <div class="nav__user">
+    <button
+      type="button"
+      class="ui-toggle"
+      [attr.aria-pressed]="ui.fiche()"
+      aria-label="Mode fiche de révision"
+      title="Basculer entre la version classique et la version fiche de révision"
+      (click)="ui.toggle()"
+    >
+      <svg class="ui-toggle__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M15 4.5l4.5 4.5-8.6 8.6H6.4v-4.5z" />
+        <path d="M12.6 6.9l4.5 4.5" />
+        <path d="M4 21h9" />
+      </svg>
+      <span class="ui-toggle__label">Mode fiche</span>
+      <span class="ui-toggle__switch" aria-hidden="true"></span>
+    </button>
+
     @if (auth.user(); as user) {
       <span class="chip" [class.chip--teacher]="auth.isTeacher()">
         {{ user.name }} · {{ roleLabel(user.role) }}

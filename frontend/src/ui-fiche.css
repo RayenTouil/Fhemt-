@@ -1,0 +1,549 @@
+/* =====================================================================
+   Fhemt ? — version « fiche de révision »
+   Activée par le bouton « Mode fiche » de la barre de navigation : l'attribut
+   data-ui="fiche" est posé sur <html> (voir src/app/core/ui-mode.ts).
+
+   L'idée : la copie à grands carreaux (Seyès) sur laquelle on révise la veille
+   d'un examen. Stylo bleu pour ce qu'on fait, surligneurs pour ce qu'on maîtrise,
+   stylo rouge du prof pour les corrections et les notes.
+   Toutes les règles sont préfixées par :root[data-ui="fiche"] : la version
+   classique n'est pas modifiée.
+   ===================================================================== */
+
+/* ---- bouton de bascule (visible dans les deux versions) ----------------- */
+.ui-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.32rem 0.55rem 0.32rem 0.5rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.ui-toggle:hover { background: rgba(255, 255, 255, 0.12); }
+.ui-toggle:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.ui-toggle__icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ui-toggle__switch {
+  position: relative;
+  width: 28px;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  transition: background 0.2s;
+}
+.ui-toggle__switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ui-toggle[aria-pressed='true'] .ui-toggle__switch::after { transform: translateX(12px); }
+@media (max-width: 520px) {
+  .ui-toggle__label { display: none; }
+}
+
+/* ---- passage d'une version à l'autre : la nouvelle page glisse comme un surligneur */
+::view-transition-old(root) { animation: none; }
+::view-transition-new(root) { animation: fiche-wipe 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes fiche-wipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* =====================================================================
+   Jetons de la version fiche
+   ===================================================================== */
+:root[data-ui='fiche'] {
+  --paper: #ffffff;
+  --rule-fine: #eeecf8;   /* lignes fines Seyès */
+  --rule: #d3cfec;        /* lignes principales Seyès */
+  --margin: #e2505f;      /* trait de marge */
+  --ink: #1f3c9e;         /* stylo bleu */
+  --ink-dark: #162d7a;
+  --graphite: #2c2f36;    /* texte courant */
+  --pencil: #5d6270;      /* texte secondaire */
+  --pen: #d3202f;         /* stylo rouge du prof */
+  --pen-green: #12804a;
+  --hl-green: #8df5a5;    /* surligneur : maîtrisé */
+  --hl-yellow: #fff35c;   /* surligneur : en cours */
+  --hl-pink: #ff9ed8;     /* surligneur : faible */
+  --f-hand: 'Kalam', 'Segoe Print', 'Bradley Hand', cursive;
+  --f-text: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+  --paper-shadow: 0 1px 0 #dcd9ef, 0 16px 30px -24px rgba(31, 60, 158, 0.55);
+  font-family: var(--f-text);
+}
+
+/* ---- la copie Seyès ------------------------------------------------------ */
+:root[data-ui='fiche'] body {
+  color: var(--graphite);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(var(--rule-fine) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 100% 32px, 100% 8px, 32px 100%;
+  line-height: 1.55;
+}
+/* le trait de marge rouge, à gauche du contenu */
+:root[data-ui='fiche'] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: max(8px, calc(50% - 560px));
+  width: 2px;
+  background: var(--margin);
+  opacity: 0.65;
+  pointer-events: none;
+}
+:root[data-ui='fiche'] .page { position: relative; padding-left: 22px; }
+:root[data-ui='fiche'] :focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+/* ---- titres --------------------------------------------------------------- */
+:root[data-ui='fiche'] h1,
+:root[data-ui='fiche'] h2,
+:root[data-ui='fiche'] h3 { color: var(--ink); }
+:root[data-ui='fiche'] h2 { font-size: 1.3rem; }
+/* le titre de la page, écrit à la main et souligné deux fois à la règle */
+:root[data-ui='fiche'] h1 {
+  width: fit-content;
+  max-width: 100%;
+  font-family: var(--f-hand);
+  font-weight: 700;
+  font-size: clamp(2rem, 1.3rem + 2.4vw, 2.9rem);
+  line-height: 1.15;
+  letter-spacing: 0;
+  padding-bottom: 12px;
+  background-image: linear-gradient(var(--pen), var(--pen)), linear-gradient(var(--pen), var(--pen));
+  background-repeat: no-repeat;
+  background-size: 100% 2px, 94% 2px;
+  background-position: 0 calc(100% - 5px), 6px 100%;
+  animation: fiche-rule 0.7s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes fiche-rule {
+  from { background-size: 0 2px, 0 2px; }
+}
+/* les petites étiquettes deviennent des notes dans la marge */
+:root[data-ui='fiche'] .eyebrow {
+  display: inline-block;
+  font-family: var(--f-hand);
+  font-size: 1.05rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--pen);
+  transform: rotate(-1.5deg);
+  margin-bottom: 0.2rem;
+}
+:root[data-ui='fiche'] .muted { color: var(--pencil); }
+:root[data-ui='fiche'] .lead { font-size: 1.12rem; color: var(--graphite); }
+:root[data-ui='fiche'] a { color: var(--ink); }
+:root[data-ui='fiche'] .link { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+
+/* ---- barre de navigation : une bande de papier ---------------------------- */
+:root[data-ui='fiche'] .nav {
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--graphite);
+  border-bottom: 3px double var(--rule);
+  backdrop-filter: blur(3px);
+}
+:root[data-ui='fiche'] .nav__brand { color: var(--ink); }
+:root[data-ui='fiche'] .nav__logo { font-family: var(--f-hand); font-size: 1.65rem; letter-spacing: 0; }
+:root[data-ui='fiche'] .nav__q { color: var(--pen); }
+:root[data-ui='fiche'] .nav__arabic { color: var(--pencil); opacity: 1; }
+:root[data-ui='fiche'] .nav__links a {
+  color: var(--graphite);
+  opacity: 1;
+  border-radius: 2px;
+  padding-inline: 0.4rem;
+  background: linear-gradient(transparent 58%, transparent 58%);
+}
+:root[data-ui='fiche'] .nav__links a:hover { background: linear-gradient(transparent 58%, #fff9a8 58%); }
+:root[data-ui='fiche'] .nav__links a.is-active {
+  font-weight: 700;
+  background: linear-gradient(transparent 52%, var(--hl-yellow) 52%, var(--hl-yellow) 92%, transparent 92%);
+}
+:root[data-ui='fiche'] .nav .chip {
+  background: transparent;
+  color: var(--pencil);
+  border: 1.5px dashed var(--rule);
+}
+:root[data-ui='fiche'] .nav .chip--teacher { background: var(--hl-green); color: var(--graphite); border-color: transparent; }
+:root[data-ui='fiche'] .nav .btn--ghost { color: var(--ink); }
+:root[data-ui='fiche'] .ui-toggle { color: var(--ink); border-color: var(--ink); }
+:root[data-ui='fiche'] .ui-toggle:hover { background: #f1f3fc; }
+:root[data-ui='fiche'] .ui-toggle:focus-visible { outline-color: var(--ink); }
+:root[data-ui='fiche'] .ui-toggle__switch { background: var(--hl-yellow); box-shadow: inset 0 0 0 1.5px var(--ink); }
+:root[data-ui='fiche'] .ui-toggle__switch::after { background: var(--ink); }
+
+/* ---- bandeau du mode démo : un post-it ------------------------------------ */
+:root[data-ui='fiche'] .demo-banner {
+  position: relative;
+  z-index: 1; /* au-dessus du trait de marge */
+  background: #fff7a8;
+  color: #4d4100;
+  border-bottom: 1px solid #ece08a;
+  box-shadow: 0 6px 12px -10px rgba(77, 65, 0, 0.6);
+}
+
+/* ---- boutons : à l'encre bleue --------------------------------------------- */
+:root[data-ui='fiche'] .btn {
+  border-radius: 8px;
+  font-family: var(--f-text);
+  font-weight: 700;
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px solid #c8c5e6;
+}
+:root[data-ui='fiche'] .btn:hover { border-color: var(--ink); }
+:root[data-ui='fiche'] .btn:active { transform: translateY(1px); }
+:root[data-ui='fiche'] .btn--primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+:root[data-ui='fiche'] .btn--primary:hover { background: var(--ink-dark); }
+:root[data-ui='fiche'] .btn--ghost { background: transparent; border-color: currentColor; }
+
+/* ---- cartes : des fiches bristol posées sur la copie ----------------------- */
+:root[data-ui='fiche'] .card {
+  background: var(--paper);
+  border: 1px solid #dcd9ef;
+  border-radius: 4px;
+  box-shadow: var(--paper-shadow);
+}
+
+/* ---- formulaires : on écrit sur une ligne ------------------------------- */
+:root[data-ui='fiche'] .auth__card { border-top: 6px solid var(--ink); }
+:root[data-ui='fiche'] .field input {
+  border: 0;
+  border-bottom: 2px solid var(--rule);
+  border-radius: 0;
+  background: transparent;
+  padding-inline: 0.15rem;
+  font-family: var(--f-text);
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+:root[data-ui='fiche'] .field input:focus { outline: none; border-bottom-color: var(--ink); background: #fffde0; }
+:root[data-ui='fiche'] .demo__item { background: #fff; border-color: #dcd9ef; border-radius: 4px; }
+:root[data-ui='fiche'] .demo__item:hover { border-color: var(--ink); background: linear-gradient(transparent 60%, #fff9a8 60%); }
+:root[data-ui='fiche'] .alert--error { background: #fff; color: var(--pen); border: 1.5px solid var(--pen); border-radius: 4px; }
+/* le concept bloquant : un post-it collé sur la copie */
+:root[data-ui='fiche'] .alert--info {
+  background: #fff7a8;
+  color: #3d3400;
+  border: 0;
+  border-radius: 2px;
+  transform: rotate(-0.6deg);
+  box-shadow: 0 10px 18px -14px rgba(61, 52, 0, 0.8);
+}
+
+/* ---- surligneurs : la maîtrise ------------------------------------------------ */
+:root[data-ui='fiche'] .is-mastered { background: var(--hl-green); }
+:root[data-ui='fiche'] .is-in-progress,
+:root[data-ui='fiche'] .is-progress { background: var(--hl-yellow); }
+:root[data-ui='fiche'] .is-weak { background: var(--hl-pink); }
+:root[data-ui='fiche'] .is-not-assessed { background: transparent; }
+:root[data-ui='fiche'] .is-mastered-text { color: var(--pen-green); }
+:root[data-ui='fiche'] .is-progress-text { color: #8a6a00; }
+:root[data-ui='fiche'] .is-weak-text { color: var(--pen); }
+
+:root[data-ui='fiche'] .bar__track {
+  height: 15px;
+  background: transparent;
+  border-radius: 0;
+  border-bottom: 1.5px dotted #b9b5da;
+  overflow: visible;
+}
+/* un trait de surligneur : bouts irréguliers, couleur qui se superpose au papier */
+:root[data-ui='fiche'] .bar__fill {
+  border-radius: 3px 10px 4px 9px / 6px 4px 8px 5px;
+  mix-blend-mode: multiply;
+  transform-origin: left center;
+  animation: fiche-sweep 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes fiche-sweep {
+  from { transform: scaleX(0); }
+}
+:root[data-ui='fiche'] .concept:nth-child(2) .bar__fill { animation-delay: 0.07s; }
+:root[data-ui='fiche'] .concept:nth-child(3) .bar__fill { animation-delay: 0.14s; }
+:root[data-ui='fiche'] .concept:nth-child(4) .bar__fill { animation-delay: 0.21s; }
+:root[data-ui='fiche'] .concept:nth-child(5) .bar__fill { animation-delay: 0.28s; }
+:root[data-ui='fiche'] .concept:nth-child(6) .bar__fill { animation-delay: 0.35s; }
+:root[data-ui='fiche'] .concept:nth-child(7) .bar__fill { animation-delay: 0.42s; }
+:root[data-ui='fiche'] .concept:nth-child(8) .bar__fill { animation-delay: 0.49s; }
+
+/* les statuts : un mot surligné */
+:root[data-ui='fiche'] .badge {
+  color: var(--graphite);
+  font-family: var(--f-text);
+  font-size: 0.8rem;
+  border-radius: 3px 8px 3px 7px;
+  padding: 0.05rem 0.45rem;
+}
+:root[data-ui='fiche'] .badge.is-not-assessed { color: var(--pencil); border: 1.5px dashed #c9c6e2; }
+:root[data-ui='fiche'] .badge.kind-practice { background: var(--hl-yellow); color: var(--graphite); }
+:root[data-ui='fiche'] .badge.kind-diagnostic {
+  background: transparent;
+  color: var(--ink);
+  border-radius: 0;
+  border-bottom: 2px solid var(--ink);
+  padding-inline: 0;
+}
+/* « Prérequis d'abord » : écrit par le prof, au stylo rouge */
+:root[data-ui='fiche'] .badge.kind-prerequisite {
+  background: transparent;
+  color: var(--pen);
+  font-family: var(--f-hand);
+  font-size: 1.1rem;
+  padding: 0;
+  transform: rotate(-3deg);
+}
+
+/* ---- tableau de maîtrise --------------------------------------------------- */
+:root[data-ui='fiche'] .concept { border-top: 1px dashed #d8d5ee; }
+:root[data-ui='fiche'] .concept__level { font-family: var(--f-hand); font-size: 1.15rem; color: var(--ink); }
+:root[data-ui='fiche'] .counts strong { font-family: var(--f-hand); font-size: 2rem; line-height: 1.1; }
+:root[data-ui='fiche'] .next { border-left: 4px solid var(--hl-yellow); }
+
+/* la maîtrise globale : une note entourée au stylo rouge, comme sur une copie */
+:root[data-ui='fiche'] .grade {
+  position: relative;
+  width: 170px;
+  height: 116px;
+  display: grid;
+  place-items: center;
+}
+:root[data-ui='fiche'] .grade__circle {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: fiche-draw 0.9s 0.35s cubic-bezier(0.45, 0, 0.2, 1) forwards;
+}
+:root[data-ui='fiche'] .grade__value {
+  font-family: var(--f-hand);
+  font-weight: 700;
+  font-size: 2.6rem;
+  color: var(--pen);
+  transform: rotate(-4deg);
+}
+@keyframes fiche-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ---- quiz -------------------------------------------------------------------- */
+:root[data-ui='fiche'] .level-pill {
+  background: #fff;
+  border: 1.5px dashed #c9c6e2;
+  border-radius: 4px;
+}
+:root[data-ui='fiche'] .level-pill strong { font-family: var(--f-hand); font-size: 1.35rem; color: var(--ink); }
+:root[data-ui='fiche'] .progress { background: transparent; border-bottom: 1.5px dotted #b9b5da; border-radius: 0; height: 9px; }
+:root[data-ui='fiche'] .progress__fill { background: var(--hl-yellow); border-radius: 2px 6px 3px 5px; mix-blend-mode: multiply; }
+:root[data-ui='fiche'] .quiz__text { font-size: 1.3rem; line-height: 1.35; }
+:root[data-ui='fiche'] .choice {
+  position: relative;
+  border: 1.5px solid #dcd9ef;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 1.02rem;
+  color: var(--graphite);
+}
+:root[data-ui='fiche'] .choice:hover:not(:disabled) { border-color: var(--ink); background: #fbfbff; }
+:root[data-ui='fiche'] .choice:disabled { color: var(--graphite); }
+:root[data-ui='fiche'] .choice__letter {
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--f-hand);
+  font-size: 1.15rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 50% 46% 52% 48% / 48% 52% 46% 54%;
+}
+/* bonne réponse : surlignée en vert */
+:root[data-ui='fiche'] .choice.is-correct {
+  border-color: var(--pen-green);
+  background: #fff linear-gradient(var(--hl-green), var(--hl-green)) no-repeat left center / 100% 100%;
+  animation: fiche-sweep-bg 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes fiche-sweep-bg {
+  from { background-size: 0% 100%; }
+}
+/* mauvaise réponse choisie : barrée au stylo rouge */
+:root[data-ui='fiche'] .choice.is-wrong { border-color: var(--pen); background: #fff; }
+:root[data-ui='fiche'] .choice.is-wrong .choice__text {
+  text-decoration: line-through;
+  text-decoration-color: var(--pen);
+  text-decoration-thickness: 2px;
+}
+:root[data-ui='fiche'] .pen-mark {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: fiche-draw 0.45s 0.1s ease-out forwards;
+}
+:root[data-ui='fiche'] .feedback {
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #dcd9ef;
+  border-left-width: 4px;
+}
+:root[data-ui='fiche'] .feedback--ok { border-left-color: var(--pen-green); }
+:root[data-ui='fiche'] .feedback--ko { border-left-color: var(--pen); }
+:root[data-ui='fiche'] .feedback > strong { font-family: var(--f-hand); font-size: 1.45rem; }
+:root[data-ui='fiche'] .feedback--ok > strong { color: var(--pen-green); }
+:root[data-ui='fiche'] .feedback--ko > strong { color: var(--pen); }
+:root[data-ui='fiche'] .quiz--done .lead strong { font-family: var(--f-hand); font-size: 1.5rem; color: var(--pen); }
+
+/* ---- parcours : une liste numérotée sur la fiche ------------------------------ */
+:root[data-ui='fiche'] .path__num,
+:root[data-ui='fiche'] .step__num {
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--f-hand);
+  font-size: 1.45rem;
+  border: 2px solid var(--ink);
+  border-radius: 50% 44% 54% 46% / 46% 54% 44% 56%;
+}
+:root[data-ui='fiche'] .path__reason { font-size: 1.02rem; }
+
+/* ---- accueil -------------------------------------------------------------------- */
+:root[data-ui='fiche'] .hero h1 {
+  margin-inline: auto;
+  font-size: clamp(2.3rem, 1.4rem + 3.6vw, 3.6rem);
+}
+/* la note 12/20 entourée au stylo rouge */
+:root[data-ui='fiche'] .compare .chip {
+  background: transparent;
+  color: var(--pen);
+  font-family: var(--f-hand);
+  font-size: 1.1rem;
+  border: 2px solid var(--pen);
+  border-radius: 50% / 46%;
+  padding: 0.05rem 0.55rem;
+  transform: rotate(-4deg);
+}
+:root[data-ui='fiche'] .compare__name { font-size: 1.05rem; color: var(--ink); }
+
+/* ---- carte des concepts ------------------------------------------------------- */
+:root[data-ui='fiche'] .map__canvas line {
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: fiche-draw 0.8s 0.2s ease-out forwards;
+}
+:root[data-ui='fiche'] #arrow path { fill: var(--ink); }
+:root[data-ui='fiche'] .node circle { stroke: var(--graphite); stroke-width: 1.5; fill: #fff; }
+:root[data-ui='fiche'] .node[data-status='mastered'] circle { fill: var(--hl-green); }
+:root[data-ui='fiche'] .node[data-status='in-progress'] circle { fill: var(--hl-yellow); }
+:root[data-ui='fiche'] .node[data-status='weak'] circle { fill: var(--hl-pink); }
+:root[data-ui='fiche'] .node[data-status='not-assessed'] circle { stroke-dasharray: 4 3; }
+:root[data-ui='fiche'] .node:hover circle,
+:root[data-ui='fiche'] .node.is-selected circle { stroke: var(--ink); stroke-width: 2.2; }
+:root[data-ui='fiche'] .node__level { fill: var(--graphite); font-family: var(--f-hand); font-size: 16px; }
+:root[data-ui='fiche'] .node__label { fill: var(--ink); font-family: var(--f-text); font-weight: 700; }
+:root[data-ui='fiche'] .pen-circle {
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: fiche-draw 0.5s ease-out forwards;
+}
+
+/* légendes (carte des concepts et carte de chaleur) aux couleurs des surligneurs */
+:root[data-ui='fiche'] .legend i { border-radius: 2px 5px 2px 4px; }
+:root[data-ui='fiche'] .legend li:nth-child(1) i { background: var(--hl-green) !important; }
+:root[data-ui='fiche'] .legend li:nth-child(2) i { background: var(--hl-yellow) !important; }
+:root[data-ui='fiche'] .legend li:nth-child(3) i { background: var(--hl-pink) !important; }
+:root[data-ui='fiche'] .legend li:nth-child(4) i { background: #fff !important; outline: 1.5px dashed #b9b5da; }
+
+/* ---- carte de chaleur de l'enseignant ----------------------------------------- */
+:root[data-ui='fiche'] .heatmap td {
+  border-radius: 3px 7px 3px 6px;
+  font-family: var(--f-hand);
+  font-size: 1.1rem;
+  color: var(--graphite) !important;
+}
+:root[data-ui='fiche'] .heatmap td[data-status='mastered'] { background: var(--hl-green) !important; }
+:root[data-ui='fiche'] .heatmap td[data-status='in-progress'] { background: var(--hl-yellow) !important; }
+:root[data-ui='fiche'] .heatmap td[data-status='weak'] { background: var(--hl-pink) !important; }
+:root[data-ui='fiche'] .heatmap td[data-status='not-assessed'] {
+  background: #fff !important;
+  color: var(--pencil) !important;
+  outline: 1.5px dashed #d0cde8;
+  outline-offset: -3px;
+}
+:root[data-ui='fiche'] .heatmap th { color: var(--ink); }
+:root[data-ui='fiche'] .heatmap tfoot td {
+  position: relative;
+  background: transparent;
+  font-family: var(--f-text);
+  font-size: 0.95rem;
+  color: var(--ink) !important;
+}
+/* le concept bloquant : entouré au stylo rouge */
+:root[data-ui='fiche'] .heatmap tfoot td.is-blocking { background: transparent; color: var(--pen) !important; }
+:root[data-ui='fiche'] .heatmap tfoot td.is-blocking::after {
+  content: '';
+  position: absolute;
+  inset: -2px -4px;
+  border: 2.5px solid var(--pen);
+  border-radius: 50% 46% 52% 48% / 52% 48% 54% 46%;
+  transform: rotate(-4deg);
+  pointer-events: none;
+}
+
+/* ---- pied de page ------------------------------------------------------------------ */
+:root[data-ui='fiche'] .footer { color: var(--pencil); position: relative; }
+
+/* ---- petits écrans ------------------------------------------------------------------ */
+@media (max-width: 760px) {
+  :root[data-ui='fiche'] body::before { left: 8px; }
+  :root[data-ui='fiche'] .page { padding-left: 24px; }
+}
+
+/* ---- animations réduites si l'utilisateur le demande -------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-ui='fiche'] *,
+  :root[data-ui='fiche'] *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  :root[data-ui='fiche'] .grade__circle,
+  :root[data-ui='fiche'] .pen-mark,
+  :root[data-ui='fiche'] .pen-circle,
+  :root[data-ui='fiche'] .map__canvas line { stroke-dashoffset: 0; }
+}

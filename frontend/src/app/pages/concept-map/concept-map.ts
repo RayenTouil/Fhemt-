@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ApiService, errorMessage } from '../../core/api';
 import { ConceptMastery } from '../../core/models';
 import { colorOf } from '../../core/levels';
+import { UiModeService } from '../../core/ui-mode';
 
 // Positions des 8 concepts placées à la main dans le SVG (viewBox 640 x 430).
 const POSITIONS: Record<string, { x: number; y: number }> = {
@@ -34,6 +35,7 @@ interface Edge {
 export class ConceptMap implements OnInit {
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
+  readonly ui = inject(UiModeService);
 
   readonly concepts = signal<ConceptMastery[] | null>(null);
   readonly error = signal('');
@@ -79,6 +81,16 @@ export class ConceptMap implements OnInit {
   prerequisiteTitles(node: Node): string {
     const byId = new Map(this.nodes().map((n) => [n.id, n.title]));
     return node.prerequisites.map((id) => byId.get(id) ?? id).join(', ');
+  }
+
+  // Version fiche : un cercle tracé à la main (au stylo rouge) autour du concept sélectionné.
+  penCircle(n: Node): string {
+    const { x, y } = n;
+    return (
+      `M${x - 30} ${y - 24} C${x - 10} ${y - 46} ${x + 42} ${y - 40} ${x + 42} ${y} ` +
+      `C${x + 42} ${y + 36} ${x - 6} ${y + 46} ${x - 36} ${y + 20} ` +
+      `C${x - 52} ${y - 2} ${x - 32} ${y - 36} ${x - 2} ${y - 40}`
+    );
   }
 
   // Raccourcit la flèche pour qu'elle s'arrête au bord des cercles (rayon 28).

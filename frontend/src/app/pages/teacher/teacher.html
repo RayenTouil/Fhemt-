@@ -2,7 +2,7 @@
   <div>
     <p class="eyebrow">Espace enseignant · Communications numériques</p>
     <h1>Où la classe bloque-t-elle ?</h1>
-    <p class="muted">Une ligne par étudiant, une colonne par concept. Rouge = faible.</p>
+    <p class="muted">Une ligne par étudiant, une colonne par concept. {{ ui.fiche() ? 'Rose = faible.' : 'Rouge = faible.' }}</p>
   </div>
 </header>
 
@@ -35,6 +35,7 @@
               <th scope="row">{{ s.name }}</th>
               @for (c of d.concepts; track c.id) {
                 <td
+                  [attr.data-status]="statusOf(s.levels[c.id])"
                   [style.background]="colorOf(s.levels[c.id] ?? null)"
                   [style.color]="textOn(s.levels[c.id])"
                   [title]="s.name + ' · ' + c.title"

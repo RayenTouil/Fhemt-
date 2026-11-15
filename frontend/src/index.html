@@ -8,6 +8,12 @@
   <meta name="description" content="Fhemt ? (فهمت؟) : plateforme d'apprentissage adaptatif. Un quiz par concept, un niveau de maîtrise, un parcours de révision où chaque étape a sa raison. Projet web Sup'Com.">
   <meta name="theme-color" content="#1b365d">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Applique la version choisie (classique ou fiche) avant l'affichage, sans clignotement -->
+  <script>
+    try { if (localStorage.getItem('fhemt.ui') === 'fiche') document.documentElement.setAttribute('data-ui', 'fiche'); } catch (e) {}
+  </script>
 </head>
 <body>
   <app-root></app-root>

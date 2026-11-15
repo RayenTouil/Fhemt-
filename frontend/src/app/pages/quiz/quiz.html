@@ -34,7 +34,15 @@
               (click)="choose($index)"
             >
               <span class="choice__letter">{{ 'ABCD'[$index] }}</span>
-              <span>{{ choice }}</span>
+              <span class="choice__text">{{ choice }}</span>
+              @if (ui.fiche() && result()) {
+                <!-- Version fiche : la correction tracée au stylo rouge dans la marge -->
+                @if (result()!.correctIndex === $index) {
+                  <svg class="pen-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 17 L13 25 L28 6" pathLength="1" /></svg>
+                } @else if (selected() === $index) {
+                  <svg class="pen-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 7 L25 25 M25 7 L7 25" pathLength="1" /></svg>
+                }
+              }
             </button>
           }
         </div>

@@ -2,6 +2,7 @@ import { Component, computed, effect, inject, input, signal, untracked } from '@
 import { RouterLink } from '@angular/router';
 import { ApiService, errorMessage } from '../../core/api';
 import { AnswerResponse, QuizResponse } from '../../core/models';
+import { UiModeService } from '../../core/ui-mode';
 
 @Component({
   selector: 'app-quiz',
@@ -10,6 +11,7 @@ import { AnswerResponse, QuizResponse } from '../../core/models';
 })
 export class Quiz {
   private readonly api = inject(ApiService);
+  readonly ui = inject(UiModeService);
 
   // Vient de l'URL /quiz/:conceptId (withComponentInputBinding dans app.config.ts)
   readonly conceptId = input.required<string>();
