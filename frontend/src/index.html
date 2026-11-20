@@ -10,9 +10,12 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Applique la version choisie (classique ou fiche) avant l'affichage, sans clignotement -->
+  <!-- Applique les préférences (habillage fiche, animations réduites) avant l'affichage, sans clignotement -->
   <script>
-    try { if (localStorage.getItem('fhemt.ui') === 'fiche') document.documentElement.setAttribute('data-ui', 'fiche'); } catch (e) {}
+    try {
+      if (localStorage.getItem('fhemt.ui') === 'fiche') document.documentElement.setAttribute('data-ui', 'fiche');
+      if (localStorage.getItem('fhemt.motion') === 'reduce') document.documentElement.setAttribute('data-motion', 'reduce');
+    } catch (e) {}
   </script>
 </head>
 <body>

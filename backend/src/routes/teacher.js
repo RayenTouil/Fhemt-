@@ -1,11 +1,28 @@
-// GET /api/teacher/heatmap : la vue de la classe. Comptes enseignant uniquement (vérification RBAC).
+// Routes de l'espace enseignant. TOUTES sont réservées aux rôles teacher et admin :
+// les deux vérifications (requireUser puis requireRole) sont posées une fois pour tout le fichier.
+//
+// GET  /api/teacher/heatmap                -> la carte de chaleur de la classe
+// GET  /api/teacher/questions?conceptId=…  -> les questions d'un concept, AVEC les réponses
+// POST /api/teacher/questions              -> créer une question
+// PUT  /api/teacher/questions/:id          -> modifier une question
 import { Router } from 'express';
 import { requireUser, requireRole } from '../middleware/auth.js';
-import { getConcepts, getUsersByRole, getMasteryForUser } from '../store.js';
+import {
+  createQuestion,
+  getConcept,
+  getConcepts,
+  getMasteryForUser,
+  getQuestion,
+  getQuestionsForConcept,
+  getUsersByRole,
+  updateQuestion,
+} from '../store.js';
+import { hasErrors, sendValidationError, validateQuestion } from '../services/validation.js';
 
 const router = Router();
+router.use(requireUser, requireRole('teacher', 'admin'));
 
-router.get('/heatmap', requireUser, requireRole('teacher', 'admin'), (req, res) => {
+router.get('/heatmap', (req, res) => {
   const concepts = getConcepts();
   const students = getUsersByRole('student').map((s) => ({
     id: s.id,
@@ -32,6 +49,28 @@ router.get('/heatmap', requireUser, requireRole('teacher', 'admin'), (req, res) 
     averages,
     blockingConcept: blocking ? { id: blocking.id, title: blocking.title, average: averages[blocking.id] } : null,
   });
+});
+
+router.get('/questions', (req, res) => {
+  const conceptId = String(req.query.conceptId || '');
+  if (!getConcept(conceptId)) return res.status(404).json({ error: 'Concept inconnu.' });
+  // Ici on renvoie correctIndex et l'explication : la route est réservée aux enseignants.
+  res.json({ questions: getQuestionsForConcept(conceptId) });
+});
+
+router.post('/questions', async (req, res) => {
+  const { value, errors } = validateQuestion(req.body, getConcepts().map((c) => c.id));
+  if (hasErrors(errors)) return sendValidationError(res, errors);
+  const question = await createQuestion(value, req.user.id);
+  res.status(201).json({ question });
+});
+
+router.put('/questions/:id', async (req, res) => {
+  if (!getQuestion(req.params.id)) return res.status(404).json({ error: 'Question inconnue.' });
+  const { value, errors } = validateQuestion(req.body, getConcepts().map((c) => c.id));
+  if (hasErrors(errors)) return sendValidationError(res, errors);
+  const question = await updateQuestion(req.params.id, value, req.user.id);
+  res.json({ question });
 });
 
 export default router;

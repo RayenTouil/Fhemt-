@@ -22,6 +22,11 @@ export const routes: Routes = [
     title: 'À propos · Fhemt ?',
   },
   {
+    path: 'contact',
+    loadComponent: () => import('./pages/contact/contact').then((m) => m.Contact),
+    title: 'Contact · Fhemt ?',
+  },
+  {
     path: 'login',
     loadComponent: () => import('./pages/login/login').then((m) => m.Login),
     title: 'Connexion · Fhemt ?',
@@ -52,6 +57,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Quiz · Fhemt ?',
   },
+  {
+    path: 'profile',
+    loadComponent: () => import('./pages/profile/profile').then((m) => m.Profile),
+    canActivate: [authGuard],
+    title: 'Mon profil · Fhemt ?',
+  },
 
   // Espace enseignant (rôle teacher ou admin)
   {
@@ -59,6 +70,13 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/teacher/teacher').then((m) => m.Teacher),
     canActivate: [authGuard, teacherGuard],
     title: 'Ma classe · Fhemt ?',
+  },
+  {
+    path: 'teacher/questions',
+    loadComponent: () =>
+      import('./pages/question-editor/question-editor').then((m) => m.QuestionEditor),
+    canActivate: [authGuard, teacherGuard],
+    title: 'Questions du quiz · Fhemt ?',
   },
 
   // Toute autre adresse : la page 404 (au lieu de renvoyer à l'accueil sans rien dire).

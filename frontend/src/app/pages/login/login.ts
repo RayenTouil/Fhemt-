@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ApiService, errorMessage } from '../../core/api';
 import { AuthService } from '../../core/auth';
 import { fieldError } from '../../core/forms';
+import { UiModeService } from '../../core/ui-mode';
 import { EMAIL_PATTERN, LIMITS } from '../../core/validation';
 import { FieldControl, FormField } from '../../shared/form-field/form-field';
 
@@ -18,6 +19,7 @@ export class Login {
   private readonly api = inject(ApiService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly ui = inject(UiModeService);
 
   // Le formulaire réactif : un FormControl par champ, avec ses règles.
   readonly form = inject(NonNullableFormBuilder).group({
@@ -49,6 +51,7 @@ export class Login {
     this.api.login(email, name).subscribe({
       next: ({ user }) => {
         this.auth.setUser(user);
+        this.ui.applyPreferences(user.preferences); // habillage et animations du profil
         this.router.navigateByUrl(user.role === 'student' ? '/dashboard' : '/teacher');
       },
       error: (err) => {

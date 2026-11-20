@@ -783,6 +783,160 @@ legend {
   text-align: center;
 }
 
+/* ---- mise en page en deux colonnes (contact, profil) -------------------------------- */
+.split {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr);
+  align-items: start;
+}
+.split--reverse {
+  grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr);
+}
+@media (max-width: 760px) {
+  .split,
+  .split--reverse {
+    grid-template-columns: 1fr;
+  }
+}
+.form-row {
+  display: grid;
+  gap: 0 var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.form-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.faq dt {
+  font-weight: 700;
+  color: var(--navy);
+  margin-top: var(--space-3);
+}
+.faq dd {
+  margin: var(--space-1) 0 0;
+}
+.state--sent h2 {
+  color: inherit;
+}
+
+/* ---- profil ------------------------------------------------------------------------ */
+.profile-card {
+  text-align: center;
+}
+.team__avatar--lg {
+  width: 72px;
+  height: 72px;
+  font-size: 1.5rem;
+  margin: 0 auto var(--space-3);
+}
+.identity {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+}
+.identity dt {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.identity dd {
+  margin: 0;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+/* ---- éditeur de questions (enseignant) ---------------------------------------------- */
+.toolbar {
+  max-width: 480px;
+}
+.editor {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .editor {
+    grid-template-columns: 1fr;
+  }
+}
+.editor__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-3);
+}
+.editor__head h2 {
+  margin: 0;
+}
+.editor__form h2:focus {
+  outline: none;
+}
+.qlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.qlist__item {
+  padding: var(--space-4) var(--space-3);
+  border-top: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.qlist__item:first-child {
+  border-top: 0;
+}
+.qlist__item.is-editing {
+  background: var(--info-bg);
+}
+.qlist__text {
+  font-size: 1rem;
+  color: var(--ink);
+}
+.qlist__choices {
+  list-style: none;
+  margin: 0 0 var(--space-2);
+  padding: 0;
+  font-size: 0.9rem;
+}
+.qlist__choices .is-answer {
+  font-weight: 700;
+  color: var(--success-text);
+}
+.qlist__check {
+  margin-left: var(--space-1);
+}
+.choice-rows {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.choice-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.choice-row input[type='radio'] {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
+  accent-color: var(--green);
+}
+.choice-row input[type='text'] {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+}
+fieldset.field--invalid {
+  border-color: var(--red);
+}
+
 /* ---- barres de maîtrise et pastilles ---------------------------------------------- */
 .bar {
   display: block;

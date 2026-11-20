@@ -1,0 +1,81 @@
+<app-page-header
+  eyebrow="Mon compte"
+  heading="Mon profil"
+  subtitle="Ton nom et tes préférences d'affichage. Elles s'appliquent tout de suite, puis à chaque connexion."
+/>
+
+@if (user(); as u) {
+  <div class="split split--reverse">
+    <section class="card profile-card" aria-labelledby="identity-title">
+      <span class="team__avatar team__avatar--lg" aria-hidden="true">{{ initials() }}</span>
+      <h2 id="identity-title">{{ u.name }}</h2>
+      <dl class="identity">
+        <div>
+          <dt>E-mail</dt>
+          <dd>{{ u.email }}</dd>
+        </div>
+        <div>
+          <dt>Rôle</dt>
+          <dd>{{ roleLabel(u.role) }}</dd>
+        </div>
+      </dl>
+      <p class="small muted">
+        L'e-mail identifie ton compte et le rôle est attribué par l'administrateur : ils ne se
+        modifient pas ici.
+      </p>
+    </section>
+
+    <section class="card" aria-labelledby="prefs-title">
+      <h2 id="prefs-title">Modifier</h2>
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <app-form-field label="Nom affiché" [error]="nameError()">
+          <input appFieldControl type="text" formControlName="name" autocomplete="name" required />
+        </app-form-field>
+
+        <fieldset>
+          <legend>Habillage du site</legend>
+          <label class="option">
+            <input type="radio" formControlName="uiMode" value="classique" />
+            <span><strong>Classique</strong> <span class="muted">· bleu marine, rouge et or</span></span>
+          </label>
+          <label class="option">
+            <input type="radio" formControlName="uiMode" value="fiche" />
+            <span
+              ><strong>Fiche de révision</strong>
+              <span class="muted">· papier à carreaux, stylo et surligneurs</span></span
+            >
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Animations</legend>
+          <label class="option">
+            <input type="checkbox" formControlName="reduceMotion" aria-describedby="motion-hint" />
+            <span>Réduire les animations</span>
+          </label>
+          <p id="motion-hint" class="field__hint">
+            Coupe les transitions et les effets de surligneur. Le réglage « animations réduites » de
+            ton système est toujours respecté, même sans cocher cette case.
+          </p>
+        </fieldset>
+
+        <div aria-live="polite">
+          @if (status()) {
+            <p class="alert alert--success">{{ status() }}</p>
+          }
+        </div>
+        @if (error()) {
+          <p class="alert alert--error" role="alert">{{ error() }}</p>
+        }
+
+        <button class="btn btn--primary" type="submit" [disabled]="saving()">
+          @if (saving()) {
+            <span class="spinner" aria-hidden="true"></span> Enregistrement…
+          } @else {
+            Enregistrer
+          }
+        </button>
+      </form>
+    </section>
+  </div>
+}
