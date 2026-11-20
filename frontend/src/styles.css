@@ -20,12 +20,12 @@
   --red: #c8102e;
   --red-dark: #a90d26;
   --gold: #f2a900;
-  --gold-text: #b57d00; /* l'or quand il sert de couleur de texte */
-  --green: #2e8b57;
+  --gold-text: #8a6500; /* l'or quand il sert de texte : 4,9:1 sur le crème (AA) */
+  --green: #277a4c; /* 5,3:1 sous un texte blanc (AA) */
   --cream: #f7f4ee;
   --card: #ffffff;
   --ink: #1d2433;
-  --muted: #6b7280;
+  --muted: #5f6672; /* texte secondaire : 5,3:1 sur le crème (AA) */
   --line: #e4e1da;
   --grey: #c9cdd4;
   --white: #ffffff;
@@ -34,7 +34,8 @@
   --surface-soft: #fafaf7; /* fond très léger (boutons de démo, correction du quiz) */
   --surface-blue: #eef1f6; /* bouton par défaut, lettre des choix, pied du tableau */
   --track: #ecebe6; /* fond des barres et de l'anneau */
-  --edge: #8a94a6; /* flèches de la carte des concepts */
+  --edge: #76808f; /* flèches de la carte : 4:1 sur blanc (≥ 3:1 pour un graphique) */
+  --shimmer: rgba(255, 255, 255, 0.55); /* reflet qui passe sur les squelettes */
   --on-dark-soft: rgba(255, 255, 255, 0.14); /* survol dans la barre marine */
   --on-dark-chip: rgba(255, 255, 255, 0.16);
   --on-dark-line: rgba(255, 255, 255, 0.4);
@@ -72,6 +73,10 @@
   --space-12: 3rem; /* 48 px */
   --gutter: 16px; /* marge sur les côtés de l'écran */
   --page-width: 1080px;
+
+  /* ---- focus : le contour qui montre où est le clavier ---------------- */
+  --focus: var(--navy);
+  --focus-on-dark: var(--gold);
 
   /* ---- mouvement ------------------------------------------------------ */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -173,6 +178,32 @@ code {
   border: 0;
 }
 
+/* Focus visible partout : un contour net autour de l'élément qui a le focus du clavier
+   (:focus-visible ne s'affiche pas au clic de souris, seulement au clavier). */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.nav :focus-visible {
+  outline-color: var(--focus-on-dark);
+}
+/* Lien « Aller au contenu » : caché hors de l'écran, il apparaît à la première touche Tab. */
+.skip-link {
+  position: absolute;
+  left: var(--space-2);
+  top: -100px;
+  z-index: 100;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--navy);
+  font-weight: 700;
+  box-shadow: var(--shadow-lg);
+}
+.skip-link:focus {
+  top: var(--space-2);
+}
+
 /* Les balises de nos composants (<app-…>) se comportent comme des blocs. */
 app-page-header,
 app-footer,
@@ -270,11 +301,76 @@ app-form-field {
   background: var(--on-dark-soft);
   opacity: 1;
 }
+.nav__menu {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1;
+}
 .nav__user {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   margin-left: auto;
+}
+/* Bouton du menu burger : caché sur grand écran. */
+.nav__burger {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--on-dark-line);
+  background: transparent;
+  color: var(--white);
+  font-weight: 600;
+  cursor: pointer;
+}
+.nav__burger-icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+/* Téléphone et tablette : les liens passent dans un panneau qui s'ouvre sous la barre. */
+@media (max-width: 899px) {
+  .nav__burger {
+    display: inline-flex;
+  }
+  .nav__menu {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    padding-bottom: var(--space-2);
+  }
+  .nav.is-open .nav__menu {
+    display: flex;
+    animation: menu-in var(--dur) var(--ease-out) both;
+  }
+  .nav__links {
+    flex-direction: column;
+  }
+  .nav__links a {
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+  }
+  .nav__user {
+    margin-left: 0;
+    flex-wrap: wrap;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--on-dark-line);
+  }
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
 .chip {
   display: inline-block;
@@ -417,11 +513,13 @@ app-form-field {
   resize: vertical;
   min-height: 8rem;
 }
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  outline: 2px solid var(--gold);
-  border-color: var(--gold);
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible,
+.choice-row input[type='text']:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 0;
+  border-color: var(--focus);
 }
 .field__hint {
   font-size: 0.85rem;
@@ -532,6 +630,21 @@ legend {
   border-radius: var(--radius-xs);
   position: relative;
   overflow: hidden;
+}
+/* Un reflet passe sur les blocs : on comprend que « ça charge ». Animé avec transform
+   (le navigateur le fait sans recalculer la mise en page : fluide même sur un petit téléphone). */
+.sk::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--shimmer), transparent);
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
 }
 .sk--line {
   height: 0.9rem;
@@ -701,9 +814,15 @@ legend {
   background: var(--surface-soft);
   color: var(--ink);
   cursor: pointer;
+  transition:
+    transform var(--dur-fast),
+    box-shadow var(--dur-fast),
+    border-color var(--dur-fast);
 }
 .demo__item:hover {
-  border-color: var(--gold);
+  border-color: var(--navy);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
 }
 
 /* ---- à propos ------------------------------------------------------------------- */
@@ -796,7 +915,7 @@ legend {
 @media (max-width: 760px) {
   .split,
   .split--reverse {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .form-row {
@@ -850,6 +969,9 @@ legend {
 .toolbar {
   max-width: 480px;
 }
+.toolbar select {
+  text-overflow: ellipsis;
+}
 .editor {
   display: grid;
   gap: var(--space-4);
@@ -858,7 +980,7 @@ legend {
 }
 @media (max-width: 900px) {
   .editor {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .editor__head {
@@ -987,6 +1109,9 @@ fieldset.field--invalid {
 }
 .badge.is-not-assessed {
   color: var(--ink);
+}
+.badge.is-in-progress {
+  color: var(--navy-dark);
 }
 .badge.kind-prerequisite {
   background: var(--red);
@@ -1244,7 +1369,7 @@ fieldset.field--invalid {
 }
 @media (max-width: 760px) {
   .map {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .map__canvas svg {
@@ -1263,36 +1388,100 @@ fieldset.field--invalid {
   cursor: pointer;
 }
 .node:focus {
-  outline: none;
+  outline: none; /* remplacé par l'anneau .node__ring, qui suit la forme du cercle */
 }
-.node circle {
+.node__ring {
+  fill: none;
+  stroke: var(--focus);
+  stroke-width: 4;
+  opacity: 0;
+}
+.node:focus-visible .node__ring {
+  opacity: 1;
+}
+.node__dot {
   stroke: var(--white);
   stroke-width: 3;
   fill: var(--grey);
+  transition: stroke var(--dur-fast);
 }
-.node[data-status='mastered'] circle {
+.node[data-status='not-assessed'] .node__dot {
+  stroke: var(--muted);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+.node[data-status='mastered'] .node__dot {
   fill: var(--green);
 }
-.node[data-status='in-progress'] circle {
+.node[data-status='in-progress'] .node__dot {
   fill: var(--gold);
 }
-.node[data-status='weak'] circle {
+.node[data-status='weak'] .node__dot {
   fill: var(--red);
 }
-.node:hover circle,
-.node.is-selected circle {
+.node:hover .node__dot,
+.node.is-selected .node__dot {
   stroke: var(--navy);
+  stroke-width: 3;
+  stroke-dasharray: none;
 }
+/* Le niveau écrit dans le cercle : couleur choisie pour rester lisible sur chaque fond. */
 .node__level {
   fill: var(--white);
   font-weight: 800;
   font-size: 14px;
   pointer-events: none;
 }
+.node[data-status='in-progress'] .node__level {
+  fill: var(--navy-dark);
+}
+.node[data-status='not-assessed'] .node__level {
+  fill: var(--ink);
+}
 .node__label {
   fill: var(--ink);
   font-size: 13px;
   font-weight: 600;
+}
+@media (max-width: 600px) {
+  .node__label,
+  .node__level {
+    font-size: 18px;
+  }
+}
+.map__summary {
+  margin-top: var(--space-2);
+}
+/* Liste des concepts : seulement sur petit écran, où le graphe devient trop petit. */
+.graph-list {
+  display: none;
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  gap: var(--space-2);
+}
+@media (max-width: 600px) {
+  .graph-list {
+    display: grid;
+  }
+}
+.graph-list__item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+.graph-list__item[aria-pressed='true'] {
+  border-color: var(--navy);
+  box-shadow: inset 0 0 0 1px var(--navy);
 }
 .legend {
   list-style: none;
@@ -1348,13 +1537,14 @@ fieldset.field--invalid {
 }
 .heatmap td[data-status='in-progress'] {
   background: var(--gold);
+  color: var(--navy-dark);
 }
 .heatmap td[data-status='weak'] {
   background: var(--red);
 }
 .heatmap td[data-status='not-assessed'] {
   background: var(--grey);
-  color: var(--muted);
+  color: var(--ink);
 }
 .heatmap tfoot td {
   background: var(--surface-blue);
@@ -1380,4 +1570,87 @@ fieldset.field--invalid {
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: 0.2s;
+}
+
+/* ---- animations légères ------------------------------------------------------------------
+   Seulement des propriétés que le navigateur anime sans effort (opacity, transform), courtes
+   (moins d'une demi-seconde) et utiles : montrer ce qui arrive ou ce qui a changé. */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+/* Les cartes apparaissent en glissant légèrement, l'une après l'autre. */
+.card,
+.feedback,
+.alert--success {
+  animation: card-in var(--dur) var(--ease-out) both;
+}
+.grid > .card:nth-child(2),
+.path > .card:nth-child(2),
+.split > .card:nth-child(2),
+.map > .card:nth-child(2) {
+  animation-delay: 60ms;
+}
+.grid > .card:nth-child(3),
+.path > .card:nth-child(3) {
+  animation-delay: 120ms;
+}
+/* Les barres de maîtrise se remplissent de gauche à droite. */
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+.bar__fill {
+  transform-origin: left center;
+  animation: bar-grow var(--dur-slow) var(--ease-out) both;
+}
+/* L'anneau de maîtrise globale se remplit (la variable --value est animée de 0 à sa valeur). */
+@property --value {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes ring-fill {
+  from {
+    --value: 0;
+  }
+}
+.ring {
+  animation: ring-fill 0.9s var(--ease-out) both;
+}
+
+/* ---- moins d'animations, pour ceux qui le demandent ----------------------------------------
+   1. le réglage « animations réduites » du système (Windows, macOS, Android, iOS) ;
+   2. la case « Réduire les animations » du profil (attribut data-motion="reduce" sur <html>).
+   Les animations sont ramenées à leur état final, sans mouvement. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+:root[data-motion='reduce'] *,
+:root[data-motion='reduce'] *::before,
+:root[data-motion='reduce'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+:root[data-motion='reduce']::view-transition-group(*),
+:root[data-motion='reduce']::view-transition-old(*),
+:root[data-motion='reduce']::view-transition-new(*) {
+  animation: none !important;
 }

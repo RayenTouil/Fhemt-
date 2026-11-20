@@ -1,7 +1,7 @@
 <app-page-header
   eyebrow="Carte des concepts"
   heading="Le cours sous forme de graphe"
-  subtitle="Une flèche signifie « à voir avant ». Les couleurs montrent ta maîtrise. Clique sur un concept."
+  subtitle="Une flèche signifie « à voir avant ». Les couleurs montrent ta maîtrise. Clique sur un concept (ou utilise les flèches du clavier)."
 />
 
 <div [attr.aria-busy]="mastery.isLoading()">
@@ -12,76 +12,31 @@
   } @else {
     <section class="map">
       <div class="card map__canvas">
-        <svg viewBox="0 0 640 430" role="img" aria-label="Carte des concepts colorée selon la maîtrise">
-          <defs>
-            <marker
-              id="arrow"
-              viewBox="0 0 10 10"
-              refX="8"
-              refY="5"
-              markerWidth="8"
-              markerHeight="8"
-              orient="auto-start-reverse"
-            >
-              <path d="M 0 0 L 10 5 L 0 10 z" />
-            </marker>
-          </defs>
-
-          @for (e of edges(); track e.from.id + e.to.id) {
-            <line
-              class="edge"
-              [attr.x1]="shorten(e, 'from').x"
-              [attr.y1]="shorten(e, 'from').y"
-              [attr.x2]="shorten(e, 'to').x"
-              [attr.y2]="shorten(e, 'to').y"
-              marker-end="url(#arrow)"
-              pathLength="1"
-            />
-          }
-
-          @for (n of nodes(); track n.id) {
-            <g
-              class="node"
-              [class.is-selected]="selected()?.id === n.id"
-              (click)="select(n)"
-              tabindex="0"
-              role="button"
-              [attr.aria-label]="n.title"
-              [attr.data-status]="n.status"
-              (keydown.enter)="select(n)"
-            >
-              @if (ui.fiche() && selected()?.id === n.id) {
-                <path class="pen-circle" [attr.d]="penCircle(n)" pathLength="1" />
-              }
-              <circle [attr.cx]="n.x" [attr.cy]="n.y" r="28" />
-              <text [attr.x]="n.x" [attr.y]="n.y + 5" text-anchor="middle" class="node__level">
-                {{ n.level === null ? '?' : n.level + '%' }}
-              </text>
-              <text [attr.x]="n.x" [attr.y]="n.y + 46" text-anchor="middle" class="node__label">
-                {{ n.short }}
-              </text>
-            </g>
-          }
-        </svg>
-
+        <app-concept-graph
+          [concepts]="concepts()"
+          [selectedId]="selectedId()"
+          [fiche]="ui.fiche()"
+          (selectedChange)="toggle($event)"
+        />
         <app-mastery-legend />
       </div>
 
-      <aside class="card map__side">
-        @if (selected(); as n) {
+      <aside class="card map__side" aria-live="polite">
+        @if (selected(); as c) {
           <p class="eyebrow">Concept sélectionné</p>
-          <h2>{{ n.title }}</h2>
-          <p class="muted">{{ n.summary }}</p>
+          <h2>{{ c.title }}</h2>
+          <app-status-badge [status]="c.status" />
+          <p class="muted map__summary">{{ c.summary }}</p>
           <p>
-            Niveau : <strong>{{ levelText(n.level) }}</strong>
+            Niveau : <strong>{{ levelText(c.level) }}</strong>
           </p>
-          @if (n.prerequisites.length) {
-            <p class="small muted">À voir d'abord : {{ prerequisiteTitles(n) }}</p>
+          @if (c.prerequisites.length) {
+            <p class="small muted">À voir d'abord : {{ prerequisiteTitles(c) }}</p>
           } @else {
             <p class="small muted">Aucun prérequis : un bon point de départ.</p>
           }
-          <button class="btn btn--primary" type="button" (click)="practise(n)">
-            {{ actionLabel(n.level) }}
+          <button class="btn btn--primary" type="button" (click)="practise(c)">
+            {{ actionLabel(c.level) }}
           </button>
         } @else {
           <p class="eyebrow">Astuce</p>

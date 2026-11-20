@@ -57,9 +57,6 @@
   transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .ui-toggle[aria-pressed='true'] .ui-toggle__switch::after { transform: translateX(12px); }
-@media (max-width: 520px) {
-  .ui-toggle__label { display: none; }
-}
 
 /* ---- passage d'une version à l'autre : la nouvelle page glisse comme un surligneur.
    Seulement pendant le changement d'habillage (classe ui-switch posée par core/ui-mode.ts) :
@@ -485,13 +482,13 @@
   animation: fiche-draw 0.8s 0.2s ease-out forwards;
 }
 :root[data-ui='fiche'] #arrow path { fill: var(--ink); }
-:root[data-ui='fiche'] .node circle { stroke: var(--graphite); stroke-width: 1.5; fill: var(--paper); }
-:root[data-ui='fiche'] .node[data-status='mastered'] circle { fill: var(--hl-green); }
-:root[data-ui='fiche'] .node[data-status='in-progress'] circle { fill: var(--hl-yellow); }
-:root[data-ui='fiche'] .node[data-status='weak'] circle { fill: var(--hl-pink); }
-:root[data-ui='fiche'] .node[data-status='not-assessed'] circle { stroke-dasharray: 4 3; }
-:root[data-ui='fiche'] .node:hover circle,
-:root[data-ui='fiche'] .node.is-selected circle { stroke: var(--ink); stroke-width: 2.2; }
+:root[data-ui='fiche'] .node .node__dot { stroke: var(--graphite); stroke-width: 1.5; fill: var(--paper); }
+:root[data-ui='fiche'] .node[data-status='mastered'] .node__dot { fill: var(--hl-green); }
+:root[data-ui='fiche'] .node[data-status='in-progress'] .node__dot { fill: var(--hl-yellow); }
+:root[data-ui='fiche'] .node[data-status='weak'] .node__dot { fill: var(--hl-pink); }
+:root[data-ui='fiche'] .node[data-status='not-assessed'] .node__dot { stroke-dasharray: 4 3; }
+:root[data-ui='fiche'] .node:hover .node__dot,
+:root[data-ui='fiche'] .node.is-selected .node__dot { stroke: var(--ink); stroke-width: 2.2; }
 :root[data-ui='fiche'] .node__level { fill: var(--graphite); font-family: var(--f-hand); font-size: 16px; }
 :root[data-ui='fiche'] .node__label { fill: var(--ink); font-family: var(--f-text); font-weight: 700; }
 :root[data-ui='fiche'] .pen-circle {
@@ -546,6 +543,102 @@
 
 /* ---- pied de page ------------------------------------------------------------------ */
 :root[data-ui='fiche'] .footer { color: var(--pencil); position: relative; }
+
+/* =====================================================================
+   Objectif 4 : les nouveaux composants et pages, en version fiche
+   ===================================================================== */
+
+/* ---- menu burger (petits écrans) -------------------------------------------------- */
+:root[data-ui='fiche'] .nav__burger { color: var(--ink); border-color: var(--ink); border-radius: 8px; }
+:root[data-ui='fiche'] .nav :focus-visible { outline-color: var(--ink); }
+@media (max-width: 899px) {
+  :root[data-ui='fiche'] .nav__user { border-top: 1px dashed var(--rule); }
+}
+
+/* ---- squelettes : des traits de crayon gris clair ----------------------------------- */
+:root[data-ui='fiche'] .sk { background: var(--fiche-hover); border-radius: 3px; }
+
+/* ---- états vides, erreurs, 404 -------------------------------------------------------- */
+:root[data-ui='fiche'] .state__icon { stroke: var(--ink); }
+:root[data-ui='fiche'] .state__code { font-family: var(--f-hand); color: var(--ink); transform: rotate(-3deg); }
+:root[data-ui='fiche'] .state__code::after { color: var(--pen); }
+:root[data-ui='fiche'] .alert--success {
+  background: var(--paper);
+  color: var(--pen-green);
+  border: 1.5px solid var(--pen-green);
+  border-radius: 4px;
+}
+:root[data-ui='fiche'] code { background: var(--fiche-hover); }
+
+/* ---- formulaires : tous les champs s'écrivent sur une ligne -------------------------- */
+:root[data-ui='fiche'] .field select,
+:root[data-ui='fiche'] .field textarea,
+:root[data-ui='fiche'] .choice-row input[type='text'] {
+  border: 0;
+  border-bottom: 2px solid var(--rule);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--f-text);
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+:root[data-ui='fiche'] .field textarea {
+  /* une zone de texte « lignée », comme le papier */
+  background-image: linear-gradient(transparent calc(100% - 1px), var(--rule-fine) 1px);
+  background-size: 100% 1.6em;
+  line-height: 1.6em;
+}
+:root[data-ui='fiche'] .field select:focus-visible,
+:root[data-ui='fiche'] .field textarea:focus-visible,
+:root[data-ui='fiche'] .choice-row input[type='text']:focus-visible,
+:root[data-ui='fiche'] .field input:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-bottom-color: var(--ink);
+  background-color: var(--fiche-input-focus);
+}
+:root[data-ui='fiche'] .field__error { color: var(--pen); font-family: var(--f-hand); font-size: 1.05rem; }
+:root[data-ui='fiche'] .field--invalid input,
+:root[data-ui='fiche'] .field--invalid select,
+:root[data-ui='fiche'] .field--invalid textarea { border-bottom-color: var(--pen); }
+:root[data-ui='fiche'] fieldset { border: 1.5px dashed var(--fiche-dash-strong); border-radius: 4px; }
+:root[data-ui='fiche'] fieldset.field--invalid { border-color: var(--pen); }
+:root[data-ui='fiche'] legend { color: var(--ink); }
+:root[data-ui='fiche'] .choice-row input[type='radio'] { accent-color: var(--pen-green); }
+
+/* ---- à propos, profil : avatars à l'encre, frise au surligneur ------------------------ */
+:root[data-ui='fiche'] .team__avatar {
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  font-family: var(--f-hand);
+  font-size: 1.2rem;
+  border-radius: 50% 44% 54% 46% / 46% 54% 44% 56%;
+}
+:root[data-ui='fiche'] .team__avatar--alt { color: var(--pen); border-color: var(--pen); }
+:root[data-ui='fiche'] .team__avatar--lg { font-size: 1.8rem; }
+:root[data-ui='fiche'] .timeline { border-left: 2px dashed var(--rule); }
+:root[data-ui='fiche'] .timeline__item::before { background: var(--hl-yellow); border-color: var(--ink); border-width: 2px; }
+:root[data-ui='fiche'] .stack dt,
+:root[data-ui='fiche'] .faq dt { color: var(--ink); }
+:root[data-ui='fiche'] .identity dt { color: var(--pencil); }
+
+/* ---- éditeur de questions --------------------------------------------------------------- */
+:root[data-ui='fiche'] .qlist__item { border-top: 1px dashed var(--fiche-dash); border-radius: 0; }
+:root[data-ui='fiche'] .qlist__item.is-editing { background: linear-gradient(transparent 0, var(--hl-yellow-soft) 0); }
+:root[data-ui='fiche'] .qlist__text { color: var(--graphite); }
+:root[data-ui='fiche'] .qlist__choices .is-answer {
+  color: var(--graphite);
+  background: linear-gradient(transparent 55%, var(--hl-green) 55%);
+}
+
+/* ---- carte des concepts : anneau de focus et liste (petits écrans) ----------------------- */
+:root[data-ui='fiche'] .node__ring { stroke: var(--ink); stroke-dasharray: 3 3; }
+:root[data-ui='fiche'] .graph-list__item { background: var(--paper); border-color: var(--fiche-line); border-radius: 4px; }
+:root[data-ui='fiche'] .graph-list__item[aria-pressed='true'] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+
+/* ---- pied de page --------------------------------------------------------------------------- */
+:root[data-ui='fiche'] .footer a { color: var(--pencil); }
 
 /* ---- petits écrans ------------------------------------------------------------------ */
 @media (max-width: 760px) {
