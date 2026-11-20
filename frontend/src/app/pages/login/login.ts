@@ -35,7 +35,11 @@ export class Login {
   readonly demo = [
     { email: 'amira@fhemt.tn', name: 'Amira', hint: 'étudiante · à l’aise en échantillonnage' },
     { email: 'youssef@fhemt.tn', name: 'Youssef', hint: 'étudiant · prérequis fragiles' },
-    { email: 'teacher@fhemt.tn', name: 'Dr. Sami Ben Salah', hint: 'enseignant · carte de chaleur' },
+    {
+      email: 'teacher@fhemt.tn',
+      name: 'Dr. Sami Ben Salah',
+      hint: 'enseignant · carte de chaleur',
+    },
   ];
 
   fill(account: { email: string; name: string }) {

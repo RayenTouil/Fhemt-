@@ -1,4 +1,12 @@
-import { Component, ElementRef, computed, inject, linkedSignal, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  computed,
+  inject,
+  linkedSignal,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import {
   NonNullableFormBuilder,
@@ -28,7 +36,15 @@ const correctChoiceFilled: ValidatorFn = (group) => {
 // pour un concept. Une question enregistrée apparaît tout de suite dans le quiz des étudiants.
 @Component({
   selector: 'app-question-editor',
-  imports: [ReactiveFormsModule, RouterLink, ErrorState, FieldControl, FormField, PageHeader, Skeleton],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    ErrorState,
+    FieldControl,
+    FormField,
+    PageHeader,
+    Skeleton,
+  ],
   templateUrl: './question-editor.html',
 })
 export class QuestionEditor {
@@ -112,7 +128,8 @@ export class QuestionEditor {
         ? `Chaque choix fait ${LIMITS.choice.max} caractères maximum.`
         : 'Remplis au moins les choix A et B.';
     }
-    if (this.form.controls.choices.invalid) return `Chaque choix fait ${LIMITS.choice.max} caractères maximum.`;
+    if (this.form.controls.choices.invalid)
+      return `Chaque choix fait ${LIMITS.choice.max} caractères maximum.`;
     return '';
   }
 
@@ -121,7 +138,8 @@ export class QuestionEditor {
     if (server) return server;
     if (!this.submitted()) return '';
     if (this.form.controls.correctIndex.invalid) return 'Coche la bonne réponse.';
-    if (this.form.errors?.['correctEmpty']) return 'La bonne réponse cochée doit être un choix rempli.';
+    if (this.form.errors?.['correctEmpty'])
+      return 'La bonne réponse cochée doit être un choix rempli.';
     return '';
   }
 
@@ -158,7 +176,9 @@ export class QuestionEditor {
 
     // On retire les cases vides (C, D) et on recalcule l'indice de la bonne réponse.
     const v = this.form.getRawValue();
-    const filled = v.choices.map((text, index) => ({ text: text.trim(), index })).filter((c) => c.text);
+    const filled = v.choices
+      .map((text, index) => ({ text: text.trim(), index }))
+      .filter((c) => c.text);
     const editing = this.editing();
     const input: QuestionInput = {
       conceptId: editing?.conceptId ?? this.conceptId(),

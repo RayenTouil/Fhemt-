@@ -1,4 +1,12 @@
-import { Component, ElementRef, computed, inject, input, linkedSignal, output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  computed,
+  inject,
+  input,
+  linkedSignal,
+  output,
+} from '@angular/core';
 import { labelOf, levelText } from '../../core/levels';
 import { ConceptMastery } from '../../core/models';
 import { StatusBadge } from '../../shared/status-badge/status-badge';

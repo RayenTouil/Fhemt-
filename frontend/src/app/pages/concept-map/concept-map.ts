@@ -32,7 +32,9 @@ export class ConceptMap {
 
   // Cliquer deux fois sur le même concept le désélectionne.
   readonly selectedId = signal<string | null>(null);
-  readonly selected = computed(() => this.concepts().find((c) => c.id === this.selectedId()) ?? null);
+  readonly selected = computed(
+    () => this.concepts().find((c) => c.id === this.selectedId()) ?? null,
+  );
 
   readonly errorMessage = errorMessage;
   readonly actionLabel = actionLabel;

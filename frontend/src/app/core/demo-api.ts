@@ -103,7 +103,11 @@ export class DemoApi implements ApiContract {
     return throwError(() => ({ status, error: { error, fields } }));
   }
   private invalid(fields: FieldErrors) {
-    return this.fail(400, 'Le formulaire contient des erreurs : corrige les champs indiqués.', fields);
+    return this.fail(
+      400,
+      'Le formulaire contient des erreurs : corrige les champs indiqués.',
+      fields,
+    );
   }
 
   // Les mêmes vérifications que requireUser / requireRole côté serveur.
@@ -205,13 +209,22 @@ export class DemoApi implements ApiContract {
       switchMap((state) => {
         const question = state.questions.find((q) => q.id === questionId);
         if (!question) return this.fail(404, 'Question inconnue.');
-        if (!Number.isInteger(choiceIndex) || choiceIndex < 0 || choiceIndex >= question.choices.length) {
+        if (
+          !Number.isInteger(choiceIndex) ||
+          choiceIndex < 0 ||
+          choiceIndex >= question.choices.length
+        ) {
           return this.fail(400, "choiceIndex doit être l'indice de l'un des choix.");
         }
         const isCorrect = choiceIndex === question.correctIndex;
         const before = this.levelsOf(state, me.id)[question.conceptId];
-        const after = Math.max(0, Math.min(100, (before ?? 0) + (isCorrect ? CORRECT_DELTA : WRONG_DELTA)));
-        const row = state.mastery.find((m) => m.userId === me.id && m.conceptId === question.conceptId);
+        const after = Math.max(
+          0,
+          Math.min(100, (before ?? 0) + (isCorrect ? CORRECT_DELTA : WRONG_DELTA)),
+        );
+        const row = state.mastery.find(
+          (m) => m.userId === me.id && m.conceptId === question.conceptId,
+        );
         if (row) row.level = after;
         else state.mastery.push({ userId: me.id, conceptId: question.conceptId, level: after });
         this.save();
@@ -289,7 +302,8 @@ export class DemoApi implements ApiContract {
   heatmap(): Observable<Heatmap> {
     const me = this.me();
     if (!me) return this.fail(401, "Connecte-toi d'abord.");
-    if (!this.isTeacher(me)) return this.fail(403, 'Cette page est réservée aux comptes enseignant ou administrateur.');
+    if (!this.isTeacher(me))
+      return this.fail(403, 'Cette page est réservée aux comptes enseignant ou administrateur.');
     return forkJoin([this.concepts$, this.state$]).pipe(
       delay(LATENCY),
       map(([concepts, state]) => {
@@ -299,17 +313,24 @@ export class DemoApi implements ApiContract {
         const averages: Record<string, number | null> = {};
         for (const c of concepts) {
           const assessed = students.map((s) => s.levels[c.id]).filter((l) => l !== undefined);
-          averages[c.id] = assessed.length ? Math.round(assessed.reduce((a, b) => a + b, 0) / assessed.length) : null;
+          averages[c.id] = assessed.length
+            ? Math.round(assessed.reduce((a, b) => a + b, 0) / assessed.length)
+            : null;
         }
         const candidates = concepts.filter((c) => averages[c.id] !== null);
         const blocking = candidates.length
-          ? candidates.reduce((w, c) => ((averages[c.id] as number) < (averages[w.id] as number) ? c : w), candidates[0])
+          ? candidates.reduce(
+              (w, c) => ((averages[c.id] as number) < (averages[w.id] as number) ? c : w),
+              candidates[0],
+            )
           : null;
         return {
           concepts: concepts.map(({ id, title, short }) => ({ id, title, short })),
           students,
           averages,
-          blockingConcept: blocking ? { id: blocking.id, title: blocking.title, average: averages[blocking.id] as number } : null,
+          blockingConcept: blocking
+            ? { id: blocking.id, title: blocking.title, average: averages[blocking.id] as number }
+            : null,
         };
       }),
     );
@@ -334,7 +355,10 @@ export class DemoApi implements ApiContract {
     return forkJoin([this.concepts$, this.state$]).pipe(
       delay(LATENCY),
       switchMap(([concepts, state]) => {
-        const { value, errors } = validateQuestion(input, concepts.map((c) => c.id));
+        const { value, errors } = validateQuestion(
+          input,
+          concepts.map((c) => c.id),
+        );
         if (hasErrors(errors)) return this.invalid(errors);
         const question: TeacherQuestion = {
           id: newId(`q-${value.conceptId}`),
@@ -356,7 +380,10 @@ export class DemoApi implements ApiContract {
       switchMap(([concepts, state]) => {
         const question = state.questions.find((q) => q.id === id);
         if (!question) return this.fail(404, 'Question inconnue.');
-        const { value, errors } = validateQuestion(input, concepts.map((c) => c.id));
+        const { value, errors } = validateQuestion(
+          input,
+          concepts.map((c) => c.id),
+        );
         if (hasErrors(errors)) return this.invalid(errors);
         Object.assign(question, value, { updatedAt: new Date().toISOString() });
         this.save();
@@ -369,7 +396,8 @@ export class DemoApi implements ApiContract {
   private teacherOnly(): Observable<never> | null {
     const me = this.me();
     if (!me) return this.fail(401, "Connecte-toi d'abord.");
-    if (!this.isTeacher(me)) return this.fail(403, 'Cette page est réservée aux comptes enseignant ou administrateur.');
+    if (!this.isTeacher(me))
+      return this.fail(403, 'Cette page est réservée aux comptes enseignant ou administrateur.');
     return null;
   }
 }
@@ -381,12 +409,20 @@ function buildPath(concepts: Concept[], levels: Record<string, number>): PathSte
   const already = new Set<string>();
   const isMastered = (id: string) => levels[id] !== undefined && levels[id] >= MASTERED;
   const blockedBy = (id: string) =>
-    concepts.filter((c) => c.prerequisites.includes(id) && levels[c.id] !== undefined && !isMastered(c.id));
+    concepts.filter(
+      (c) => c.prerequisites.includes(id) && levels[c.id] !== undefined && !isMastered(c.id),
+    );
 
   const push = (concept: Concept, reason: string, kind: PathStep['kind']) => {
     if (already.has(concept.id) || steps.length >= 3) return;
     already.add(concept.id);
-    steps.push({ conceptId: concept.id, title: concept.title, level: levels[concept.id] ?? null, reason, kind });
+    steps.push({
+      conceptId: concept.id,
+      title: concept.title,
+      level: levels[concept.id] ?? null,
+      reason,
+      kind,
+    });
   };
 
   const reasonFor = (concept: Concept): { reason: string; kind: PathStep['kind'] } => {
@@ -394,13 +430,23 @@ function buildPath(concepts: Concept[], levels: Record<string, number>): PathSte
     const blocked = blockedBy(concept.id);
     if (blocked.length) {
       const list = blocked.map((b) => `« ${b.title} » (${levels[b.id]} %)`).join(' et ');
-      const where = level === undefined ? 'tu ne l’as pas encore évalué' : `ton niveau y est de ${level} %`;
-      return { kind: 'prerequisite', reason: `« ${concept.title} » est un prérequis pour ${list} et ${where}. Consolide-le d'abord.` };
+      const where =
+        level === undefined ? 'tu ne l’as pas encore évalué' : `ton niveau y est de ${level} %`;
+      return {
+        kind: 'prerequisite',
+        reason: `« ${concept.title} » est un prérequis pour ${list} et ${where}. Consolide-le d'abord.`,
+      };
     }
     if (level === undefined) {
-      return { kind: 'diagnostic', reason: `Pas encore d'évaluation sur « ${concept.title} » : fais le court quiz de diagnostic.` };
+      return {
+        kind: 'diagnostic',
+        reason: `Pas encore d'évaluation sur « ${concept.title} » : fais le court quiz de diagnostic.`,
+      };
     }
-    return { kind: 'practice', reason: `Ton niveau sur « ${concept.title} » est de ${level} %. Entraîne-toi jusqu'à ${MASTERED} %.` };
+    return {
+      kind: 'practice',
+      reason: `Ton niveau sur « ${concept.title} » est de ${level} %. Entraîne-toi jusqu'à ${MASTERED} %.`,
+    };
   };
 
   for (const concept of concepts) {

@@ -11,7 +11,11 @@
 } @else {
   <div class="toolbar">
     <app-form-field label="Concept">
-      <select appFieldControl [value]="conceptId()" (change)="selectConcept($any($event.target).value)">
+      <select
+        appFieldControl
+        [value]="conceptId()"
+        (change)="selectConcept($any($event.target).value)"
+      >
         @for (c of concepts.value().concepts; track c.id) {
           <option [value]="c.id">{{ c.title }} ({{ c.questionCount ?? 0 }} questions)</option>
         }
@@ -23,7 +27,9 @@
     <section class="card" aria-labelledby="list-title" [attr.aria-busy]="questions.isLoading()">
       <div class="editor__head">
         <h2 id="list-title">Questions · {{ conceptTitle() }}</h2>
-        <button type="button" class="btn btn--small" (click)="newQuestion()">+ Nouvelle question</button>
+        <button type="button" class="btn btn--small" (click)="newQuestion()">
+          + Nouvelle question
+        </button>
       </div>
 
       @if (questions.error()) {
@@ -96,7 +102,9 @@
                 <input
                   type="text"
                   [formControlName]="$index"
-                  [attr.aria-label]="'Choix ' + letters[$index] + ($index < 2 ? ' (obligatoire)' : ' (facultatif)')"
+                  [attr.aria-label]="
+                    'Choix ' + letters[$index] + ($index < 2 ? ' (obligatoire)' : ' (facultatif)')
+                  "
                   [placeholder]="$index < 2 ? 'Obligatoire' : 'Facultatif'"
                 />
               </div>

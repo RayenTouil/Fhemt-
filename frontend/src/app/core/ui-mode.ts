@@ -76,9 +76,7 @@ export class UiModeService {
 
   // Vrai si l'utilisateur a demandé moins d'animations, dans Fhemt ? ou dans son système.
   prefersLessMotion(): boolean {
-    return (
-      this.reduceMotion() || !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    );
+    return this.reduceMotion() || !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   }
 }
 

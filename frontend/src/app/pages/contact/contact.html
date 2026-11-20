@@ -30,7 +30,13 @@
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <div class="form-row">
           <app-form-field label="Nom" [error]="errorOf('name')">
-            <input appFieldControl type="text" formControlName="name" autocomplete="name" required />
+            <input
+              appFieldControl
+              type="text"
+              formControlName="name"
+              autocomplete="name"
+              required
+            />
           </app-form-field>
           <app-form-field label="E-mail" [error]="errorOf('email')">
             <input
@@ -87,13 +93,13 @@
     <dl class="faq">
       <dt>Mon niveau ne bouge pas ?</dt>
       <dd class="muted">
-        Il change après chaque réponse : +20 si elle est juste, −10 sinon. Un concept est maîtrisé
-        à partir de 70&nbsp;%.
+        Il change après chaque réponse : +20 si elle est juste, −10 sinon. Un concept est maîtrisé à
+        partir de 70&nbsp;%.
       </dd>
       <dt>Je suis enseignant, comment avoir un compte ?</dt>
       <dd class="muted">
         Les comptes enseignants sont attribués par l'administrateur : écris-nous avec le sujet
-        « Autre ».
+        «&nbsp;Autre&nbsp;».
       </dd>
       <dt>Comment marche le parcours ?</dt>
       <dd class="muted">

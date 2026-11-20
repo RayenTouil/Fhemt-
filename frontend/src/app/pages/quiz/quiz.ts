@@ -1,4 +1,13 @@
-import { Component, computed, effect, inject, input, linkedSignal, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  signal,
+  untracked,
+} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ApiService, errorMessage } from '../../core/api';

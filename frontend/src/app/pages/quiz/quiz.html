@@ -70,7 +70,11 @@
         <!-- Zone toujours présente : un lecteur d'écran annonce la correction dès qu'elle s'y écrit -->
         <div aria-live="polite">
           @if (result(); as r) {
-            <div class="feedback" [class.feedback--ok]="r.isCorrect" [class.feedback--ko]="!r.isCorrect">
+            <div
+              class="feedback"
+              [class.feedback--ok]="r.isCorrect"
+              [class.feedback--ko]="!r.isCorrect"
+            >
               <strong>{{ r.isCorrect ? 'Bonne réponse !' : 'Pas tout à fait.' }}</strong>
               <p>{{ r.explanation }}</p>
               <p class="small">

@@ -32,7 +32,12 @@ export type FieldErrors = Record<string, string>;
 
 const text = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
 
-function checkText(errors: FieldErrors, field: string, value: string, limit: { min: number; max: number }) {
+function checkText(
+  errors: FieldErrors,
+  field: string,
+  value: string,
+  limit: { min: number; max: number },
+) {
   if (!value) errors[field] = 'Ce champ est obligatoire.';
   else if (value.length < limit.min) errors[field] = `Au moins ${limit.min} caractères.`;
   else if (value.length > limit.max) errors[field] = `${limit.max} caractères maximum.`;
@@ -89,7 +94,8 @@ export function validateQuestion(input: Partial<QuestionInput>, conceptIds: stri
     explanation: text(input.explanation),
   };
   const errors: FieldErrors = {};
-  if (!conceptIds.includes(value.conceptId)) errors['conceptId'] = 'Choisis un concept de la liste.';
+  if (!conceptIds.includes(value.conceptId))
+    errors['conceptId'] = 'Choisis un concept de la liste.';
   checkText(errors, 'text', value.text, LIMITS.questionText);
 
   const choices = value.choices;

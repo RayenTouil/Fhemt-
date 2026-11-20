@@ -23,7 +23,11 @@
       <article class="card stat">
         @if (ui.fiche()) {
           <!-- Version fiche : la maîtrise globale écrite comme une note entourée au stylo rouge -->
-          <div class="grade" role="img" [attr.aria-label]="'Maîtrise globale : ' + d.overall + ' %'">
+          <div
+            class="grade"
+            role="img"
+            [attr.aria-label]="'Maîtrise globale : ' + d.overall + ' %'"
+          >
             <svg class="grade__circle" viewBox="0 0 170 116" aria-hidden="true">
               <path
                 d="M34 66 C30 26 118 10 146 44 C166 72 120 106 70 102 C30 98 12 70 30 44 C42 28 64 20 86 19"

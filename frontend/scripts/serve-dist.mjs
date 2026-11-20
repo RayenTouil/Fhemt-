@@ -16,7 +16,13 @@ import path from 'node:path';
 import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist', 'fhemt', 'browser');
+const root = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+  'dist',
+  'fhemt',
+  'browser',
+);
 const port = Number(process.env.PORT) || 4300;
 
 const TYPES = {
@@ -44,7 +50,8 @@ http
     let file = path.join(root, urlPath);
     // Sécurité : on ne sert jamais un fichier en dehors du dossier du site.
     if (!file.startsWith(root)) file = path.join(root, 'index.html');
-    if (!fs.existsSync(file) || fs.statSync(file).isDirectory()) file = path.join(root, 'index.html');
+    if (!fs.existsSync(file) || fs.statSync(file).isDirectory())
+      file = path.join(root, 'index.html');
 
     const ext = path.extname(file);
     const headers = { 'Content-Type': TYPES[ext] || 'application/octet-stream' };

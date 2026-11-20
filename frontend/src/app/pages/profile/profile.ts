@@ -42,7 +42,11 @@ export class Profile {
   readonly form = inject(NonNullableFormBuilder).group({
     name: [
       this.start.name,
-      [Validators.required, Validators.minLength(LIMITS.name.min), Validators.maxLength(LIMITS.name.max)],
+      [
+        Validators.required,
+        Validators.minLength(LIMITS.name.min),
+        Validators.maxLength(LIMITS.name.max),
+      ],
     ],
     uiMode: [this.start.uiMode as 'classique' | 'fiche'],
     reduceMotion: [this.start.reduceMotion],

@@ -28,7 +28,11 @@ export class Contact {
   readonly form = inject(NonNullableFormBuilder).group({
     name: [
       this.user?.name ?? '',
-      [Validators.required, Validators.minLength(LIMITS.name.min), Validators.maxLength(LIMITS.name.max)],
+      [
+        Validators.required,
+        Validators.minLength(LIMITS.name.min),
+        Validators.maxLength(LIMITS.name.max),
+      ],
     ],
     email: [this.user?.email ?? '', [Validators.required, Validators.pattern(EMAIL_PATTERN)]],
     subject: [CONTACT_SUBJECTS[0] as string, [Validators.required]],
