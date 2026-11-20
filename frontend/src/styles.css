@@ -220,6 +220,9 @@ app-form-field {
   max-width: var(--page-width);
   margin: 0 auto;
   padding: var(--space-6) var(--gutter) var(--space-12);
+  /* La place de la page est réservée dès le départ : quand le code d'une page arrive (lazy
+     loading) ou que ses données se chargent, le pied de page ne « saute » pas (score CLS). */
+  min-height: 100vh;
 }
 .page:focus {
   outline: none; /* <main> reçoit le focus après un changement de page (pas un élément cliquable) */
@@ -1088,8 +1091,7 @@ fieldset.field--invalid {
 .is-mastered {
   background: var(--green);
 }
-.is-in-progress,
-.is-progress {
+.is-in-progress {
   background: var(--gold);
 }
 .is-weak {

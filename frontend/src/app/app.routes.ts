@@ -1,11 +1,15 @@
 import { Routes } from '@angular/router';
 import { authGuard, teacherGuard } from './core/guards';
+import { Home } from './pages/home/home';
 
 // Le plan du site (sitemap). Chaque route = une page du dossier pages/.
 //
 // LAZY LOADING : `loadComponent` ne charge le code d'une page qu'au moment où on l'ouvre
 // (import() dynamique). Au premier affichage, le navigateur ne télécharge donc que la coquille
 // de l'application et la page demandée, au lieu des 12 pages d'un coup.
+// Exception : l'accueil (4 kB), la page d'entrée du site, est livré avec la coquille. Mesuré avec
+// Lighthouse : en lazy loading, il arrivait après un aller-retour réseau de plus (affichage
+// principal à 2,9 s sur mobile au lieu de 0,6 s, et décalage de la mise en page).
 //
 // Guards : authGuard = il faut être connecté ; teacherGuard = enseignant ou admin.
 // `title` devient le titre de l'onglet du navigateur (et ce que lit un lecteur d'écran).
@@ -13,7 +17,7 @@ export const routes: Routes = [
   // Pages publiques
   {
     path: '',
-    loadComponent: () => import('./pages/home/home').then((m) => m.Home),
+    component: Home, // chargé tout de suite : voir l'exception ci-dessus
     title: 'Fhemt ? · Sache ce que tu maîtrises',
   },
   {

@@ -27,7 +27,7 @@ export class ConceptMap {
 
   readonly mastery = rxResource({ stream: () => this.api.mastery() });
   readonly concepts = computed<ConceptMastery[]>(() =>
-    this.mastery.hasValue() ? (this.mastery.value()?.concepts ?? []) : [],
+    this.mastery.hasValue() ? this.mastery.value().concepts : [],
   );
 
   // Cliquer deux fois sur le même concept le désélectionne.

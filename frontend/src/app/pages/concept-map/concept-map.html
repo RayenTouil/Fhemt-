@@ -12,6 +12,9 @@
   } @else {
     <section class="map">
       <div class="card map__canvas">
+        <!-- Pas de @defer ici, après mesure : il ajoutait ~10 kB au bundle initial (le code
+             d'Angular qui gère les blocs différés) pour différer seulement 5,7 kB, alors que
+             cette page est déjà chargée à la demande (loadComponent). Voir le README. -->
         <app-concept-graph
           [concepts]="concepts()"
           [selectedId]="selectedId()"

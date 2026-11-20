@@ -1,6 +1,7 @@
+// La configuration de l'application, lue au démarrage (main.ts) : le routeur et ses options,
+// HttpClient et son intercepteur, et le choix entre la vraie API et le mode démo.
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import {
-  PreloadAllModules,
   provideRouter,
   withComponentInputBinding,
   withInMemoryScrolling,
@@ -12,6 +13,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { routes } from './app.routes';
 import { ApiService, DEMO_MODE, authInterceptor } from './core/api';
 import { DemoApi } from './core/demo-api';
+import { DelayedPreloading } from './core/preloading';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,9 +27,9 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
       // Transition douce entre deux pages (API View Transitions du navigateur, voir styles.css).
       withViewTransitions({ skipInitialTransition: true }),
-      // Une fois la première page affichée, le code des autres pages est téléchargé en
-      // arrière-plan : le clic suivant est instantané.
-      withPreloading(PreloadAllModules),
+      // 2 secondes après l'arrivée, le code des autres pages est téléchargé en arrière-plan :
+      // les clics suivants sont instantanés (voir core/preloading.ts).
+      withPreloading(DelayedPreloading),
     ),
     // HttpClient + notre intercepteur qui ajoute l'en-tête x-user-id.
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),

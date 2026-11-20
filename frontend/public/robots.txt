@@ -1,0 +1,6 @@
+# Les robots des moteurs de recherche peuvent tout lire.
+# Les pages réservées (tableau de bord, enseignant…) demandent une connexion : rien à cacher ici.
+User-agent: *
+Allow: /
+
+Sitemap: https://fhemt.me/sitemap.xml

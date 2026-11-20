@@ -3,9 +3,8 @@ import { labelOf, levelText } from '../../core/levels';
 import { ConceptMastery } from '../../core/models';
 import { StatusBadge } from '../../shared/status-badge/status-badge';
 
-// Le graphe de la carte des concepts (SVG), séparé de la page pour deux raisons :
-//  - la page le charge avec @defer : son code n'est téléchargé qu'au moment de l'afficher ;
-//  - toute la logique du dessin et du clavier est au même endroit.
+// Le graphe de la carte des concepts (SVG), séparé de la page : toute la logique du dessin
+// et du clavier est au même endroit, et la page ne garde que le panneau de détail.
 //
 // Accessibilité au clavier (« roving tabindex », comme dans un menu ou une grille) :
 //  - Tab entre dans le graphe sur UN seul concept (les autres ont tabindex="-1") ;

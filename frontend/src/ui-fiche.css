@@ -274,8 +274,7 @@
 
 /* ---- surligneurs : la maîtrise ------------------------------------------------ */
 :root[data-ui='fiche'] .is-mastered { background: var(--hl-green); }
-:root[data-ui='fiche'] .is-in-progress,
-:root[data-ui='fiche'] .is-progress { background: var(--hl-yellow); }
+:root[data-ui='fiche'] .is-in-progress { background: var(--hl-yellow); }
 :root[data-ui='fiche'] .is-weak { background: var(--hl-pink); }
 :root[data-ui='fiche'] .is-not-assessed { background: transparent; }
 :root[data-ui='fiche'] .is-mastered-text { color: var(--pen-green); }

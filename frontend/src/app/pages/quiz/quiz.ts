@@ -38,11 +38,11 @@ export class Quiz {
 
   // Le niveau au début du quiz, puis le niveau après chaque réponse.
   // linkedSignal : repart du niveau chargé à chaque (re)chargement du quiz, mais reste modifiable.
-  readonly startLevel = computed(() => (this.quiz.hasValue() ? (this.quiz.value()?.level ?? 0) : 0));
+  readonly startLevel = computed(() => (this.quiz.hasValue() ? (this.quiz.value().level ?? 0) : 0));
   readonly currentLevel = linkedSignal(() => this.startLevel());
 
   readonly question = computed(() =>
-    this.quiz.hasValue() ? (this.quiz.value()?.questions[this.index()] ?? null) : null,
+    this.quiz.hasValue() ? (this.quiz.value().questions[this.index()] ?? null) : null,
   );
   readonly finished = computed(() => {
     const q = this.quiz.hasValue() ? this.quiz.value() : undefined;

@@ -42,12 +42,12 @@ export class QuestionEditor {
   // Le concept choisi dans la liste. linkedSignal : vaut le premier concept au chargement,
   // puis garde le choix de l'enseignant même quand la liste est rechargée.
   readonly conceptId = linkedSignal<string[], string>({
-    source: () => (this.concepts.hasValue() ? (this.concepts.value()?.concepts ?? []) : []).map((c) => c.id),
+    source: () => (this.concepts.hasValue() ? this.concepts.value().concepts : []).map((c) => c.id),
     computation: (ids, previous) =>
       previous && ids.includes(previous.value) ? previous.value : (ids[0] ?? ''),
   });
   readonly conceptTitle = computed(() => {
-    const list = this.concepts.hasValue() ? (this.concepts.value()?.concepts ?? []) : [];
+    const list = this.concepts.hasValue() ? this.concepts.value().concepts : [];
     return list.find((c) => c.id === this.conceptId())?.title ?? '';
   });
 

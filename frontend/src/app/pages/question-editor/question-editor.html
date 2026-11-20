@@ -12,7 +12,7 @@
   <div class="toolbar">
     <app-form-field label="Concept">
       <select appFieldControl [value]="conceptId()" (change)="selectConcept($any($event.target).value)">
-        @for (c of concepts.value()?.concepts ?? []; track c.id) {
+        @for (c of concepts.value().concepts; track c.id) {
           <option [value]="c.id">{{ c.title }} ({{ c.questionCount ?? 0 }} questions)</option>
         }
       </select>
@@ -30,11 +30,11 @@
         <app-error-state [message]="errorMessage(questions.error())" (retry)="questions.reload()" />
       } @else if (!questions.hasValue()) {
         <app-skeleton variant="list" [count]="6" label="Chargement des questions…" />
-      } @else if ((questions.value()?.questions ?? []).length === 0) {
+      } @else if (questions.value().questions.length === 0) {
         <p class="muted">Aucune question pour ce concept : crée la première avec le formulaire.</p>
       } @else {
         <ol class="qlist">
-          @for (q of questions.value()?.questions ?? []; track q.id; let i = $index) {
+          @for (q of questions.value().questions; track q.id; let i = $index) {
             <li class="qlist__item" [class.is-editing]="editing()?.id === q.id">
               <h3 class="qlist__text">{{ q.text }}</h3>
               <ul class="qlist__choices">
