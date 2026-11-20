@@ -1,33 +1,35 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { ApiService, errorMessage } from '../../core/api';
-import { AuthService } from '../../core/auth';
-import { Heatmap } from '../../core/models';
-import { colorOf, statusOf } from '../../core/levels';
+import { labelOf, statusOf } from '../../core/levels';
 import { UiModeService } from '../../core/ui-mode';
+import { EmptyState } from '../../shared/empty-state/empty-state';
+import { ErrorState } from '../../shared/error-state/error-state';
+import { MasteryLegend } from '../../shared/mastery-legend/mastery-legend';
+import { PageHeader } from '../../shared/page-header/page-header';
+import { Skeleton } from '../../shared/skeleton/skeleton';
 
+// Espace enseignant : la carte de chaleur de la classe (une ligne par étudiant, une colonne
+// par concept) et le concept où la classe bloque. Réservé aux rôles teacher et admin.
 @Component({
   selector: 'app-teacher',
+  imports: [RouterLink, EmptyState, ErrorState, MasteryLegend, PageHeader, Skeleton],
   templateUrl: './teacher.html',
 })
-export class Teacher implements OnInit {
+export class Teacher {
   private readonly api = inject(ApiService);
-  readonly auth = inject(AuthService);
   readonly ui = inject(UiModeService);
 
-  readonly data = signal<Heatmap | null>(null);
-  readonly error = signal('');
-  readonly colorOf = colorOf;
-  readonly statusOf = statusOf; // utilisé par la version fiche (couleurs des surligneurs)
+  readonly heatmap = rxResource({ stream: () => this.api.heatmap() });
 
-  ngOnInit() {
-    this.api.heatmap().subscribe({
-      next: (data) => this.data.set(data),
-      error: (err) => this.error.set(errorMessage(err)),
-    });
-  }
+  // La couleur d'une cellule vient de son statut (attribut data-status, voir styles.css).
+  readonly statusOf = statusOf;
+  readonly errorMessage = errorMessage;
 
-  // Couleur du texte lisible sur le fond de la cellule.
-  textOn(level: number | undefined): string {
-    return level === undefined ? '#6b7280' : '#fff';
+  // Ce que lit un lecteur d'écran pour une cellule : « Amira, Nyquist : 70 %, maîtrisé ».
+  cellLabel(student: string, concept: string, level: number | undefined): string {
+    if (level === undefined) return `${student}, ${concept} : non évalué`;
+    return `${student}, ${concept} : ${level} %, ${labelOf(statusOf(level)).toLowerCase()}`;
   }
 }

@@ -29,10 +29,21 @@ export class UiModeService {
       this.appRef.tick(); // affiche tout de suite les éléments propres à chaque version
     };
     // Transition animée entre les deux versions, sauf si l'utilisateur limite les animations.
-    const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+    // La classe « ui-switch » réserve l'effet « coup de surligneur » (ui-fiche.css) à ce
+    // changement d'habillage : un simple changement de page garde son fondu discret.
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => { finished: Promise<void> };
+    };
     const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (doc.startViewTransition && !reduceMotion) doc.startViewTransition(apply);
-    else apply();
+    if (doc.startViewTransition && !reduceMotion) {
+      const root = document.documentElement;
+      root.classList.add('ui-switch');
+      doc
+        .startViewTransition(apply)
+        .finished.finally(() => root.classList.remove('ui-switch'));
+    } else {
+      apply();
+    }
     try {
       localStorage.setItem(STORAGE_KEY, next);
     } catch {

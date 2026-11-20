@@ -3,39 +3,56 @@
     <h1>Connexion</h1>
     <p class="muted">
       Entre ton adresse e-mail. Les nouveaux comptes sont créés comme <strong>étudiants</strong> ;
-      les comptes enseignants sont attribués par l'administrateur. La connexion Google arrive au
-      prochain objectif.
+      les comptes enseignants sont attribués par l'administrateur. La connexion Google arrivera
+      avec Firebase.
     </p>
 
-    <form (ngSubmit)="submit()" novalidate>
-      <label class="field">
-        <span>E-mail</span>
-        <input type="email" name="email" [(ngModel)]="email" required placeholder="toi@supcom.tn" autocomplete="email" />
-      </label>
-      <label class="field">
-        <span>Nom <small class="muted">(seulement la première fois)</small></span>
-        <input type="text" name="name" [(ngModel)]="name" placeholder="Ton nom" autocomplete="name" />
-      </label>
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <app-form-field label="E-mail" [error]="fieldError(form.controls.email, submitted())">
+        <input
+          appFieldControl
+          type="email"
+          formControlName="email"
+          placeholder="toi@supcom.tn"
+          autocomplete="email"
+          required
+        />
+      </app-form-field>
+      <app-form-field
+        label="Nom"
+        hint="Seulement la première fois, pour créer ton compte."
+        [error]="fieldError(form.controls.name, submitted())"
+      >
+        <input appFieldControl type="text" formControlName="name" autocomplete="name" />
+      </app-form-field>
 
-      @if (error()) {
-        <p class="alert alert--error" role="alert">{{ error() }}</p>
-      }
+      <div aria-live="polite">
+        @if (error()) {
+          <p class="alert alert--error">{{ error() }}</p>
+        }
+      </div>
 
-      <button class="btn btn--primary btn--block" type="submit" [disabled]="loading() || !email">
-        {{ loading() ? 'Connexion…' : 'Continuer' }}
+      <button class="btn btn--primary btn--block" type="submit" [disabled]="loading()">
+        @if (loading()) {
+          <span class="spinner" aria-hidden="true"></span> Connexion…
+        } @else {
+          Continuer
+        }
       </button>
     </form>
 
     <div class="demo">
       <p class="muted">Comptes de démonstration (clique pour remplir) :</p>
-      <div class="demo__list">
+      <ul class="demo__list">
         @for (account of demo; track account.email) {
-          <button type="button" class="demo__item" (click)="fill(account)">
-            <strong>{{ account.name }}</strong>
-            <span class="muted">{{ account.hint }}</span>
-          </button>
+          <li>
+            <button type="button" class="demo__item" (click)="fill(account)">
+              <strong>{{ account.name }}</strong>
+              <span class="muted">{{ account.hint }}</span>
+            </button>
+          </li>
         }
-      </div>
+      </ul>
     </div>
   </div>
 </section>

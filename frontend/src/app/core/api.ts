@@ -46,9 +46,30 @@ export class ApiService {
   }
 }
 
+// La forme d'une erreur renvoyée par le backend (ou par DemoApi) : { error, fields? }.
+interface ApiError {
+  status?: number;
+  error?: { error?: string; fields?: Record<string, string> };
+  cause?: unknown;
+}
+
+// rxResource emballe parfois l'erreur d'origine dans une Error (propriété `cause`) : on la déballe.
+function unwrap(err: unknown): ApiError {
+  const e = err as ApiError | undefined;
+  return e?.cause && typeof e.cause === 'object' ? (e.cause as ApiError) : (e ?? {});
+}
+
 // Transforme une erreur HTTP en phrase affichable dans la page.
 export function errorMessage(err: unknown): string {
-  const e = err as { status?: number; error?: { error?: string } };
-  if (e?.status === 0) return 'Le serveur est injoignable. Lance-le avec « npm run dev » dans le dossier backend.';
-  return e?.error?.error || 'Une erreur est survenue. Réessaie.';
+  const e = unwrap(err);
+  if (e.status === 0) {
+    return 'Le serveur est injoignable. Lance-le avec « npm run dev » dans le dossier backend.';
+  }
+  return e.error?.error || 'Une erreur est survenue. Réessaie.';
+}
+
+// Les erreurs champ par champ renvoyées par la validation du serveur (400), par exemple
+// { email: 'Saisis une adresse e-mail valide.' }. Le formulaire les affiche sous chaque champ.
+export function fieldErrors(err: unknown): Record<string, string> {
+  return unwrap(err).error?.fields ?? {};
 }

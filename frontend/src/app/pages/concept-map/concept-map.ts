@@ -1,9 +1,17 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService, errorMessage } from '../../core/api';
+import { actionLabel, levelText } from '../../core/levels';
 import { ConceptMastery } from '../../core/models';
-import { colorOf } from '../../core/levels';
 import { UiModeService } from '../../core/ui-mode';
+import { ErrorState } from '../../shared/error-state/error-state';
+import { MasteryLegend } from '../../shared/mastery-legend/mastery-legend';
+import { PageHeader } from '../../shared/page-header/page-header';
+import { Skeleton } from '../../shared/skeleton/skeleton';
+
+// Carte des concepts : le cours dessiné comme un graphe (SVG). Une flèche = « à voir avant » ;
+// la couleur d'un cercle = la maîtrise de l'étudiant connecté.
 
 // Positions des 8 concepts placées à la main dans le SVG (viewBox 640 x 430).
 const POSITIONS: Record<string, { x: number; y: number }> = {
@@ -20,7 +28,6 @@ const POSITIONS: Record<string, { x: number; y: number }> = {
 interface Node extends ConceptMastery {
   x: number;
   y: number;
-  color: string;
 }
 interface Edge {
   from: Node;
@@ -29,23 +36,21 @@ interface Edge {
 
 @Component({
   selector: 'app-concept-map',
-  imports: [RouterLink],
+  imports: [RouterLink, ErrorState, MasteryLegend, PageHeader, Skeleton],
   templateUrl: './concept-map.html',
 })
-export class ConceptMap implements OnInit {
+export class ConceptMap {
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
   readonly ui = inject(UiModeService);
 
-  readonly concepts = signal<ConceptMastery[] | null>(null);
-  readonly error = signal('');
+  readonly mastery = rxResource({ stream: () => this.api.mastery() });
   readonly selected = signal<Node | null>(null);
 
   readonly nodes = computed<Node[]>(() =>
-    (this.concepts() ?? []).map((c) => ({
+    (this.mastery.hasValue() ? this.mastery.value().concepts : []).map((c) => ({
       ...c,
       ...(POSITIONS[c.id] ?? { x: 320, y: 215 }),
-      color: colorOf(c.level),
     })),
   );
 
@@ -62,12 +67,9 @@ export class ConceptMap implements OnInit {
     return edges;
   });
 
-  ngOnInit() {
-    this.api.mastery().subscribe({
-      next: (data) => this.concepts.set(data.concepts),
-      error: (err) => this.error.set(errorMessage(err)),
-    });
-  }
+  readonly errorMessage = errorMessage;
+  readonly actionLabel = actionLabel;
+  readonly levelText = levelText;
 
   select(node: Node) {
     this.selected.set(this.selected()?.id === node.id ? null : node);

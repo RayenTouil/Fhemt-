@@ -1,72 +1,85 @@
-<header class="page-head">
-  <div>
-    <p class="eyebrow">Espace enseignant · Communications numériques</p>
-    <h1>Où la classe bloque-t-elle ?</h1>
-    <p class="muted">Une ligne par étudiant, une colonne par concept. {{ ui.fiche() ? 'Rose = faible.' : 'Rouge = faible.' }}</p>
-  </div>
-</header>
+<app-page-header
+  eyebrow="Espace enseignant · Communications numériques"
+  heading="Où la classe bloque-t-elle ?"
+  [subtitle]="
+    'Une ligne par étudiant, une colonne par concept. ' +
+    (ui.fiche() ? 'Rose = faible.' : 'Rouge = faible.')
+  "
+/>
 
-@if (error()) {
-  <p class="alert alert--error" role="alert">{{ error() }}</p>
-} @else if (!data()) {
-  <p class="muted">Chargement de la classe…</p>
-} @else if (data(); as d) {
-  @if (d.blockingConcept; as b) {
-    <section class="alert alert--info">
-      <strong>Concept bloquant :</strong> {{ b.title }} (moyenne de la classe {{ b.average }}&nbsp;%).
-      À reprendre en cours.
-    </section>
-  }
+<div [attr.aria-busy]="heatmap.isLoading()">
+  @if (heatmap.error()) {
+    <app-error-state [message]="errorMessage(heatmap.error())" (retry)="heatmap.reload()" />
+  } @else if (!heatmap.hasValue()) {
+    <app-skeleton variant="table" [count]="5" label="Chargement de la classe…" />
+  } @else if (heatmap.value().students.length === 0) {
+    <app-empty-state
+      heading="Aucun étudiant pour l'instant"
+      message="La carte de chaleur se remplit dès que des étudiants se connectent et répondent aux quiz."
+    >
+      <a class="btn btn--primary" routerLink="/teacher/questions">Préparer les questions</a>
+    </app-empty-state>
+  } @else {
+    @let d = heatmap.value();
+    @if (d.blockingConcept; as b) {
+      <p class="alert alert--info">
+        <strong>Concept bloquant :</strong> {{ b.title }} (moyenne de la classe
+        {{ b.average }}&nbsp;%). À reprendre en cours.
+      </p>
+    }
 
-  <section class="card heatmap-card">
-    <div class="table-wrap">
-      <table class="heatmap">
-        <thead>
-          <tr>
-            <th scope="col">Étudiant</th>
-            @for (c of d.concepts; track c.id) {
-              <th scope="col" [title]="c.title">{{ c.short }}</th>
-            }
-          </tr>
-        </thead>
-        <tbody>
-          @for (s of d.students; track s.id) {
+    <section class="card heatmap-card" aria-labelledby="heatmap-caption">
+      <div class="table-wrap" tabindex="0" aria-labelledby="heatmap-caption">
+        <table class="heatmap">
+          <caption id="heatmap-caption" class="visually-hidden">
+            Niveau de maîtrise de chaque étudiant pour chaque concept, en pourcentage
+          </caption>
+          <thead>
             <tr>
-              <th scope="row">{{ s.name }}</th>
+              <th scope="col">Étudiant</th>
               @for (c of d.concepts; track c.id) {
-                <td
-                  [attr.data-status]="statusOf(s.levels[c.id])"
-                  [style.background]="colorOf(s.levels[c.id] ?? null)"
-                  [style.color]="textOn(s.levels[c.id])"
-                  [title]="s.name + ' · ' + c.title"
-                >
-                  {{ s.levels[c.id] ?? '—' }}
+                <th scope="col">
+                  <abbr [title]="c.title">{{ c.short }}</abbr>
+                </th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of d.students; track s.id) {
+              <tr>
+                <th scope="row">{{ s.name }}</th>
+                @for (c of d.concepts; track c.id) {
+                  <td
+                    [attr.data-status]="statusOf(s.levels[c.id])"
+                    [attr.aria-label]="cellLabel(s.name, c.title, s.levels[c.id])"
+                  >
+                    {{ s.levels[c.id] ?? '—' }}
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row">Moyenne de la classe</th>
+              @for (c of d.concepts; track c.id) {
+                <td [class.is-blocking]="c.id === d.blockingConcept?.id">
+                  {{ d.averages[c.id] === null ? '—' : d.averages[c.id] + ' %' }}
                 </td>
               }
             </tr>
-          }
-        </tbody>
-        <tfoot>
-          <tr>
-            <th scope="row">Moyenne de la classe</th>
-            @for (c of d.concepts; track c.id) {
-              <td [class.is-blocking]="c.id === d.blockingConcept?.id">
-                {{ d.averages[c.id] === null ? '—' : d.averages[c.id] + ' %' }}
-              </td>
-            }
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-    <ul class="legend">
-      <li><i style="background: #2e8b57"></i> Maîtrisé</li>
-      <li><i style="background: #f2a900"></i> En cours</li>
-      <li><i style="background: #c8102e"></i> Faible</li>
-      <li><i style="background: #c9cdd4"></i> Non évalué (pas compté dans la moyenne)</li>
-    </ul>
-  </section>
+          </tfoot>
+        </table>
+      </div>
+      <app-mastery-legend notAssessedNote="pas compté dans la moyenne" />
+    </section>
 
-  <p class="muted small center">
-    {{ d.students.length }} étudiants · les niveaux changent dès que les étudiants répondent aux quiz (actualise la page).
-  </p>
-}
+    <p class="muted small center">
+      {{ d.students.length }} étudiants · les niveaux changent dès que les étudiants répondent aux
+      quiz.
+      <button type="button" class="btn btn--small btn--ghost" (click)="heatmap.reload()">
+        Actualiser
+      </button>
+    </p>
+  }
+</div>

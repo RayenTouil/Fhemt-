@@ -1,0 +1,86 @@
+<app-page-header
+  eyebrow="À propos"
+  heading="Fhemt ? : « as-tu compris ? »"
+  subtitle="Un projet web de Sup'Com pour savoir, concept par concept, ce qu'on a vraiment compris avant un examen."
+/>
+
+<div class="about">
+  <section class="card" aria-labelledby="about-why">
+    <h2 id="about-why">Pourquoi ce projet ?</h2>
+    <p>
+      <span lang="ar">فهمت؟</span> (« Fhemt ? ») veut dire « as-tu compris ? » en arabe tunisien.
+      C'est la question que se pose chaque étudiant avant un examen de Communications numériques,
+      sans avoir de réponse précise : une note de 12/20 ne dit pas <em>quoi</em> réviser.
+    </p>
+    <p>
+      Fhemt ? mesure la maîtrise <strong>concept par concept</strong>, tient compte des prérequis
+      entre les concepts et propose un parcours où chaque étape a sa raison. L'enseignant voit, lui,
+      le concept où toute la classe bloque.
+    </p>
+    <a class="link" routerLink="/" fragment="comment">Voir comment ça marche →</a>
+  </section>
+
+  <section aria-labelledby="about-team">
+    <h2 id="about-team">L'équipe</h2>
+    <ul class="grid grid--3 team">
+      @for (member of team; track member.name) {
+        <li class="card team__member">
+          <span class="team__avatar" aria-hidden="true">{{ member.initials }}</span>
+          <div>
+            <h3>{{ member.name }}</h3>
+            <p class="muted small">Étudiant ingénieur · Sup'Com</p>
+            @if (member.role) {
+              <p class="small">{{ member.role }}</p>
+            }
+          </div>
+        </li>
+      }
+      <li class="card team__member">
+        <span class="team__avatar team__avatar--alt" aria-hidden="true">MN</span>
+        <div>
+          <h3>Dr. Maroua Nouioua</h3>
+          <p class="muted small">Encadrante · Projet web 2025/2026</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="about-steps">
+    <h2 id="about-steps">Le projet en quatre objectifs</h2>
+    <ol class="timeline">
+      @for (step of milestones; track step.title) {
+        <li class="timeline__item">
+          <h3>{{ step.title }}</h3>
+          <p class="muted">{{ step.text }}</p>
+        </li>
+      }
+    </ol>
+  </section>
+
+  <section class="card" aria-labelledby="about-stack">
+    <h2 id="about-stack">Avec quoi c'est construit</h2>
+    <dl class="stack">
+      @for (tech of stack; track tech.name) {
+        <div>
+          <dt>{{ tech.name }}</dt>
+          <dd class="muted">{{ tech.role }}</dd>
+        </div>
+      }
+    </dl>
+    <p class="small muted">
+      Le code est ouvert :
+      <a href="https://github.com/RayenTouil/Fhemt-" target="_blank" rel="noopener"
+        >github.com/RayenTouil/Fhemt-<span class="visually-hidden"> (nouvel onglet)</span></a
+      >.
+    </p>
+  </section>
+
+  <section class="card about__cta">
+    <h2>Une question, une idée ?</h2>
+    <p class="muted">Écris-nous : chaque message est lu par l'équipe.</p>
+    <div class="state__actions">
+      <a class="btn btn--primary" routerLink="/contact">Nous écrire</a>
+      <a class="btn btn--ghost" routerLink="/login">Essayer Fhemt ?</a>
+    </div>
+  </section>
+</div>
