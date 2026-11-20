@@ -42,3 +42,6 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Captures prises par npm run e2e quand une étape échoue
+e2e-echec-*.png

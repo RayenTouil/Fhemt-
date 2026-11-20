@@ -23,5 +23,5 @@ import { RouterLink } from '@angular/router';
   `,
 })
 export class Footer {
-  readonly stage = 'Objectif 3 (MVP)';
+  readonly stage = 'Objectif 4';
 }

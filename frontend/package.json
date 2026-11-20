@@ -11,6 +11,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "serve:dist": "node scripts/serve-dist.mjs",
+    "e2e": "node e2e/parcours.mjs",
     "deploy": "node scripts/deploy.mjs"
   },
   "private": true,

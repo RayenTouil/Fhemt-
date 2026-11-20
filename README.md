@@ -6,7 +6,8 @@
 
 [![Site en ligne](https://img.shields.io/badge/en%20ligne-fhemt.me-c8102e)](https://fhemt.me)
 [![CI](https://github.com/RayenTouil/Fhemt-/actions/workflows/ci.yml/badge.svg)](https://github.com/RayenTouil/Fhemt-/actions/workflows/ci.yml)
-![Statut](https://img.shields.io/badge/statut-Objectif%203%20·%20MVP-brightgreen)
+![Statut](https://img.shields.io/badge/statut-Objectif%204%20·%20site%20finalisé-brightgreen)
+![Lighthouse](https://img.shields.io/badge/Lighthouse-100%20·%20100%20·%20100%20·%20100-2e8b57)
 ![Angular](https://img.shields.io/badge/Angular-22-dd0031)
 ![Express](https://img.shields.io/badge/Express-5-000000)
 
@@ -70,15 +71,174 @@ Le périmètre du MVP vient de la priorisation des fonctionnalités de l'objecti
 
 **Contenu du cours :** 8 concepts de Communications numériques (signaux, échantillonnage, Nyquist, quantification, codes en ligne, modulation, bruit/TEB, capacité) avec leurs prérequis et 24 QCM expliqués, dans [`backend/data/seed/`](backend/data/seed/).
 
+## Objectif 4 · Le site finalisé
+
+Le prototype de l'objectif 3 devient une version quasi finale : toutes les pages du plan du site, des composants réutilisables, la création et la mise à jour de données, une interface responsive et accessible, des performances mesurées et un code vérifié automatiquement.
+
+### Plan du site
+
+Le sujet de notre objectif 2 portait sur la découverte produit (personas, MVP, SWOT) : il ne contenait pas de plan du site. Le voici, tel qu'il est routé dans [`app.routes.ts`](frontend/src/app/app.routes.ts). Les pages publiques sont aussi déclarées aux moteurs de recherche dans [`public/sitemap.xml`](frontend/public/sitemap.xml).
+
+| Page | Route | Accès | Nouveau |
+|---|---|---|---|
+| Accueil | `/` | tout le monde | |
+| À propos (projet, équipe, étapes, technologies) | `/about` | tout le monde | ✨ |
+| Contact (formulaire) | `/contact` | tout le monde | ✨ |
+| Connexion | `/login` | tout le monde | |
+| Ma maîtrise | `/dashboard` | connecté | |
+| Mon parcours | `/path` | connecté | |
+| Carte des concepts | `/concepts` | connecté | |
+| Quiz d'un concept | `/quiz/:conceptId` | connecté | |
+| Mon profil (nom et préférences) | `/profile` | connecté | ✨ |
+| Ma classe (carte de chaleur) | `/teacher` | enseignant, admin | |
+| Questions du quiz (créer, modifier) | `/teacher/questions` | enseignant, admin | ✨ |
+| Page introuvable (404) | toute autre adresse | tout le monde | ✨ |
+
+**Routing :** chaque page est chargée à la demande (`loadComponent`, *lazy loading*), sauf l'accueil, livré avec l'application parce que c'est la page d'entrée. Le retour en haut de page et les ancres sont gérés (`withInMemoryScrolling`), un fondu accompagne chaque changement de page (`withViewTransitions`), chaque page a son titre d'onglet, le lien de la page active est marqué (`aria-current`) et les guards protègent les pages réservées.
+
+### Composants réutilisables
+
+Les pages ne répètent plus de HTML : elles assemblent des composants du dossier [`frontend/src/app/shared/`](frontend/src/app/shared/).
+
+| Composant | Rôle | Utilisé par |
+|---|---|---|
+| `app-page-header` | étiquette, titre h1, sous-titre, zone d'actions | toutes les pages intérieures |
+| `app-mastery-bar` | barre de maîtrise (jauge accessible `role="meter"`) | accueil, tableau de bord |
+| `app-status-badge` | pastille « Maîtrisé / En cours / Faible » ou type d'étape | tableau de bord, parcours, carte |
+| `app-mastery-legend` | légende des 4 couleurs | carte des concepts, vue enseignant |
+| `app-form-field` + `appFieldControl` | libellé, champ, aide, erreur, reliés pour les lecteurs d'écran | connexion, contact, profil, questions |
+| `app-skeleton` | squelette de chargement (6 formes) | toutes les pages qui chargent des données |
+| `app-error-state` | message d'erreur + bouton « Réessayer » | idem |
+| `app-empty-state` | état vide qui dit quoi faire ensuite | tableau de bord, parcours, vue enseignant |
+| `app-navbar`, `app-footer` | navigation selon le rôle (menu burger sur mobile), pied de page | coquille de l'application |
+| `app-concept-graph` | le graphe SVG, utilisable au clavier | carte des concepts |
+
+Les **cartes** et les **boutons** restent des classes CSS du design system (`.card`, `.btn`, `.btn--primary`…) : en faire des composants Angular n'ajouterait qu'une balise autour, sans logique.
+
+**Organisation des dossiers et correspondance avec l'énoncé** (qui cite `/components`, `/pages`, `/assets`, `/hooks`, des noms venant de React) :
+
+| Énoncé | Fhemt ? (conventions Angular) | Contenu |
+|---|---|---|
+| `/pages` | `src/app/pages/` | une page par route (`home`, `login`, `dashboard`, `contact`…) |
+| `/components` | `src/app/shared/` | les composants réutilisables ci-dessus |
+| `/hooks` | `src/app/core/` | services, guards, modèles, règles de validation. L'équivalent d'un hook React comme `useFetch` est **`rxResource`** d'Angular : chaque page l'utilise pour obtenir `value()`, `isLoading()`, `error()` et `reload()` |
+| `/assets` | `public/` | favicon, `robots.txt`, `sitemap.xml`, données du mode démo |
+
+Le design reste celui de l'objectif 2 (bleu marine, rouge, or sur fond crème) : toutes les couleurs, rayons, ombres et espacements sont des variables CSS dans [`styles.css`](frontend/src/styles.css), avec une échelle d'espacement de 4 px comme Material Design et Tailwind. Aucune page n'écrit de couleur en dur. Tout fonctionne aussi dans le second habillage, le **mode fiche de révision** ([`ui-fiche.css`](frontend/src/ui-fiche.css)).
+
+### Données dynamiques : affichage, création, mise à jour
+
+Le site est branché sur la **vraie API Express**. Chaque nouvelle fonctionnalité existe aussi en **mode démo** (`DemoApi`, données dans le `localStorage`), avec les mêmes règles. Le compilateur vérifie que les deux offrent les mêmes méthodes (`DemoApi implements ApiContract`).
+
+| Action | Page | API (Express) | Accès |
+|---|---|---|---|
+| **Créer** un message | `/contact` | `POST /api/contact` | tout le monde |
+| **Mettre à jour** son nom et ses préférences (habillage, animations) | `/profile` | `PATCH /api/users/me` | connecté (jamais l'e-mail ni le rôle) |
+| **Afficher** les questions d'un concept avec leurs réponses | `/teacher/questions` | `GET /api/teacher/questions?conceptId=` | enseignant, admin |
+| **Créer** une question (elle apparaît aussitôt dans le quiz des étudiants) | `/teacher/questions` | `POST /api/teacher/questions` | enseignant, admin |
+| **Modifier** une question | `/teacher/questions` | `PUT /api/teacher/questions/:id` | enseignant, admin |
+
+La validation est faite deux fois : par le formulaire pendant la saisie (champs requis, format de l'e-mail, longueurs), puis par le serveur ([`services/validation.js`](backend/src/services/validation.js)), qui renvoie `400 { error, fields }`. Le site affiche alors chaque message sous le bon champ. Les règles et les messages sont identiques côté serveur et en mode démo ([`core/validation.ts`](frontend/src/app/core/validation.ts)).
+
+### UX/UI et accessibilité
+
+- **États de chargement :** squelettes à la forme du contenu, `aria-busy` pendant le chargement, boutons « Envoi… » avec un indicateur, état d'erreur avec « Réessayer », états vides utiles (« Aucun concept évalué : commence par un quiz »).
+- **Animations légères, en CSS seulement :** apparition des cartes, barres et anneau qui se remplissent, reflet des squelettes, fondu entre les pages. Toutes sont coupées si le système demande moins d'animations (`prefers-reduced-motion`) ou si l'utilisateur coche « Réduire les animations » dans son profil.
+- **Responsive :** menu burger sous 900 px (téléphone et tablette) avec `aria-expanded`, fermeture par Échap et au changement de page. Les 12 pages ont été vérifiées à 360, 768 et 1280 px dans les deux habillages, sans débordement horizontal.
+- **Accessibilité :**
+  - lien « Aller au contenu », titres dans l'ordre h1 → h2 → h3, un libellé sur chaque champ ;
+  - zones `aria-live` pour la correction du quiz et les confirmations, contour de focus visible partout, `lang="ar"` sur le texte arabe ;
+  - carte des concepts utilisable au clavier : flèches, Début/Fin, Entrée/Espace, chaque concept annonce son niveau et ses prérequis.
+
+  Résultat : 0 erreur axe-core (WCAG 2.1 AA) sur les 12 pages, à 360 et 1280 px, dans les deux habillages.
+- **Contrastes mesurés et corrigés** (seuil AA : 4,5:1 pour le texte, 3:1 pour les graphiques). L'identité ne change pas : l'or reste la couleur des remplissages.
+
+| Texte / fond | Avant | Après |
+|---|---|---|
+| texte secondaire `--muted` sur crème | 4,40 ✗ | **5,27** (#5f6672) |
+| blanc sur `--green` (pastille « Maîtrisé ») | 4,25 ✗ | **5,28** (#277a4c) |
+| texte sur `--gold` (« En cours », cellules) | 2,01 ✗ (blanc) | **7,62** (marine foncé) |
+| or utilisé comme texte (compteur « en cours ») | 3,56 ✗ | **4,85** (`--gold-text` #8a6500) |
+| « ? » des concepts non évalués | 1,59 ✗ | **9,74** (encre sur gris) |
+| contour de focus des champs | 2,01 ✗ (or) | **12,1** (marine) |
+| flèches de la carte des concepts | 3,06 | **4,0** |
+
+### Performance
+
+Mesuré sur la version compilée en mode démo, servie en local avec compression gzip comme sur GitHub Pages (`npm run build` puis `npm run serve:dist`).
+
+**Lighthouse** (Performance / Accessibilité / Bonnes pratiques / SEO) :
+
+| Page | Avant (objectif 3) | Après (objectif 4) |
+|---|---|---|
+| `/` mobile | 99 / 96 / 100 / 91 | **100 / 100 / 100 / 100** |
+| `/` desktop | 100 / 96 / 100 / 91 | **100 / 100 / 100 / 100** |
+| `/login` mobile | 100 / 96 / 100 / 91 | **100 / 100 / 100 / 100** |
+| `/login` desktop | 100 / 96 / 100 / 91 | **100 / 100 / 100 / 100** |
+
+Les points perdus avant venaient des contrastes et de l'absence de `robots.txt`. Les autres pages, mesurées une fois connecté, obtiennent toutes **98 à 100** dans les quatre catégories : `/dashboard`, `/path`, `/concepts`, `/quiz/sampling`, `/profile`, `/teacher`, `/teacher/questions`, `/about`, `/contact`.
+
+<details>
+<summary><strong>Mesurer une page protégée soi-même dans Chrome DevTools</strong></summary>
+
+1. `npm run build` puis `npm run serve:dist` dans `frontend/`, et ouvre http://localhost:4300 dans Chrome.
+2. Connecte-toi avec un compte de démonstration (par exemple `amira@fhemt.tn`, ou `teacher@fhemt.tn` pour les pages enseignant).
+3. Ouvre la page à mesurer (par exemple `/dashboard`), puis **F12** → onglet **Lighthouse**.
+4. Choisis **Mobile** ou **Desktop** et les quatre catégories, puis clique sur **Analyze page load**.
+5. **Important :** dans les réglages du panneau Lighthouse (roue dentée), décoche **« Clear storage »** (« Effacer l'espace de stockage »). Sinon Lighthouse vide le `localStorage` avant la mesure : tu serais déconnecté et la page mesurée serait `/login`.
+6. Fais l'analyse dans une fenêtre sans extensions (navigation privée, où tu te connectes d'abord), les extensions faussent les résultats.
+
+</details>
+
+**Ce qui a été fait, et ce qui a été mesuré puis écarté :**
+- **Lazy loading :** 11 pages sur 12 sont des fichiers séparés de 1 à 12 kB. Les formulaires d'Angular (62 kB) ne se chargent que sur les pages qui en ont. Bundle initial : 365,7 kB (96,4 kB transférés) avant, 359,2 kB (96,6 kB transférés) après. Il contient surtout Angular lui-même (environ 300 kB) ; notre code n'y pèse que 27 kB, alors que le site est passé de 7 à 12 pages.
+- **Préchargement :** le code des autres pages est téléchargé 2 s après l'arrivée ([`core/preloading.ts`](frontend/src/app/core/preloading.ts)), pour des clics instantanés. Le précharger tout de suite retardait l'affichage de l'accueil sur mobile (2,7 s au lieu de 0,6 s pour `/login`).
+- **Stabilité de la mise en page :** la hauteur de `<main>` est réservée. Sans cela, le pied de page sautait à l'arrivée du code des pages (CLS 0,53, ramené à 0).
+- **`@defer` testé puis retiré :** sur le graphe des concepts, il ajoutait environ 10 kB au bundle initial (le code d'Angular qui gère les blocs différés) pour différer seulement 5,7 kB d'une page déjà chargée à la demande.
+- **Images :** le site n'a aucune image matricielle (choix de l'objectif 2 : « SVG plutôt qu'images »), et toutes les icônes sont en SVG dans le HTML. Le favicon d'Angular (15 Ko) est remplacé par un SVG de 0,5 Ko (+ une icône PNG pour l'écran d'accueil des iPhone). Les captures de ce README sont en WebP. Les polices du mode fiche se chargent seulement quand ce mode est choisi, avec `display=swap` et `preconnect`.
+
+### Qualité du code
+
+- **ESLint** (`ng add angular-eslint`, avec les règles d'accessibilité des templates) et **Prettier** : aucune erreur. **TypeScript strict** et `strictTemplates` sont activés : les erreurs de types dans les templates sont détectées à la compilation.
+- Imports et code morts supprimés, un commentaire en français en tête de chaque fichier.
+- La CI vérifie à chaque push : ESLint, Prettier, compilation, tests du frontend et du backend, démarrage de l'API.
+
+### Tests et navigateurs
+
+- **31 tests Vitest :** `DemoApi` (création et modification de questions, refus 403, profil, contact, maîtrise), règles de validation, préférences d'affichage, composants partagés, `FormField`, menu burger, carte des concepts au clavier, coquille de l'application.
+- **30 tests `node:test` :** règles, validation, routes de création et de mise à jour par de vraies requêtes HTTP, ancienne base complétée sans perte, et un test qui vérifie que `backend/data/seed/` et `frontend/public/demo/` sont identiques (pour que le mode démo ne diverge jamais).
+- **Parcours complet automatisé** ([`frontend/e2e/parcours.mjs`](frontend/e2e/parcours.mjs), `npm run e2e`) : accueil → connexion démo → tableau de bord → quiz → profil → déconnexion → connexion enseignant → carte de chaleur → création d'une question. Sur téléphone, la navigation passe par le menu burger.
+
+| Navigateur | Téléphone (360 px) | Ordinateur (1280 px) |
+|---|---|---|
+| Chrome | ✅ 9 étapes | ✅ 9 étapes |
+| Edge | ✅ 9 étapes | ✅ 9 étapes |
+| Firefox | ⏳ à vérifier à la main (pas installé sur notre poste de test) | ⏳ idem |
+
+Pour Firefox, suis le même parcours à la main avec l'outil « Vue adaptative » (Ctrl + Maj + M) en 360 px, puis en plein écran.
+
 ### Captures d'écran
 
-| Tableau de maîtrise | Carte des concepts |
-|---|---|
-| ![Tableau de maîtrise](assets/screenshots/dashboard.png) | ![Carte des concepts colorée selon la maîtrise](assets/screenshots/concept-map.png) |
+<table>
+<tr>
+<td width="50%"><img src="assets/screenshots/dashboard.webp" width="640" height="400" loading="lazy" alt="Tableau de maîtrise d'Amira : maîtrise globale de 38 %, compteurs, prochaine étape et une barre par concept"></td>
+<td width="50%"><img src="assets/screenshots/concept-map.webp" width="640" height="400" loading="lazy" alt="Carte des concepts : graphe coloré selon la maîtrise, le concept Nyquist est sélectionné"></td>
+</tr>
+<tr>
+<td><img src="assets/screenshots/path.webp" width="640" height="400" loading="lazy" alt="Parcours de Youssef : trois étapes, chacune avec sa raison, en commençant par un prérequis faible"></td>
+<td><img src="assets/screenshots/teacher.webp" width="640" height="400" loading="lazy" alt="Carte de chaleur de la classe pour l'enseignant, avec le concept bloquant"></td>
+</tr>
+<tr>
+<td><img src="assets/screenshots/questions.webp" width="640" height="400" loading="lazy" alt="Page enseignant de création et de modification des questions du quiz"></td>
+<td><img src="assets/screenshots/dashboard-fiche.webp" width="640" height="400" loading="lazy" alt="Le tableau de maîtrise en mode fiche de révision : papier à carreaux, stylo bleu et surligneurs"></td>
+</tr>
+</table>
 
-| Parcours personnalisé | Carte de chaleur enseignant |
-|---|---|
-| ![Parcours avec raisons](assets/screenshots/path.png) | ![Carte de chaleur de la classe](assets/screenshots/teacher.png) |
+<p align="center">
+<img src="assets/screenshots/mobile-menu.webp" width="240" height="493" loading="lazy" alt="Sur téléphone : le menu burger ouvert">
+&nbsp;
+<img src="assets/screenshots/mobile-quiz.webp" width="240" height="493" loading="lazy" alt="Sur téléphone : une question du quiz avec la bonne réponse surlignée en vert">
+</p>
 
 ## Le site en ligne : fhemt.me
 
@@ -121,51 +281,62 @@ Ouvre **http://localhost:4200** et connecte-toi avec un compte de démonstration
 
 N'importe quel autre e-mail crée un nouveau compte étudiant. `npm run reset` dans `backend/` remet les données de démonstration.
 
-**Routes de l'API :** `GET /api/health`, `GET /api/concepts`, `GET /api/mastery/me`, `GET /api/path/me`, `GET /api/quiz/:conceptId`, `POST /api/quiz/answer`, `GET /api/teacher/heatmap` (avec l'en-tête `x-user-id`). Détails dans [`backend/README.md`](backend/README.md).
+**Routes de l'API :** `GET /api/health`, `GET /api/concepts`, `GET /api/mastery/me`, `GET /api/path/me`, `GET /api/quiz/:conceptId`, `POST /api/quiz/answer`, `PATCH /api/users/me`, `POST /api/contact`, `GET /api/teacher/heatmap`, `GET` / `POST` / `PUT /api/teacher/questions` (avec l'en-tête `x-user-id`). Détails dans [`backend/README.md`](backend/README.md).
 
 ## Tests et qualité
 
-| Commande | Ce qu'elle vérifie |
-|---|---|
-| `npm test` dans `backend/` | les règles de maîtrise et de parcours (8 tests, testeur intégré à Node) |
-| `npm test` dans `frontend/` | l'application Angular démarre (Vitest) |
-| `npm run build` dans `frontend/` | la compilation de production |
+| Commande | Où | Ce qu'elle vérifie |
+|---|---|---|
+| `npm test` | `backend/` | 30 tests : règles, validation, routes de l'API, synchronisation seed / mode démo |
+| `npx ng test --watch=false` | `frontend/` | 31 tests Vitest : composants partagés, services, mode démo |
+| `npm run lint` | `frontend/` | ESLint (TypeScript, Angular, accessibilité des templates) |
+| `npm run format:check` | `frontend/` | Prettier : la mise en forme est homogène (`npm run format` la corrige) |
+| `npm run build` | `frontend/` | compilation de production (TypeScript strict, budgets de taille) |
+| `npm run serve:dist` | `frontend/` | sert le site compilé sur http://localhost:4300 (pour Lighthouse et le parcours) |
+| `npm run e2e` | `frontend/` | le parcours complet dans Chrome et Edge, à 360 et 1280 px (prérequis : `npm i --no-save puppeteer-core`, et `serve:dist` lancé) |
 
-À chaque push, GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) compile le frontend, lance les tests et vérifie que l'API démarre et répond.
-
-Le parcours complet (connexion, quiz, parcours, carte, vue enseignant, création de compte, rechargement) a été vérifié dans Chrome en mode API et en mode démo, sur ordinateur et à la largeur d'un téléphone.
+À chaque push, GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) lance ESLint, Prettier, la compilation et les tests du frontend, puis les tests du backend, et vérifie que l'API démarre et répond.
 
 ## Structure du projet
 
 ```
 Fhemt/
-├── frontend/                  Angular 22 (composants standalone, signals, router)
+├── frontend/                    Angular 22 (composants standalone, signals, router)
 │   ├── src/app/
-│   │   ├── core/              api.ts (HttpClient + intercepteur), demo-api.ts (mode démo),
-│   │   │                      auth.ts, guards.ts, models.ts, levels.ts
-│   │   ├── shared/navbar/     barre de navigation selon le rôle
-│   │   ├── pages/             home, login, dashboard, quiz, path, concept-map, teacher
-│   │   ├── app.routes.ts      le plan du site
-│   │   └── app.config.ts      router, HttpClient, choix API réelle / mode démo
-│   ├── src/environments/      adresse de l'API (dev : localhost, prod : vide = mode démo)
-│   ├── public/demo/           copie des données seed pour le mode démo
-│   └── scripts/deploy.mjs     publication sur fhemt.me
-├── backend/                   API REST Node.js + Express 5
-│   ├── src/server.js          application, middlewares, routes
-│   ├── src/routes/            auth, concepts, quiz, mastery, path, teacher
-│   ├── src/services/          règles de maîtrise et de parcours (fonctions pures, testées)
-│   ├── src/middleware/auth.js requireUser / requireRole (RBAC)
-│   ├── src/store.js           stockage dans un fichier JSON (même forme que de futures requêtes MongoDB)
-│   ├── data/seed/             concepts, questions, comptes et maîtrise de démonstration
-│   └── test/                  tests des règles
-├── .github/workflows/ci.yml   intégration continue
-├── render.yaml                hébergement optionnel de l'API sur Render
-└── assets/                    images du README
+│   │   ├── pages/               une page par route : home, about, contact, login, dashboard, path,
+│   │   │                        concept-map (+ concept-graph), quiz, profile, teacher,
+│   │   │                        question-editor, not-found
+│   │   ├── shared/              composants réutilisables : navbar, footer, page-header, mastery-bar,
+│   │   │                        status-badge, mastery-legend, form-field, skeleton, empty-state,
+│   │   │                        error-state
+│   │   ├── core/                api.ts (HttpClient + intercepteur), demo-api.ts (mode démo),
+│   │   │                        auth.ts, guards.ts, models.ts, levels.ts, validation.ts,
+│   │   │                        forms.ts, ui-mode.ts (préférences), preloading.ts
+│   │   ├── app.routes.ts        le plan du site (lazy loading)
+│   │   └── app.config.ts        router, HttpClient, choix API réelle / mode démo
+│   ├── src/styles.css           le design system (variables, composants, animations)
+│   ├── src/ui-fiche.css         le second habillage : « fiche de révision »
+│   ├── src/environments/        adresse de l'API (dev : localhost, prod : vide = mode démo)
+│   ├── public/                  favicon, robots.txt, sitemap.xml, demo/ (copie des seeds)
+│   ├── e2e/parcours.mjs         le parcours complet dans de vrais navigateurs
+│   └── scripts/                 deploy.mjs (publication sur fhemt.me), serve-dist.mjs
+├── backend/                     API REST Node.js + Express 5
+│   ├── src/app.js               application : middlewares, routes, erreurs JSON
+│   ├── src/server.js            démarrage (port 3000)
+│   ├── src/routes/              auth, concepts, contact, quiz, mastery, path, teacher, users
+│   ├── src/services/            règles de maîtrise, de parcours et de validation (fonctions pures)
+│   ├── src/middleware/auth.js   requireUser / requireRole (RBAC)
+│   ├── src/store.js             stockage dans un fichier JSON (même forme que de futures requêtes MongoDB)
+│   ├── data/seed/               concepts, questions, comptes, maîtrise et messages de démonstration
+│   └── test/                    tests des règles, de la validation et des routes
+├── .github/workflows/ci.yml     intégration continue
+├── render.yaml                  hébergement optionnel de l'API sur Render
+└── assets/                      images du README (captures en WebP)
 ```
 
 ## Choix techniques
 
-- **Angular** (le framework vu en cours) : composants standalone, **signals** pour l'état des pages, **router** pour les 7 pages avec des **guards**, `HttpClient` avec un **intercepteur** qui ajoute l'en-tête utilisateur, la nouvelle syntaxe `@if` / `@for`, et l'**injection de dépendances** pour basculer entre la vraie API et le mode démo sans toucher aux pages. Pas de bibliothèque d'interface : un petit design system écrit à la main ([`frontend/src/styles.css`](frontend/src/styles.css)) et une mise en page responsive (téléphone, tablette, ordinateur).
+- **Angular** (le framework vu en cours) : composants standalone, **signals** pour l'état des pages, **router** pour les 12 pages, chargées à la demande, avec des **guards**, `HttpClient` avec un **intercepteur** qui ajoute l'en-tête utilisateur, la nouvelle syntaxe `@if` / `@for`, et l'**injection de dépendances** pour basculer entre la vraie API et le mode démo sans toucher aux pages. Pas de bibliothèque d'interface : un petit design system écrit à la main ([`frontend/src/styles.css`](frontend/src/styles.css)) et une mise en page responsive (téléphone, tablette, ordinateur).
 - **Express 5** pour un backend REST minimal : un fichier par fonctionnalité, des middlewares pour le contrôle d'accès, des fonctions pures pour les règles, donc testables sans HTTP.
 - **Un fichier JSON comme base de données** pour le MVP : aucune installation pour le correcteur, et le module de stockage garde la forme des requêtes MongoDB, donc le passage à MongoDB ne touche qu'un fichier.
 - **Connexion par e-mail** pour le MVP, avec le rôle décidé côté serveur. La connexion Google via Firebase remplacera la route de connexion sans toucher aux pages.
@@ -190,7 +361,7 @@ L'objectif 1 décrivait une architecture événementielle plus large. La prioris
 
 | Composant de l'architecture cible | Dans le MVP (objectif 3) | Ensuite |
 |---|---|---|
-| Angular | ✅ 7 pages, mode démo | page de discussion avec le tuteur IA |
+| Angular | ✅ 12 pages (objectif 4), mode démo | page de discussion avec le tuteur IA |
 | Node.js + Express | ✅ API REST, contrôle des rôles | vérification du jeton Firebase |
 | **MongoDB** | ➖ remplacé par un fichier JSON (`store.js`) | MongoDB Atlas (offre gratuite) : seul `store.js` change |
 | Connexion Google **Firebase** | ➖ connexion par e-mail, rôle côté serveur | objectif suivant |
@@ -220,7 +391,7 @@ Les actions rapides reçoivent une réponse tout de suite. Les tâches lentes (I
 ## Droits d'accès (RBAC)
 
 - **Trois rôles :** étudiant, enseignant, admin. Le rôle est stocké sur le serveur ; les nouveaux comptes sont étudiants, et un compte enseignant est attribué à la main dans les données.
-- **Vérification du rôle (codée) :** `requireRole('teacher', 'admin')` protège la carte de chaleur ; un étudiant reçoit une erreur 403, et le guard Angular le renvoie vers son tableau de bord.
+- **Vérification du rôle (codée) :** `requireRole('teacher', 'admin')` protège toutes les routes enseignant (carte de chaleur, liste, création et modification des questions) ; un étudiant reçoit une erreur 403, et le guard Angular le renvoie vers son tableau de bord. Le profil (`PATCH /api/users/me`) ne modifie jamais l'e-mail ni le rôle, même si le client les envoie.
 - **Vérification de la propriété (prévue) :** quand chaque enseignant aura ses propres cours, le serveur vérifiera aussi *« est-ce **ton** cours ? »*. Le MVP n'a qu'un seul cours, donc cette règle n'est pas encore nécessaire.
 
 ## Comment mesurer le succès
@@ -235,18 +406,21 @@ Les actions rapides reçoivent une réponse tout de suite. Les tâches lentes (I
 - [x] **Objectif 1 :** définition du projet et périmètre fonctionnel
 - [x] **Objectif 2 :** découverte produit assistée par l'IA (personas, matrice MVP, SWOT, concurrents)
 - [x] **Objectif 3 :** MVP fonctionnel — 7 pages dynamiques, API Express, tests, site en ligne sur fhemt.me
+- [x] **Objectif 4 :** site finalisé — 12 pages, composants réutilisables, création et mise à jour (API + mode démo), UX et accessibilité, Lighthouse 100, ESLint/Prettier, 61 tests
 - [ ] Ensuite : MongoDB Atlas, connexion Google Firebase, tuteur IA (RAG)
 
 ## Inspirations visuelles
 
 [Khan Academy](https://www.khanacademy.org) · [Duolingo](https://www.duolingo.com) · [ALEKS](https://www.aleks.com) · [NotebookLM](https://notebooklm.google)
 
-## Équipe
+## Équipe et répartition des rôles
 
-Projet web Sup'Com, réalisé par :
+Projet web Sup'Com 2025/2026, encadré par Dr. Maroua Nouioua, réalisé par :
 
-- **Rayen Touil**
-- **Wajdi Zentani**
+| Membre | Rôles et contributions |
+|---|---|
+| **Rayen Touil** | *À COMPLÉTER* |
+| **Wajdi Zentani** | *À COMPLÉTER* |
 
 ---
 
