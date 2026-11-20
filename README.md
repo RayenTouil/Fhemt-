@@ -417,10 +417,12 @@ Les actions rapides reçoivent une réponse tout de suite. Les tâches lentes (I
 
 Projet web Sup'Com 2025/2026, encadré par Dr. Maroua Nouioua, réalisé par :
 
-| Membre | Rôles et contributions |
-|---|---|
-| **Rayen Touil** | *À COMPLÉTER* |
-| **Wajdi Zentani** | *À COMPLÉTER* |
+| Membre | Rôle principal | Contributions |
+|---|---|---|
+| **Rayen Touil** | Frontend et mise en ligne | application Angular (pages, routing, composants partagés), design system et mode fiche, responsive et accessibilité, performance (Lighthouse), hébergement sur fhemt.me |
+| **Wajdi Zentani** | Backend et qualité | API Express (routes, validation, contrôle des rôles), stockage et contenu du cours (concepts, questions), mode démo, tests (node:test, Vitest, parcours e2e) et intégration continue |
+
+Ensemble : le cadrage du projet (objectifs 1 et 2 : personas, MVP, SWOT), les choix d'architecture, les revues de code avant chaque fusion et la préparation des soutenances.
 
 ---
 

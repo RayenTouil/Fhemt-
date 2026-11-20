@@ -12,8 +12,16 @@ import { PageHeader } from '../../shared/page-header/page-header';
 export class About {
   // L'équipe. `role` : ce que chacun a pris en charge (affiché seulement s'il est rempli).
   readonly team = [
-    { name: 'Rayen Touil', initials: 'RT', role: '' },
-    { name: 'Wajdi Zentani', initials: 'WZ', role: '' },
+    {
+      name: 'Rayen Touil',
+      initials: 'RT',
+      role: 'Frontend et mise en ligne : pages Angular, design, accessibilité, fhemt.me.',
+    },
+    {
+      name: 'Wajdi Zentani',
+      initials: 'WZ',
+      role: 'Backend et qualité : API Express, règles, mode démo, tests et CI.',
+    },
   ];
 
   // Les quatre objectifs du projet web, du cadrage au site finalisé.
