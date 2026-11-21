@@ -1,86 +1,115 @@
-@if (error()) {
-  <p class="alert alert--error" role="alert">{{ error() }}</p>
-  <a class="btn btn--ghost" routerLink="/dashboard">← Retour à ma maîtrise</a>
-} @else if (!quiz()) {
-  <p class="muted">Chargement du quiz…</p>
-} @else if (quiz(); as q) {
-  <header class="page-head">
-    <div>
-      <p class="eyebrow">Quiz · {{ q.concept.title }}</p>
-      <h1>{{ q.concept.summary }}</h1>
-    </div>
-    <div class="level-pill">
-      <span class="muted">niveau</span>
-      <strong>{{ currentLevel() }}&nbsp;%</strong>
-    </div>
-  </header>
+<div [attr.aria-busy]="quiz.isLoading()">
+  @if (quiz.error()) {
+    <app-page-header eyebrow="Quiz" heading="Ce quiz n'a pas pu s'ouvrir" />
+    <app-error-state [message]="errorMessage(quiz.error())" (retry)="quiz.reload()">
+      <a class="btn btn--small btn--ghost" routerLink="/dashboard">← Retour à ma maîtrise</a>
+    </app-error-state>
+  } @else if (!quiz.hasValue()) {
+    <app-skeleton variant="quiz" label="Chargement du quiz…" />
+  } @else if (quiz.value(); as q) {
+    <app-page-header [eyebrow]="'Quiz · ' + q.concept.title" [heading]="q.concept.summary">
+      <p class="level-pill">
+        <span class="muted">niveau</span>
+        <strong>{{ currentLevel() }}&nbsp;%</strong>
+      </p>
+    </app-page-header>
 
-  @if (!finished()) {
-    <section class="card quiz">
-      <p class="muted">Question {{ index() + 1 }} sur {{ q.questions.length }}</p>
-      <div class="progress"><div class="progress__fill" [style.width.%]="(index() / q.questions.length) * 100"></div></div>
+    @if (!finished()) {
+      <section class="card quiz" aria-labelledby="question-text">
+        <p class="muted">Question {{ index() + 1 }} sur {{ q.questions.length }}</p>
+        <div
+          class="progress"
+          role="progressbar"
+          aria-label="Avancement du quiz"
+          aria-valuemin="0"
+          [attr.aria-valuemax]="q.questions.length"
+          [attr.aria-valuenow]="index()"
+        >
+          <div class="progress__fill" [style.width.%]="(index() / q.questions.length) * 100"></div>
+        </div>
 
-      @if (question(); as question) {
-        <h2 class="quiz__text">{{ question.text }}</h2>
-        <div class="choices">
-          @for (choice of question.choices; track $index) {
-            <button
-              type="button"
-              class="choice"
-              [class.is-selected]="selected() === $index"
-              [class.is-correct]="result() && result()!.correctIndex === $index"
-              [class.is-wrong]="result() && selected() === $index && !result()!.isCorrect"
-              [disabled]="!!result() || sending()"
-              (click)="choose($index)"
-            >
-              <span class="choice__letter">{{ 'ABCD'[$index] }}</span>
-              <span class="choice__text">{{ choice }}</span>
-              @if (ui.fiche() && result()) {
-                <!-- Version fiche : la correction tracée au stylo rouge dans la marge -->
-                @if (result()!.correctIndex === $index) {
-                  <svg class="pen-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 17 L13 25 L28 6" pathLength="1" /></svg>
-                } @else if (selected() === $index) {
-                  <svg class="pen-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 7 L25 25 M25 7 L7 25" pathLength="1" /></svg>
+        @if (question(); as question) {
+          <h2 id="question-text" class="quiz__text">{{ question.text }}</h2>
+          <div class="choices" role="group" aria-labelledby="question-text">
+            @for (choice of question.choices; track $index) {
+              <button
+                type="button"
+                class="choice"
+                [class.is-selected]="selected() === $index"
+                [class.is-correct]="result() && result()!.correctIndex === $index"
+                [class.is-wrong]="result() && selected() === $index && !result()!.isCorrect"
+                [disabled]="!!result() || sending()"
+                (click)="choose($index)"
+              >
+                <span class="choice__letter" aria-hidden="true">{{ letters[$index] }}</span>
+                <span class="choice__text">{{ choice }}</span>
+                @if (sending() && selected() === $index) {
+                  <span class="spinner" aria-hidden="true"></span>
                 }
-              }
-            </button>
+                @if (ui.fiche() && result()) {
+                  <!-- Version fiche : la correction tracée au stylo rouge dans la marge -->
+                  @if (result()!.correctIndex === $index) {
+                    <svg class="pen-mark" viewBox="0 0 32 32" aria-hidden="true">
+                      <path d="M5 17 L13 25 L28 6" pathLength="1" />
+                    </svg>
+                  } @else if (selected() === $index) {
+                    <svg class="pen-mark" viewBox="0 0 32 32" aria-hidden="true">
+                      <path d="M7 7 L25 25 M25 7 L7 25" pathLength="1" />
+                    </svg>
+                  }
+                }
+              </button>
+            }
+          </div>
+        }
+
+        @if (answerError()) {
+          <p class="alert alert--error" role="alert">{{ answerError() }}</p>
+        }
+
+        <!-- Zone toujours présente : un lecteur d'écran annonce la correction dès qu'elle s'y écrit -->
+        <div aria-live="polite">
+          @if (result(); as r) {
+            <div
+              class="feedback"
+              [class.feedback--ok]="r.isCorrect"
+              [class.feedback--ko]="!r.isCorrect"
+            >
+              <strong>{{ r.isCorrect ? 'Bonne réponse !' : 'Pas tout à fait.' }}</strong>
+              <p>{{ r.explanation }}</p>
+              <p class="small">
+                Maîtrise : {{ r.mastery.before }}&nbsp;% →
+                <strong>{{ r.mastery.after }}&nbsp;%</strong>
+                ({{ r.isCorrect ? '+20' : '−10' }})
+              </p>
+              <button class="btn btn--primary" type="button" (click)="next()">
+                {{ index() + 1 < q.questions.length ? 'Question suivante' : 'Voir mon résultat' }}
+              </button>
+            </div>
           }
         </div>
-      }
-
-      @if (result(); as r) {
-        <div class="feedback" [class.feedback--ok]="r.isCorrect" [class.feedback--ko]="!r.isCorrect" aria-live="polite">
-          <strong>{{ r.isCorrect ? 'Bonne réponse !' : 'Pas tout à fait.' }}</strong>
-          <p>{{ r.explanation }}</p>
-          <p class="small">
-            Maîtrise : {{ r.mastery.before }}&nbsp;% → <strong>{{ r.mastery.after }}&nbsp;%</strong>
-            ({{ r.isCorrect ? '+20' : '−10' }})
-          </p>
-          <button class="btn btn--primary" type="button" (click)="next()">
-            {{ index() + 1 < q.questions.length ? 'Question suivante' : 'Voir mon résultat' }}
-          </button>
+      </section>
+    } @else {
+      <section class="card quiz quiz--done" aria-labelledby="done-title">
+        <h2 id="done-title">Quiz terminé</h2>
+        <p class="lead">
+          {{ correctCount() }} / {{ q.questions.length }} bonnes réponses · niveau
+          {{ startLevel() }}&nbsp;% → <strong>{{ currentLevel() }}&nbsp;%</strong>
+        </p>
+        <p class="muted">
+          @if (currentLevel() >= mastered) {
+            Tu maîtrises ce concept. Ton parcours passe au suivant.
+          } @else {
+            Pas encore maîtrisé ({{ mastered }}&nbsp;% requis). Refais le quiz ou suis le parcours
+            pour consolider d'abord les prérequis.
+          }
+        </p>
+        <div class="hero__actions">
+          <button class="btn btn--ghost" type="button" (click)="retry()">Recommencer</button>
+          <a class="btn btn--primary" routerLink="/path">Voir mon parcours</a>
+          <a class="btn btn--ghost" routerLink="/dashboard">Ma maîtrise</a>
         </div>
-      }
-    </section>
-  } @else {
-    <section class="card quiz quiz--done">
-      <h2>Quiz terminé</h2>
-      <p class="lead">
-        {{ correctCount() }} / {{ q.questions.length }} bonnes réponses ·
-        niveau {{ startLevel() }}&nbsp;% → <strong>{{ currentLevel() }}&nbsp;%</strong>
-      </p>
-      <p class="muted">
-        @if (currentLevel() >= 70) {
-          Tu maîtrises ce concept. Ton parcours passe au suivant.
-        } @else {
-          Pas encore maîtrisé (70&nbsp;% requis). Refais le quiz ou suis le parcours pour consolider d'abord les prérequis.
-        }
-      </p>
-      <div class="hero__actions">
-        <button class="btn btn--ghost" type="button" (click)="retry()">Recommencer</button>
-        <a class="btn btn--primary" routerLink="/path">Voir mon parcours</a>
-        <a class="btn btn--ghost" routerLink="/dashboard">Ma maîtrise</a>
-      </div>
-    </section>
+      </section>
+    }
   }
-}
+</div>

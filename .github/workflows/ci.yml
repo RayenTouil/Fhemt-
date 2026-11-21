@@ -1,10 +1,11 @@
-# Intégration continue : à chaque push, GitHub vérifie que le frontend compile et que
-# ses tests passent, et que l'API démarre et répond. Une croix rouge = quelque chose est cassé.
+# Intégration continue : à chaque push, GitHub vérifie que le code du frontend est propre
+# (ESLint, Prettier), qu'il compile et que ses tests passent, puis que les tests de l'API passent
+# et qu'elle démarre et répond. Une croix rouge = quelque chose est cassé.
 name: CI
 
 on:
   push:
-    branches: [main, Rayen]
+    branches: [main, Rayen, objectif-4]
   pull_request:
 
 jobs:
@@ -22,6 +23,10 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+      - name: Qualité du code (ESLint)
+        run: npm run lint
+      - name: Mise en forme (Prettier)
+        run: npm run format:check
       - run: npm run build
       - run: npx ng test --watch=false
 

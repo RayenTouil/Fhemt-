@@ -1,46 +1,98 @@
-<header class="nav">
+<header class="nav" [class.is-open]="menuOpen()">
   <a class="nav__brand" routerLink="/" aria-label="Fhemt ? : accueil">
     <span class="nav__logo">Fhemt <span class="nav__q">?</span></span>
     <span class="nav__arabic" lang="ar">فهمت؟</span>
   </a>
 
-  <nav class="nav__links" aria-label="Navigation principale">
-    @if (auth.isLoggedIn()) {
-      @if (auth.isTeacher()) {
-        <a routerLink="/teacher" routerLinkActive="is-active">Ma classe</a>
+  <!-- Bouton du menu burger : visible seulement sur les petits écrans (voir styles.css) -->
+  <button
+    #burger
+    type="button"
+    class="nav__burger"
+    aria-controls="nav-menu"
+    [attr.aria-expanded]="menuOpen()"
+    (click)="toggleMenu()"
+  >
+    <svg class="nav__burger-icon" viewBox="0 0 24 24" aria-hidden="true">
+      @if (menuOpen()) {
+        <path d="M6 6l12 12M18 6L6 18" />
       } @else {
-        <a routerLink="/dashboard" routerLinkActive="is-active">Ma maîtrise</a>
-        <a routerLink="/path" routerLinkActive="is-active">Mon parcours</a>
-        <a routerLink="/concepts" routerLinkActive="is-active">Carte des concepts</a>
+        <path d="M4 7h16M4 12h16M4 17h16" />
       }
-    }
-  </nav>
+    </svg>
+    <span>Menu</span>
+  </button>
 
-  <div class="nav__user">
-    <button
-      type="button"
-      class="ui-toggle"
-      [attr.aria-pressed]="ui.fiche()"
-      aria-label="Mode fiche de révision"
-      title="Basculer entre la version classique et la version fiche de révision"
-      (click)="ui.toggle()"
-    >
-      <svg class="ui-toggle__icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M15 4.5l4.5 4.5-8.6 8.6H6.4v-4.5z" />
-        <path d="M12.6 6.9l4.5 4.5" />
-        <path d="M4 21h9" />
-      </svg>
-      <span class="ui-toggle__label">Mode fiche</span>
-      <span class="ui-toggle__switch" aria-hidden="true"></span>
-    </button>
+  <div id="nav-menu" class="nav__menu">
+    <nav class="nav__links" aria-label="Navigation principale">
+      @if (auth.isLoggedIn()) {
+        @if (auth.isTeacher()) {
+          <a
+            routerLink="/teacher"
+            routerLinkActive="is-active"
+            ariaCurrentWhenActive="page"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Ma classe</a
+          >
+          <a
+            routerLink="/teacher/questions"
+            routerLinkActive="is-active"
+            ariaCurrentWhenActive="page"
+            >Questions</a
+          >
+        } @else {
+          <a routerLink="/dashboard" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+            >Ma maîtrise</a
+          >
+          <a routerLink="/path" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+            >Mon parcours</a
+          >
+          <a routerLink="/concepts" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+            >Carte des concepts</a
+          >
+        }
+      } @else {
+        <a routerLink="/about" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+          >À propos</a
+        >
+        <a routerLink="/contact" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+          >Contact</a
+        >
+      }
+    </nav>
 
-    @if (auth.user(); as user) {
-      <span class="chip" [class.chip--teacher]="auth.isTeacher()">
-        {{ user.name }} · {{ roleLabel(user.role) }}
-      </span>
-      <button class="btn btn--ghost" type="button" (click)="logout()">Déconnexion</button>
-    } @else {
-      <a class="btn btn--primary" routerLink="/login">Se connecter</a>
-    }
+    <div class="nav__user">
+      <button
+        type="button"
+        class="ui-toggle"
+        [attr.aria-pressed]="ui.fiche()"
+        title="Basculer entre la version classique et la version fiche de révision"
+        (click)="ui.toggle()"
+      >
+        <svg class="ui-toggle__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 4.5l4.5 4.5-8.6 8.6H6.4v-4.5z" />
+          <path d="M12.6 6.9l4.5 4.5" />
+          <path d="M4 21h9" />
+        </svg>
+        <span class="ui-toggle__label">Mode fiche</span>
+        <span class="ui-toggle__switch" aria-hidden="true"></span>
+      </button>
+
+      @if (auth.user(); as user) {
+        <a
+          class="chip chip--link"
+          [class.chip--teacher]="auth.isTeacher()"
+          routerLink="/profile"
+          routerLinkActive="is-active"
+          ariaCurrentWhenActive="page"
+          [attr.aria-label]="'Mon profil : ' + user.name + ', ' + roleLabel(user.role)"
+        >
+          {{ user.name }} · {{ roleLabel(user.role) }}
+        </a>
+        <button class="btn btn--ghost" type="button" (click)="logout()">Déconnexion</button>
+      } @else {
+        <a class="btn btn--primary" routerLink="/login">Se connecter</a>
+      }
+    </div>
   </div>
 </header>

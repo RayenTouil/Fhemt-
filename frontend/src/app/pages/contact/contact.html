@@ -1,0 +1,111 @@
+<app-page-header
+  eyebrow="Contact"
+  heading="Écris à l'équipe Fhemt ?"
+  subtitle="Une question sur le cours, un problème sur le site, une idée : on lit tous les messages."
+/>
+
+<div class="split">
+  <section class="card" aria-labelledby="contact-form-title">
+    <!-- Zone annoncée par les lecteurs d'écran : le remerciement après l'envoi -->
+    <div aria-live="polite">
+      @if (sent()) {
+        <div class="alert alert--success state--sent">
+          <h2 id="contact-form-title">Merci {{ form.controls.name.value }} !</h2>
+          <p>
+            Ton message « {{ form.controls.subject.value }} » est bien arrivé. On te répond à
+            l'adresse {{ form.controls.email.value }}.
+          </p>
+          @if (demo) {
+            <p class="small">Mode démo : le message est enregistré dans ton navigateur.</p>
+          }
+          <button type="button" class="btn btn--small" (click)="writeAnother()">
+            Écrire un autre message
+          </button>
+        </div>
+      }
+    </div>
+
+    @if (!sent()) {
+      <h2 id="contact-form-title">Ton message</h2>
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="form-row">
+          <app-form-field label="Nom" [error]="errorOf('name')">
+            <input
+              appFieldControl
+              type="text"
+              formControlName="name"
+              autocomplete="name"
+              required
+            />
+          </app-form-field>
+          <app-form-field label="E-mail" [error]="errorOf('email')">
+            <input
+              appFieldControl
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              placeholder="toi@supcom.tn"
+              required
+            />
+          </app-form-field>
+        </div>
+
+        <app-form-field label="Sujet" [error]="errorOf('subject')">
+          <select appFieldControl formControlName="subject" required>
+            @for (subject of subjects; track subject) {
+              <option [value]="subject">{{ subject }}</option>
+            }
+          </select>
+        </app-form-field>
+
+        <app-form-field
+          label="Message"
+          [hint]="
+            form.controls.message.value.length +
+            ' / ' +
+            limits.message.max +
+            ' caractères (au moins ' +
+            limits.message.min +
+            ')'
+          "
+          [error]="errorOf('message')"
+        >
+          <textarea appFieldControl formControlName="message" rows="6" required></textarea>
+        </app-form-field>
+
+        @if (error()) {
+          <p class="alert alert--error" role="alert">{{ error() }}</p>
+        }
+
+        <button class="btn btn--primary" type="submit" [disabled]="sending()">
+          @if (sending()) {
+            <span class="spinner" aria-hidden="true"></span> Envoi…
+          } @else {
+            Envoyer le message
+          }
+        </button>
+      </form>
+    }
+  </section>
+
+  <aside class="card" aria-labelledby="contact-help">
+    <h2 id="contact-help">Avant d'écrire</h2>
+    <dl class="faq">
+      <dt>Mon niveau ne bouge pas ?</dt>
+      <dd class="muted">
+        Il change après chaque réponse : +20 si elle est juste, −10 sinon. Un concept est maîtrisé à
+        partir de 70&nbsp;%.
+      </dd>
+      <dt>Je suis enseignant, comment avoir un compte ?</dt>
+      <dd class="muted">
+        Les comptes enseignants sont attribués par l'administrateur : écris-nous avec le sujet
+        «&nbsp;Autre&nbsp;».
+      </dd>
+      <dt>Comment marche le parcours ?</dt>
+      <dd class="muted">
+        Il propose toujours un prérequis faible avant le concept qui en dépend. Voir
+        <a routerLink="/about">À propos</a>.
+      </dd>
+    </dl>
+  </aside>
+</div>

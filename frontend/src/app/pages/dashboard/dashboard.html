@@ -1,78 +1,123 @@
-<header class="page-head">
-  <div>
-    <p class="eyebrow">Communications numériques</p>
-    <h1>Bonjour {{ auth.user()?.name }}, voici ta maîtrise</h1>
-  </div>
-</header>
+<app-page-header eyebrow="Communications numériques" [heading]="greeting()" />
 
-@if (error()) {
-  <p class="alert alert--error" role="alert">{{ error() }}</p>
-} @else if (!data()) {
-  <p class="muted">Chargement de ta maîtrise…</p>
-} @else if (data(); as d) {
-  <section class="grid grid--summary">
-    <article class="card stat">
-      @if (ui.fiche()) {
-        <!-- Version fiche : la maîtrise globale écrite comme une note entourée au stylo rouge -->
-        <div class="grade" role="img" [attr.aria-label]="'Maîtrise globale : ' + d.overall + ' %'">
-          <svg class="grade__circle" viewBox="0 0 170 116" aria-hidden="true">
-            <path d="M34 66 C30 26 118 10 146 44 C166 72 120 106 70 102 C30 98 12 70 30 44 C42 28 64 20 86 19" pathLength="1" />
-          </svg>
-          <span class="grade__value">{{ d.overall }}&nbsp;%</span>
-        </div>
-      } @else {
-        <div class="ring" [style.--value]="d.overall">
-          <span>{{ d.overall }}&nbsp;%</span>
-        </div>
-      }
-      <p class="muted">maîtrise globale</p>
-    </article>
-    <article class="card stat">
-      <div class="counts">
-        <div><strong class="is-mastered-text">{{ d.counts.mastered }}</strong><span>maîtrisés</span></div>
-        <div><strong class="is-progress-text">{{ d.counts.inProgress }}</strong><span>en cours</span></div>
-        <div><strong class="is-weak-text">{{ d.counts.weak }}</strong><span>faibles</span></div>
-        <div><strong class="muted">{{ d.counts.notAssessed }}</strong><span>non évalués</span></div>
-      </div>
-      <p class="muted">sur {{ d.concepts.length }} concepts · maîtrisé à partir de {{ d.thresholds.mastered }}&nbsp;%</p>
-    </article>
-    <article class="card stat next">
-      <p class="eyebrow">Prochaine étape</p>
-      @if (nextStep(); as step) {
-        <h3>{{ step.title }}</h3>
-        <p class="muted">{{ step.reason }}</p>
-        <a class="btn btn--primary" [routerLink]="['/quiz', step.conceptId]">
-          {{ step.kind === 'diagnostic' ? 'Faire le quiz' : 'M’entraîner' }}
-        </a>
-      } @else {
-        <h3>Tout est maîtrisé 🎉</h3>
-        <p class="muted">Continue à t'entraîner pour rester au point avant l'examen.</p>
-      }
-      <a class="link" routerLink="/path">Voir tout le parcours →</a>
-    </article>
-  </section>
+<div [attr.aria-busy]="mastery.isLoading()">
+  @if (mastery.error()) {
+    <app-error-state [message]="errorMessage(mastery.error())" (retry)="reload()" />
+  } @else if (!mastery.hasValue()) {
+    <app-skeleton variant="dashboard" [count]="5" label="Chargement de ta maîtrise…" />
+  } @else {
+    @let d = mastery.value();
 
-  <section class="card">
-    <h2>Maîtrise par concept</h2>
-    <ul class="concepts">
-      @for (c of d.concepts; track c.id) {
-        <li class="concept">
-          <div class="concept__head">
-            <div>
-              <strong>{{ c.title }}</strong>
-              <p class="muted small">{{ c.summary }}</p>
-            </div>
-            <span class="badge" [class]="'badge is-' + c.status">{{ labelOf(c.status) }}</span>
+    @if (d.counts.notAssessed === d.concepts.length) {
+      <app-empty-state
+        heading="Aucun concept évalué pour l'instant"
+        message="Commence par un quiz de diagnostic : trois questions suffisent pour connaître ton niveau sur un concept."
+      >
+        <a class="btn btn--primary" [routerLink]="['/quiz', d.concepts[0].id]"
+          >Commencer par « {{ d.concepts[0].title }} »</a
+        >
+      </app-empty-state>
+    }
+
+    <section class="grid grid--summary" aria-label="Résumé">
+      <article class="card stat">
+        @if (ui.fiche()) {
+          <!-- Version fiche : la maîtrise globale écrite comme une note entourée au stylo rouge -->
+          <div
+            class="grade"
+            role="img"
+            [attr.aria-label]="'Maîtrise globale : ' + d.overall + ' %'"
+          >
+            <svg class="grade__circle" viewBox="0 0 170 116" aria-hidden="true">
+              <path
+                d="M34 66 C30 26 118 10 146 44 C166 72 120 106 70 102 C30 98 12 70 30 44 C42 28 64 20 86 19"
+                pathLength="1"
+              />
+            </svg>
+            <span class="grade__value" aria-hidden="true">{{ d.overall }}&nbsp;%</span>
           </div>
-          <div class="concept__row">
-            <div class="bar__track">
-              <div class="bar__fill" [class]="'bar__fill is-' + c.status" [style.width.%]="c.level ?? 0"></div>
-            </div>
-            <span class="concept__level">{{ c.level === null ? '—' : c.level + ' %' }}</span>
-            <a class="btn btn--small" [routerLink]="['/quiz', c.id]">{{ c.level === null ? 'Commencer' : 'M’entraîner' }}</a>
+        } @else {
+          <div class="ring" [style.--value]="d.overall">
+            <span>{{ d.overall }}&nbsp;%</span>
           </div>
-        </li>
-      }
-    </ul>
-  </section>
-}
+        }
+        <p class="muted">maîtrise globale</p>
+      </article>
+
+      <article class="card stat">
+        <dl class="counts">
+          <div>
+            <dt>maîtrisés</dt>
+            <dd class="is-mastered-text">{{ d.counts.mastered }}</dd>
+          </div>
+          <div>
+            <dt>en cours</dt>
+            <dd class="is-progress-text">{{ d.counts.inProgress }}</dd>
+          </div>
+          <div>
+            <dt>faibles</dt>
+            <dd class="is-weak-text">{{ d.counts.weak }}</dd>
+          </div>
+          <div>
+            <dt>non évalués</dt>
+            <dd class="muted">{{ d.counts.notAssessed }}</dd>
+          </div>
+        </dl>
+        <p class="muted">
+          sur {{ d.concepts.length }} concepts · maîtrisé à partir de
+          {{ d.thresholds.mastered }}&nbsp;%
+        </p>
+      </article>
+
+      <article class="card stat next">
+        <p class="eyebrow">Prochaine étape</p>
+        @if (path.error()) {
+          <p class="muted">Ton parcours n'a pas pu être calculé.</p>
+          <button type="button" class="btn btn--small" (click)="path.reload()">Réessayer</button>
+        } @else if (!path.hasValue()) {
+          <div class="sk sk--line sk--w80" aria-hidden="true"></div>
+          <div class="sk sk--line sk--w60" aria-hidden="true"></div>
+        } @else if (nextStep(); as step) {
+          <h2 class="next__title">{{ step.title }}</h2>
+          <p class="muted">{{ step.reason }}</p>
+          <a class="btn btn--primary" [routerLink]="['/quiz', step.conceptId]">
+            {{ actionLabel(step.level) }}
+          </a>
+        } @else {
+          <h2 class="next__title">Tout est maîtrisé 🎉</h2>
+          <p class="muted">Continue à t'entraîner pour rester au point avant l'examen.</p>
+        }
+        <a class="link" routerLink="/path">Voir tout le parcours →</a>
+      </article>
+    </section>
+
+    <section class="card" aria-labelledby="concepts-title">
+      <h2 id="concepts-title">Maîtrise par concept</h2>
+      <ul class="concepts">
+        @for (c of d.concepts; track c.id) {
+          <li class="concept">
+            <div class="concept__head">
+              <div>
+                <h3 class="concept__title">{{ c.title }}</h3>
+                <p class="muted small">{{ c.summary }}</p>
+              </div>
+              <app-status-badge [status]="c.status" />
+            </div>
+            <div class="concept__row">
+              <app-mastery-bar [level]="c.level" [name]="c.title" />
+              <span class="concept__level" aria-hidden="true">{{
+                c.level === null ? '—' : c.level + ' %'
+              }}</span>
+              <a
+                class="btn btn--small"
+                [routerLink]="['/quiz', c.id]"
+                [attr.aria-label]="actionLabel(c.level) + ' : ' + c.title"
+                >{{ actionLabel(c.level) }}</a
+              >
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</div>

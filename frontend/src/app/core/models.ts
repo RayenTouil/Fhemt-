@@ -8,6 +8,53 @@ export interface User {
   email: string;
   name: string;
   role: Role;
+  preferences?: UserPreferences; // absent tant que l'utilisateur n'a rien enregistré
+}
+
+// Les préférences modifiables dans la page Profil.
+export interface UserPreferences {
+  uiMode: 'classique' | 'fiche'; // l'habillage du site
+  reduceMotion: boolean; // couper les animations
+}
+
+// PATCH /api/users/me : on n'envoie que ce qui change.
+export interface ProfileUpdate {
+  name?: string;
+  preferences?: Partial<UserPreferences>;
+}
+
+// POST /api/contact
+export interface ContactInput {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+// Un concept du cours (GET /api/concepts).
+export interface Concept {
+  id: string;
+  title: string;
+  short: string;
+  summary: string;
+  prerequisites: string[];
+  questionCount?: number;
+}
+
+// Une question telle que l'enseignant la crée ou la modifie (avec la réponse).
+export interface QuestionInput {
+  conceptId: string;
+  text: string;
+  choices: string[];
+  correctIndex: number;
+  explanation: string;
+}
+
+// Une question complète, vue par l'enseignant (GET /api/teacher/questions).
+export interface TeacherQuestion extends QuestionInput {
+  id: string;
+  createdBy?: string;
+  updatedAt?: string;
 }
 
 export type MasteryStatus = 'mastered' | 'in-progress' | 'weak' | 'not-assessed';

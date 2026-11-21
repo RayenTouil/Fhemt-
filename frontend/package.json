@@ -7,6 +7,11 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "lint": "ng lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "serve:dist": "node scripts/serve-dist.mjs",
+    "e2e": "node e2e/parcours.mjs",
     "deploy": "node scripts/deploy.mjs"
   },
   "private": true,
@@ -25,9 +30,13 @@
     "@angular/build": "^22.2.6",
     "@angular/cli": "^22.2.6",
     "@angular/compiler-cli": "^22.2.0",
+    "@eslint/js": "^10.0.1",
+    "angular-eslint": "22.8.0",
+    "eslint": "^10.14.0",
     "jsdom": "^30.0.0",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2",
+    "typescript-eslint": "8.72.2",
     "vitest": "^5.0.0"
   }
 }

@@ -1,28 +1,27 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ApiService, errorMessage } from '../../core/api';
-import { PathStep } from '../../core/models';
+import { MASTERED, actionLabel } from '../../core/levels';
+import { EmptyState } from '../../shared/empty-state/empty-state';
+import { ErrorState } from '../../shared/error-state/error-state';
+import { PageHeader } from '../../shared/page-header/page-header';
+import { Skeleton } from '../../shared/skeleton/skeleton';
+import { StatusBadge } from '../../shared/status-badge/status-badge';
 
+// Parcours personnalisé : au plus trois prochaines étapes, chacune avec sa raison
+// (règle dans backend/src/services/path.js, recopiée dans core/demo-api.ts).
 @Component({
   selector: 'app-path',
-  imports: [RouterLink],
+  imports: [RouterLink, EmptyState, ErrorState, PageHeader, Skeleton, StatusBadge],
   templateUrl: './path.html',
 })
-export class PathPage implements OnInit {
+export class PathPage {
   private readonly api = inject(ApiService);
-  readonly steps = signal<PathStep[] | null>(null);
-  readonly error = signal('');
 
-  readonly kindLabel: Record<PathStep['kind'], string> = {
-    prerequisite: "Prérequis d'abord",
-    diagnostic: 'Diagnostic',
-    practice: 'Entraînement',
-  };
+  readonly path = rxResource({ stream: () => this.api.path() });
 
-  ngOnInit() {
-    this.api.path().subscribe({
-      next: ({ steps }) => this.steps.set(steps),
-      error: (err) => this.error.set(errorMessage(err)),
-    });
-  }
+  readonly errorMessage = errorMessage;
+  readonly actionLabel = actionLabel;
+  readonly mastered = MASTERED;
 }

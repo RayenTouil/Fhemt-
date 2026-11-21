@@ -1,0 +1,84 @@
+<p id="graph-help" class="visually-hidden">
+  Graphe des concepts. Une flèche va d'un concept à voir avant vers celui qui en dépend. Utilise les
+  flèches du clavier pour passer d'un concept à l'autre, et Entrée pour le sélectionner.
+</p>
+<svg
+  viewBox="0 0 640 430"
+  role="group"
+  aria-label="Carte des concepts colorée selon ta maîtrise"
+  aria-describedby="graph-help"
+>
+  <defs>
+    <marker
+      id="arrow"
+      viewBox="0 0 10 10"
+      refX="8"
+      refY="5"
+      markerWidth="8"
+      markerHeight="8"
+      orient="auto-start-reverse"
+    >
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+
+  <g aria-hidden="true">
+    @for (e of edges(); track e.from.id + e.to.id) {
+      <line
+        class="edge"
+        [attr.x1]="shorten(e, 'from').x"
+        [attr.y1]="shorten(e, 'from').y"
+        [attr.x2]="shorten(e, 'to').x"
+        [attr.y2]="shorten(e, 'to').y"
+        marker-end="url(#arrow)"
+        pathLength="1"
+      />
+    }
+  </g>
+
+  @for (n of nodes(); track n.id) {
+    <g
+      class="node"
+      role="button"
+      [class.is-selected]="selectedId() === n.id"
+      [attr.data-id]="n.id"
+      [attr.data-status]="n.status"
+      [attr.tabindex]="activeId() === n.id ? 0 : -1"
+      [attr.aria-pressed]="selectedId() === n.id"
+      [attr.aria-label]="label(n)"
+      (click)="select(n)"
+      (keydown)="onKeydown($event, n)"
+      (focus)="activeId.set(n.id)"
+    >
+      <!-- anneau de focus, visible seulement quand le concept a le focus du clavier -->
+      <circle class="node__ring" [attr.cx]="n.x" [attr.cy]="n.y" r="36" />
+      @if (fiche() && selectedId() === n.id) {
+        <path class="pen-circle" [attr.d]="penCircle(n)" pathLength="1" />
+      }
+      <circle class="node__dot" [attr.cx]="n.x" [attr.cy]="n.y" r="28" />
+      <text [attr.x]="n.x" [attr.y]="n.y + 5" text-anchor="middle" class="node__level">
+        {{ n.level === null ? '?' : n.level + '%' }}
+      </text>
+      <text [attr.x]="n.x" [attr.y]="n.y + 46" text-anchor="middle" class="node__label">
+        {{ n.short }}
+      </text>
+    </g>
+  }
+</svg>
+
+<!-- Sur petit écran : la même information sous forme de liste de boutons -->
+<ul class="graph-list" aria-label="Concepts (liste)">
+  @for (n of nodes(); track n.id) {
+    <li>
+      <button
+        type="button"
+        class="graph-list__item"
+        [attr.aria-pressed]="selectedId() === n.id"
+        (click)="select(n)"
+      >
+        <span>{{ n.title }}</span>
+        <app-status-badge [status]="n.status" />
+      </button>
+    </li>
+  }
+</ul>

@@ -1,12 +1,28 @@
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  signal,
+  untracked,
+} from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ApiService, errorMessage } from '../../core/api';
-import { AnswerResponse, QuizResponse } from '../../core/models';
+import { MASTERED } from '../../core/levels';
+import { AnswerResponse } from '../../core/models';
 import { UiModeService } from '../../core/ui-mode';
+import { ErrorState } from '../../shared/error-state/error-state';
+import { PageHeader } from '../../shared/page-header/page-header';
+import { Skeleton } from '../../shared/skeleton/skeleton';
 
+// Le quiz d'un concept : une question à la fois, correction immédiate par le serveur
+// (POST /api/quiz/answer), puis le bilan avec le nouveau niveau de maîtrise.
 @Component({
   selector: 'app-quiz',
-  imports: [RouterLink],
+  imports: [RouterLink, ErrorState, PageHeader, Skeleton],
   templateUrl: './quiz.html',
 })
 export class Quiz {
@@ -16,45 +32,50 @@ export class Quiz {
   // Vient de l'URL /quiz/:conceptId (withComponentInputBinding dans app.config.ts)
   readonly conceptId = input.required<string>();
 
-  readonly quiz = signal<QuizResponse | null>(null);
-  readonly error = signal('');
+  // `params` : le quiz est rechargé tout seul quand le concept de l'URL change.
+  readonly quiz = rxResource({
+    params: () => this.conceptId(),
+    stream: ({ params }) => this.api.quiz(params),
+  });
+
   readonly index = signal(0); // la question affichée
   readonly selected = signal<number | null>(null); // le choix cliqué
-  readonly result = signal<AnswerResponse | null>(null); // la correction renvoyée par le backend
+  readonly result = signal<AnswerResponse | null>(null); // la correction renvoyée par le serveur
   readonly correctCount = signal(0);
-  readonly startLevel = signal(0);
-  readonly currentLevel = signal(0);
   readonly sending = signal(false);
+  readonly answerError = signal('');
 
-  readonly question = computed(() => this.quiz()?.questions[this.index()] ?? null);
+  // Le niveau au début du quiz, puis le niveau après chaque réponse.
+  // linkedSignal : repart du niveau chargé à chaque (re)chargement du quiz, mais reste modifiable.
+  readonly startLevel = computed(() => (this.quiz.hasValue() ? (this.quiz.value().level ?? 0) : 0));
+  readonly currentLevel = linkedSignal(() => this.startLevel());
+
+  readonly question = computed(() =>
+    this.quiz.hasValue() ? (this.quiz.value().questions[this.index()] ?? null) : null,
+  );
   readonly finished = computed(() => {
-    const q = this.quiz();
+    const q = this.quiz.hasValue() ? this.quiz.value() : undefined;
     return !!q && this.index() >= q.questions.length;
   });
 
+  readonly mastered = MASTERED;
+  readonly errorMessage = errorMessage;
+  readonly letters = 'ABCD';
+
   constructor() {
-    // Recharge le quiz chaque fois que le concept dans l'URL change.
+    // Nouveau concept dans l'URL : on repart de la première question.
     effect(() => {
-      const id = this.conceptId();
-      untracked(() => this.load(id));
+      this.conceptId();
+      untracked(() => this.resetProgress());
     });
   }
 
-  load(conceptId: string) {
-    this.quiz.set(null);
-    this.error.set('');
+  private resetProgress() {
     this.index.set(0);
     this.selected.set(null);
     this.result.set(null);
     this.correctCount.set(0);
-    this.api.quiz(conceptId).subscribe({
-      next: (quiz) => {
-        this.quiz.set(quiz);
-        this.startLevel.set(quiz.level ?? 0);
-        this.currentLevel.set(quiz.level ?? 0);
-      },
-      error: (err) => this.error.set(errorMessage(err)),
-    });
+    this.answerError.set('');
   }
 
   choose(choiceIndex: number) {
@@ -62,6 +83,7 @@ export class Quiz {
     if (!q || this.result() || this.sending()) return; // déjà répondu
     this.selected.set(choiceIndex);
     this.sending.set(true);
+    this.answerError.set('');
     this.api.answer(q.id, choiceIndex).subscribe({
       next: (res) => {
         this.result.set(res);
@@ -70,7 +92,8 @@ export class Quiz {
         this.sending.set(false);
       },
       error: (err) => {
-        this.error.set(errorMessage(err));
+        this.answerError.set(errorMessage(err));
+        this.selected.set(null);
         this.sending.set(false);
       },
     });
@@ -83,6 +106,7 @@ export class Quiz {
   }
 
   retry() {
-    this.load(this.conceptId());
+    this.resetProgress();
+    this.quiz.reload();
   }
 }

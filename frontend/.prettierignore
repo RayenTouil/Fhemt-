@@ -1,0 +1,7 @@
+# Fichiers que Prettier ne doit pas reformater
+dist/
+.angular/
+node_modules/
+package-lock.json
+# Copies exactes de backend/data/seed (vérifiées par backend/test/seed-sync.test.js)
+public/demo/

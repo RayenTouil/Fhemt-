@@ -1,0 +1,156 @@
+<app-page-header
+  eyebrow="Espace enseignant"
+  heading="Les questions du quiz"
+  subtitle="Crée une question ou corrige une question existante : les étudiants la voient tout de suite dans le quiz du concept."
+/>
+
+@if (concepts.error()) {
+  <app-error-state [message]="errorMessage(concepts.error())" (retry)="concepts.reload()" />
+} @else if (!concepts.hasValue()) {
+  <div aria-busy="true"><app-skeleton variant="list" label="Chargement des concepts…" /></div>
+} @else {
+  <div class="toolbar">
+    <app-form-field label="Concept">
+      <select
+        appFieldControl
+        [value]="conceptId()"
+        (change)="selectConcept($any($event.target).value)"
+      >
+        @for (c of concepts.value().concepts; track c.id) {
+          <option [value]="c.id">{{ c.title }} ({{ c.questionCount ?? 0 }} questions)</option>
+        }
+      </select>
+    </app-form-field>
+  </div>
+
+  <div class="editor">
+    <section class="card" aria-labelledby="list-title" [attr.aria-busy]="questions.isLoading()">
+      <div class="editor__head">
+        <h2 id="list-title">Questions · {{ conceptTitle() }}</h2>
+        <button type="button" class="btn btn--small" (click)="newQuestion()">
+          + Nouvelle question
+        </button>
+      </div>
+
+      @if (questions.error()) {
+        <app-error-state [message]="errorMessage(questions.error())" (retry)="questions.reload()" />
+      } @else if (!questions.hasValue()) {
+        <app-skeleton variant="list" [count]="6" label="Chargement des questions…" />
+      } @else if (questions.value().questions.length === 0) {
+        <p class="muted">Aucune question pour ce concept : crée la première avec le formulaire.</p>
+      } @else {
+        <ol class="qlist">
+          @for (q of questions.value().questions; track q.id; let i = $index) {
+            <li class="qlist__item" [class.is-editing]="editing()?.id === q.id">
+              <h3 class="qlist__text">{{ q.text }}</h3>
+              <ul class="qlist__choices">
+                @for (choice of q.choices; track $index) {
+                  <li [class.is-answer]="$index === q.correctIndex">
+                    <span aria-hidden="true">{{ letters[$index] }}.</span> {{ choice }}
+                    @if ($index === q.correctIndex) {
+                      <span class="qlist__check" aria-hidden="true">✓</span>
+                      <span class="visually-hidden">(bonne réponse)</span>
+                    }
+                  </li>
+                }
+              </ul>
+              <p class="small muted">{{ q.explanation }}</p>
+              <button
+                type="button"
+                class="btn btn--small btn--ghost"
+                (click)="edit(q)"
+                [attr.aria-label]="'Modifier la question ' + (i + 1)"
+              >
+                Modifier
+              </button>
+            </li>
+          }
+        </ol>
+      }
+    </section>
+
+    <section class="card editor__form" aria-labelledby="form-title">
+      <h2 id="form-title" #formHeading tabindex="-1">
+        {{ editing() ? 'Modifier la question' : 'Nouvelle question' }}
+      </h2>
+      <p class="muted small">Concept : {{ conceptTitle() }}</p>
+
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <app-form-field label="Énoncé" [error]="errorOf('text')">
+          <textarea appFieldControl formControlName="text" rows="3" required></textarea>
+        </app-form-field>
+
+        <fieldset
+          [class.field--invalid]="choicesError() || correctError()"
+          aria-describedby="choices-hint"
+        >
+          <legend>Choix de réponse et bonne réponse</legend>
+          <p id="choices-hint" class="field__hint">
+            Coche le rond de la bonne réponse. Les choix C et D sont facultatifs.
+          </p>
+          <div formArrayName="choices" class="choice-rows">
+            @for (ctrl of form.controls.choices.controls; track $index) {
+              <div class="choice-row">
+                <input
+                  type="radio"
+                  name="correctIndex"
+                  [value]="$index"
+                  [formControl]="form.controls.correctIndex"
+                  [attr.aria-label]="'Le choix ' + letters[$index] + ' est la bonne réponse'"
+                />
+                <span class="choice__letter" aria-hidden="true">{{ letters[$index] }}</span>
+                <input
+                  type="text"
+                  [formControlName]="$index"
+                  [attr.aria-label]="
+                    'Choix ' + letters[$index] + ($index < 2 ? ' (obligatoire)' : ' (facultatif)')
+                  "
+                  [placeholder]="$index < 2 ? 'Obligatoire' : 'Facultatif'"
+                />
+              </div>
+            }
+          </div>
+          @if (choicesError()) {
+            <p class="field__error">{{ choicesError() }}</p>
+          }
+          @if (correctError()) {
+            <p class="field__error">{{ correctError() }}</p>
+          }
+        </fieldset>
+
+        <app-form-field
+          label="Explication"
+          hint="Montrée à l'étudiant après sa réponse : explique pourquoi c'est la bonne."
+          [error]="errorOf('explanation')"
+        >
+          <textarea appFieldControl formControlName="explanation" rows="3" required></textarea>
+        </app-form-field>
+
+        <div aria-live="polite">
+          @if (status()) {
+            <p class="alert alert--success">
+              {{ status() }}
+              <a [routerLink]="['/quiz', savedConcept()]">Voir le quiz</a>
+            </p>
+          }
+        </div>
+        @if (error()) {
+          <p class="alert alert--error" role="alert">{{ error() }}</p>
+        }
+
+        <div class="form-actions">
+          <button class="btn btn--primary" type="submit" [disabled]="saving()">
+            @if (saving()) {
+              <span class="spinner" aria-hidden="true"></span> Enregistrement…
+            } @else {
+              {{ editing() ? 'Enregistrer les modifications' : 'Créer la question' }}
+            }
+          </button>
+          @if (editing()) {
+            <button class="btn btn--ghost" type="button" (click)="newQuestion()">Annuler</button>
+          }
+        </div>
+      </form>
+    </section>
+  </div>
+}
