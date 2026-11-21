@@ -1,5 +1,5 @@
 // npm run e2e : le parcours complet d'un utilisateur, joué automatiquement dans de vrais
-// navigateurs (Chrome et Edge), en largeur téléphone (360 px) et ordinateur (1280 px).
+// navigateurs (Chrome, Edge et Firefox), en largeur téléphone (360 px) et ordinateur (1280 px).
 //
 // Parcours : accueil → connexion démo (Amira) → tableau de bord → quiz → profil → déconnexion
 //            → connexion enseignant → carte de chaleur → création d'une question.
@@ -9,7 +9,10 @@
 // Puis :                         npm run build  →  npm run serve:dist  (dans un autre terminal)
 //                                npm run e2e
 // Le script utilise les navigateurs déjà installés sur l'ordinateur (rien à télécharger).
-// Variables utiles : BASE_URL (défaut http://localhost:4300), BROWSERS=chrome,edge, WIDTHS=360,1280
+// Un navigateur absent est signalé « non installé », sans faire échouer le parcours.
+// Variables utiles : BASE_URL (défaut http://localhost:4300), BROWSERS=chrome,edge,firefox,
+// WIDTHS=360,1280, et CHROME_PATH / EDGE_PATH / FIREFOX_PATH pour un navigateur rangé ailleurs
+// (par exemple un Firefox portable).
 import fs from 'node:fs';
 import puppeteer from 'puppeteer-core';
 
@@ -26,10 +29,21 @@ const CANDIDATES = {
     '/usr/bin/microsoft-edge',
     '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
   ],
+  firefox: [
+    'C:/Program Files/Mozilla Firefox/firefox.exe',
+    '/usr/bin/firefox',
+    '/Applications/Firefox.app/Contents/MacOS/firefox',
+  ],
 };
-const browsers = (process.env.BROWSERS || 'chrome,edge')
+// Chemin d'un navigateur : d'abord la variable CHROME_PATH, EDGE_PATH ou FIREFOX_PATH si elle
+// existe, sinon le premier emplacement habituel qui existe sur l'ordinateur.
+const findPath = (name) =>
+  [process.env[`${name.toUpperCase()}_PATH`], ...(CANDIDATES[name] ?? [])].find(
+    (p) => p && fs.existsSync(p),
+  );
+const browsers = (process.env.BROWSERS || 'chrome,edge,firefox')
   .split(',')
-  .map((name) => ({ name, path: (CANDIDATES[name] ?? []).find((p) => fs.existsSync(p)) }));
+  .map((name) => ({ name, path: findPath(name) }));
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -135,7 +149,13 @@ for (const { name, path } of browsers) {
     rows.push(`${name.padEnd(7)} | non installé sur cet ordinateur`);
     continue;
   }
-  const browser = await puppeteer.launch({ executablePath: path, headless: true });
+  // Chrome et Edge se pilotent avec le même protocole ; Firefox demande de préciser `browser`
+  // (puppeteer lui parle alors en WebDriver BiDi, le protocole standard des navigateurs).
+  const browser = await puppeteer.launch({
+    browser: name === 'firefox' ? 'firefox' : 'chrome',
+    executablePath: path,
+    headless: true,
+  });
   for (const width of WIDTHS) {
     const context = await browser.createBrowserContext(); // une session vierge (comme une navigation privée)
     const page = await context.newPage();

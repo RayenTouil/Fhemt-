@@ -213,9 +213,9 @@ Les points perdus avant venaient des contrastes et de l'absence de `robots.txt`.
 |---|---|---|
 | Chrome | ✅ 9 étapes | ✅ 9 étapes |
 | Edge | ✅ 9 étapes | ✅ 9 étapes |
-| Firefox | ⏳ à vérifier à la main (pas installé sur notre poste de test) | ⏳ idem |
+| Firefox 160 | ✅ 9 étapes | ✅ 9 étapes |
 
-Pour Firefox, suis le même parcours à la main avec l'outil « Vue adaptative » (Ctrl + Maj + M) en 360 px, puis en plein écran.
+Firefox n'est pas installé sur notre poste de test : nous avons lancé le parcours avec un Firefox portable, sans l'installer, en donnant son chemin au script avec `FIREFOX_PATH=…/firefox.exe npm run e2e`. Puppeteer pilote Chrome et Edge par leur protocole habituel, et Firefox par WebDriver BiDi, le protocole standard commun aux navigateurs.
 
 ### Captures d'écran
 
@@ -293,7 +293,7 @@ N'importe quel autre e-mail crée un nouveau compte étudiant. `npm run reset` d
 | `npm run format:check` | `frontend/` | Prettier : la mise en forme est homogène (`npm run format` la corrige) |
 | `npm run build` | `frontend/` | compilation de production (TypeScript strict, budgets de taille) |
 | `npm run serve:dist` | `frontend/` | sert le site compilé sur http://localhost:4300 (pour Lighthouse et le parcours) |
-| `npm run e2e` | `frontend/` | le parcours complet dans Chrome et Edge, à 360 et 1280 px (prérequis : `npm i --no-save puppeteer-core`, et `serve:dist` lancé) |
+| `npm run e2e` | `frontend/` | le parcours complet dans Chrome, Edge et Firefox, à 360 et 1280 px (prérequis : `npm i --no-save puppeteer-core`, et `serve:dist` lancé) |
 
 À chaque push, GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) lance ESLint, Prettier, la compilation et les tests du frontend, puis les tests du backend, et vérifie que l'API démarre et répond.
 

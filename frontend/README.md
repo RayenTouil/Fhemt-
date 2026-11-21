@@ -13,7 +13,7 @@ npm test           # tests unitaires (Vitest)
 npm run lint       # ESLint (TypeScript, Angular, accessibilité des templates)
 npm run format     # met le code en forme avec Prettier (format:check vérifie seulement)
 npm run serve:dist # sert le site compilé sur http://localhost:4300 (Lighthouse, parcours e2e)
-npm run e2e        # parcours complet dans Chrome et Edge (une fois : npm i --no-save puppeteer-core)
+npm run e2e        # parcours complet dans Chrome, Edge et Firefox (une fois : npm i --no-save puppeteer-core)
 npm run deploy     # compile et publie le site sur https://fhemt.me
 ```
 
